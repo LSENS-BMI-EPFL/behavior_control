@@ -73,7 +73,8 @@ delete(lh2);
 delete(lh3);
 fclose('all');
 
-cameraClk.stop();
+% Axel's setup
+% cameraClk.stop();
 
 
 set(handles2give.OnlineTextTag,'String','Session Stopped');

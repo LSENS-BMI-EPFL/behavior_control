@@ -18,14 +18,17 @@ global  Stim_S Reward_S LickTime Quietwindow Trial_Duration ITI  ...
     DelayedRewardOn DelayedReward
 
 %% Detecting the licks
- 
-if  sum(abs(event.Data(1:end-1,1))<Lick_Threshold & abs(event.Data(2:end,1))>Lick_Threshold)
+
+% This condition detect a crossing from below to above the threshold.
+% A single scan above the threshold is enough to be considered as a lick.
+if sum( abs(event.Data(1:end-1,1)) < Lick_Threshold & abs(event.Data(2:end,1)) > Lick_Threshold )
     LickTime=tic;
 end
 
 %% Delivering the stimuli
 
-if   StimBoolian && toc(LickTime)>Quietwindow/1000 && toc(TrialFinished)>ITI/1000 &&...
+% Note that when Main_S is ran, LickTime = tic.
+if  StimBoolian && toc(LickTime)>Quietwindow/1000 && toc(TrialFinished)>ITI/1000 &&...
         toc(TimeOut)>TimeOutEarlyLick/1000
     size(event.Data)
 
@@ -35,11 +38,11 @@ if   StimBoolian && toc(LickTime)>Quietwindow/1000 && toc(TrialFinished)>ITI/100
     
     outputSingleScan(Trigger_S,[1 0 0])
     
+    % Free reward.
     if Association && Stim_NoStim
-        
         RewardShouldBeDelivered=1;
-        
     end
+    
     LickEarlyAlreadyDetected=0;
     TrialStarted=1;
     PerformanceAndSaveBoolian=0;
@@ -187,19 +190,12 @@ elseif ~DelayedRewardOn
 end
 
 %% Setting booleans if lick was not detected within the response window
-%% THESE ARE THE SAME IT COULD BE REWRITTEN
-if DelayedRewardOn
-    if  ~Association && TrialStarted && toc(TrialTime)>ResponseWindowEnd+0.3 %0.3 because...?
-        TrialStarted=0;
-        PerformanceAndSaveBoolian=1;
-    end
 
-elseif ~DelayedRewardOn
-    if  ~Association && TrialStarted && toc(TrialTime)>ResponseWindowEnd+0.3
-        TrialStarted=0;
-        PerformanceAndSaveBoolian=1;
-    end
+if  ~Association && TrialStarted && toc(TrialTime)>ResponseWindowEnd+0.3 %0.3 because...?
+    TrialStarted=0;
+    PerformanceAndSaveBoolian=1;
 end
+
     
 %% Defining Performance (Perf) and Saving Session Results Data
 
@@ -439,7 +435,7 @@ if   TrialStarted && ~LickEarlyAlreadyDetected...
     Stim_S.release();
 
     
-    queueOutputData(Stim_S,[zeros(1,Stim_S_SR/2);zeros(1,Stim_S_SR/2); zeros(1,Stim_S_SR/2); zeros(1,Stim_S_SR/2);zeros(1,Stim_S_SR/2)]')
+    queueOutputData(Stim_S,[zeros(1,Stim_S_SR/2);zeros(1,Stim_S_SR/2); zeros(1,Stim_S_SR/2); zeros(1,Stim_S_SR/2)]')
 %     queueOutputData(Stim_S,[zeros(1,Stim_S_SR/2); zeros(1,Stim_S_SR/2); zeros(1,Stim_S_SR/2)]')
     Stim_S.prepare();
     Stim_S.startBackground();
@@ -505,8 +501,9 @@ if   TrialStarted && ~LickEarlyAlreadyDetected...
     
     TrialLickData=[];
 
-queueOutputData(Stim_S,[Wh_vec; Aud_vec;Light_vec;Camera_vec;SITrigger_vec]')
-% queueOutputData(Stim_S,[Stim_vec; Light_vec]')
+    % queueOutputData(Stim_S,[Wh_vec; Aud_vec;Light_vec;Camera_vec;SITrigger_vec]')
+    queueOutputData(Stim_S,[Wh_vec; Aud_vec; Camera_vec;SITrigger_vec]')
+    
     Stim_S.startBackground();
     
     while ~Stim_S.IsRunning

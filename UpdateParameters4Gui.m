@@ -40,40 +40,41 @@ trialnumber=trialnumber+1;
 CameraFlag = handles2give.CameraFlag;
 
 % SAVING CAMERA FRAMES
-if CameraFlag && (trialnumber==1 || toc(cameraStartTime)>Block_Duration)
-    
+% if CameraFlag && (trialnumber==1 || toc(cameraStartTime)>Block_Duration)
+if CameraFlag
+    disp('ok')
     Camera_freq=handles2give.CameraFrameRate; % Hz
     
     VideoFileInfo.trialnumber=trialnumber;
     
+    % TODO: remove hard coded basename
     VideoFileInfo.directory=['D:\AR\' char(handles2give.MouseName)...
         '\' [char(handles2give.MouseName) '_' char(handles2give.Date) '_' char(handles2give.FolderName) '\']];
     
     % Define number of frames to save in block
-    VideoFileInfo.nOfFramesToGrab=(Block_Duration)*Camera_freq;
+    VideoFileInfo.nOfFramesToGrab = Trial_Duration*Camera_freq/1000;
     
-    disp(VideoFileInfo)
     save('D:\Behavior\TemplateConfigFile\VideoFileInfo','VideoFileInfo');
+    ArmCameraNew()
     
-    
-    if trialnumber~=1
-        cameraClk.stop()
-        pause(0.05)
-        cameraClk.release()
-    end
-    
-    outputSingleScan(Trigger_S,[0 0 1])
-    pause(5)
-    outputSingleScan(Trigger_S,[0 0 0])
-    
-    cameraClk.startBackground()
-    pause(3)
-    cameraStartTime=tic;
+%     if trialnumber~=1
+%         cameraClk.stop()
+%         pause(0.05)
+%         cameraClk.release()
+%     end
+%     
+%     outputSingleScan(Trigger_S,[0 0 1])
+%     pause(5)
+%     outputSingleScan(Trigger_S,[0 0 0])
+%     
+%     cameraClk.startBackground()
+%     pause(3)
+%     cameraStartTime=tic;
     
     
 % NOT SAVING CAMERA FRAMES
-else
-    outputSingleScan(Trigger_S,[0 0 0])
+% else
+%     outputSingleScan(Trigger_S,[0 0 0])
 end
 
 %% GENERAL SETTINGS
@@ -233,12 +234,14 @@ Auditory_Block = [Stim_Light(1)*ones(1,round(round(((1-Block_Probability)*Block_
          Stim_Light(2)*ones(1,round(round(Block_Probability*Block_Size*100)/100))];
 Auditory_Block = Auditory_Block(randperm(numel(Auditory_Block)));
 
-% Select next trial from pool
-if trialnumber < Block_Size
-    Trial_Type = Auditory_Block(mod(NCompletedTrials,Hlaf_Main_Pool_Size)+1); % select from auditory detection block first
-else
-    Trial_Type = Main_Pool(mod(NCompletedTrials,Hlaf_Main_Pool_Size)+1); %0 noLight 1 Light
-end
+% % Select next trial from pool
+% if trialnumber < Block_Size
+%     Trial_Type = Auditory_Block(mod(NCompletedTrials,Hlaf_Main_Pool_Size)+1); % select from auditory detection block first
+% else
+%     Trial_Type = Main_Pool(mod(NCompletedTrials,Hlaf_Main_Pool_Size)+1); %0 noLight 1 Light
+% end
+
+Trial_Type = Main_Pool(mod(NCompletedTrials,Hlaf_Main_Pool_Size)+1); %0 noLight 1 Light
 
 switch Trial_Type
     case Stim_Light(1) % CATCH TRIAL
@@ -726,7 +729,7 @@ if Stim_NoStim
     else
         
         set(handles2give.TrialTimeLineTextTag,'String',['Next Trial:   "' char(TrialTitles(Stim_NoStim+1)) '" '...
-            char(AssociationTitles(Association+1)) '     ' char(RewardTitles(Wh_Rew+1)) '       ' char(LightTitles(Light_NoLight+1))],'ForegroundColor','#77AC30');
+            char(AssociationTitles(Association+1)) '     ' char(RewardTitles(Wh_Rew+1)) '       ' char(LightTitles(Light_NoLight+1))],'ForegroundColor','green');
         
     end
     

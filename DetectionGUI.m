@@ -58,9 +58,9 @@ global handles2give
 handles.output = hObject;
 
 %% Set experimental name for saving data
-formatOut = 'ddmmyyyy';
+formatOut = 'yyyymmdd';
 handles.Date = datestr(now,formatOut);
-formatOut = 'dd/mm/yyyy';
+formatOut = 'yyyy/mm/dd';
 Date2Display = datestr(now,formatOut);
 set(handles.SetDateTag,'String',Date2Display);
 set(handles.SetDateTag,'Enable','off');
