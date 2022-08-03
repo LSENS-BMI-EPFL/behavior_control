@@ -1,5 +1,7 @@
  function DefiningSessions4Gui
+
 %% Define all global variables
+
 global  Reward_S Stim_S  LickTime  trialnumber   ...
     TrialTime  TrialFinished    TimeOut ...
     Stimcounter NoStimcounter Trigger_S  Stim_S_SR Main_S...
@@ -8,6 +10,7 @@ global  Reward_S Stim_S  LickTime  trialnumber   ...
     Main_S_SR Reward_Ch LastTrialFA lh3 Trial_Duration LightCounter
 
 %% Initialize variables
+
 set(handles2give.OnlineTextTag, 'String', 'Session Started','FontWeight','bold');
 
 handles2give.ReportPause=1;

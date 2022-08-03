@@ -318,7 +318,7 @@ if ~Reward_NoReward
 end
 
 %% Performance Measures
-TrialsBefore=handles2give.LastRecentTrials;
+perf_win_size=handles2give.LastRecentTrials;
 
 % Inter trial interval
 if ITImin>ITImax
@@ -705,7 +705,7 @@ if trialnumber>1
 %     set(handles2give.PerformanceText2Tag, 'FontWeight', 'Bold');
     
     % Make performance plot
-    PlotRecentPerformance4Gui(Results, TrialsBefore);
+    PlotRecentPerformance4Gui(Results, perf_win_size);
 end
 
 %% Checking if Pause is requested (???)

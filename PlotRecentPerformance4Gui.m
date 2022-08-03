@@ -1,8 +1,9 @@
-function PlotRecentPerformance4Gui(Results, TrialsBefore)
+function PlotRecentPerformance4Gui(Results, perf_win_size)
 % PLOTRECENTPERFORMANCE4GUI Plot performance metrics on GUI, given Results
-% data and in window of number of trials of TrialsBefore.
-% RESULTS Results structure to compute metrics from.
-% TRIALSBEFORE Length of window to compute metrics in.
+% data and sliding window length (in number of trials).
+
+% Results: Results structure to compute metrics from.
+% perf_win_size: Length of window to compute metrics in.
 
 global handles2give WhRew
 
@@ -28,7 +29,7 @@ Stim = Results.data(Results.data(:,10) ~= 6,6);
 
  % If current trial number SMALLER than window size, plot metrics for all
  % available trials
-if TrialsN <= TrialsBefore
+if TrialsN <= perf_win_size
     AHitRate=zeros(1,TrialsN); % Init vectors
     WHitRate=zeros(1,TrialsN);
     FalseAlarm=zeros(1,TrialsN);
@@ -36,7 +37,7 @@ if TrialsN <= TrialsBefore
     Wdprime=zeros(1,TrialsN);
     
     for i=1:TrialsN
-        Indices=max(1, i-TrialsBefore):i; % Get trial indices
+        Indices=max(1, i-perf_win_size):i; % Get trial indices
         AHitRate(i)=sum(Perf(Indices)==3)/sum(AudStim(Indices)== 1); % Compute rates
         WHitRate(i)=sum(Perf(Indices)==2)/sum(WhStim(Indices) == 1);
         FalseAlarm(i)=sum(Perf(Indices)==5)/sum(Stim==0);
@@ -93,7 +94,7 @@ if TrialsN <= TrialsBefore
 % Else, if current trial index LARGER than window size, then compute
 % metrics in latest trials
 else
-    minindex=min(TrialsBefore,TrialsN);
+    minindex=min(perf_win_size,TrialsN);
     Trials=minindex:TrialsN; % Get all trials satisfying the above if condition i.e. excludes all trial indices below window size
     AHitRate=zeros(1,length(Trials)); % Init vectors
     WHitRate=zeros(1,length(Trials));
@@ -104,7 +105,7 @@ else
 
     for ThisTrial=Trials %Compute metrics for all trials, in window defined
         Counter=Counter+1;
-        Indices=max(1, ThisTrial-TrialsBefore):ThisTrial; % This gets indices of all trials in window before ThisTrial
+        Indices=max(1, ThisTrial-perf_win_size):ThisTrial; % This gets indices of all trials in window before ThisTrial
         AHitRate(Counter)=sum(Perf(Indices) == 3)/sum(AudStim(Indices)== 1);
         WHitRate(Counter)=sum(Perf(Indices) == 2)/sum(WhStim(Indices) == 1);
         FalseAlarm(Counter)=sum(Perf(Indices) == 5)/sum(Stim(Indices) == 0);
@@ -164,7 +165,7 @@ if sum(Results.data(:,10)==6) >= 1
     EarlyLicksCount=zeros(1,TrialsN);
     
     for i=1:TrialsN
-        Indices=max(1, i-TrialsBefore):i;
+        Indices=max(1, i-perf_win_size):i;
         EarlyLicksCount(i)=sum(Results.data(Indices,10)==6)/length(Indices); %Early lick rate from Results, at each trial
     end
 
