@@ -34,10 +34,10 @@ Stim_Light.ExternalTriggerTimeout =2000;
 Stim_Light.TriggersPerRun=1;
 %%
 Main_Control.startBackground();
-trialnumber=0;
+trial_number=0;
 %%
-trialnumber=trialnumber+1;
-fid3=fopen(['D:\Behaviour\VE0\20160212\182157\' num2str(trialnumber) '.bin'],'w');
+trial_number=trial_number+1;
+fid3=fopen(['D:\Behaviour\VE0\20160212\182157\' num2str(trial_number) '.bin'],'w');
 lh3 = addlistener(Stim_Light,'DataAvailable',@(src, event)logData(src, event, fid3) );
 
 Stim_vec=[5*ones(1,40000) zeros(1,60000)];

@@ -7,7 +7,7 @@ global    Association ResponseWindow Trial_Duration Quietwindow Lick_Threshold..
     TimeOutEarlyLick RewardSound_vec RewardSound Fs_Reward Stimcounter ...
     NoStimcounter Stim_S StimDuration  AStimDuration  AStimAmp  AStimFreq  Stim_S_SR ScansTobeAcquired ...
     Reward_S Reward_S_SR  Trigger_S fid3 AnimalLicked ReactionTime ...
-    TrialStarted  trialnumber LightProbOld folder_name handles2give StimPool...
+    TrialStarted  trial_number LightProbOld folder_name handles2give StimPool...
     LightPool StimProbOld StimProbOldAud StimProbOldWh LightProbOldAud LightProbOldWh Light BaselineWindow Camera_vec...
     RewardShouldBeDelivered FalseAlarmPunishment EarlylickCounter CueProbOld...
     CuePool StimAmp Cue_NoCue ResponseWindowStart ResponseWindowEnd cameraClk...
@@ -32,7 +32,7 @@ Light_Duration = handles2give.LightDuration;
 N_pool=10; % Making the Stim/NoStim, Light/NoLight, TrialStartCue/NoCue and Durations pool
 Block_Duration = 300; % in seconds (added for continuous filming) 
 
-trialnumber=trialnumber+1;
+trial_number = trial_number+1;
 
 
 %% Update Video Parameters and Arm the Camera
@@ -40,12 +40,12 @@ trialnumber=trialnumber+1;
 CameraFlag = handles2give.CameraFlag;
 
 % SAVING CAMERA FRAMES
-% if CameraFlag && (trialnumber==1 || toc(cameraStartTime)>Block_Duration)
+% if CameraFlag && (trial_number==1 || toc(cameraStartTime)>Block_Duration)
 if CameraFlag
     disp('ok')
     Camera_freq=handles2give.CameraFrameRate; % Hz
     
-    VideoFileInfo.trialnumber=trialnumber;
+    VideoFileInfo.trial_number=trial_number;
     
     % TODO: remove hard coded basename
     VideoFileInfo.directory=['D:\AR\' char(handles2give.MouseName)...
@@ -57,7 +57,7 @@ if CameraFlag
     save('D:\Behavior\TemplateConfigFile\VideoFileInfo','VideoFileInfo');
     ArmCameraNew()
     
-%     if trialnumber~=1
+%     if trial_number~=1
 %         cameraClk.stop()
 %         pause(0.05)
 %         cameraClk.release()
@@ -80,7 +80,7 @@ end
 %% GENERAL SETTINGS
 
 FA_Timeout=10000; %in ms
-N_pool=10; % Making the WhStim/AStim/NoStim and Durations pool
+N_pool=10; % Making the wh_trials/AStim/NoStim and Durations pool
 
 % GET PARAMETERS FROM GUI
 Association=handles2give.AssociationFlag; % 0 detection 1 assosiation
@@ -131,23 +131,23 @@ Nostim_Weight=handles2give.NostimWeight;
 StimDurations= handles2give.StimDuration(1:handles2give.NumStim);  % in miliseconds
 
 % Stim_Probability=handles2give.StimProb; % proportion of stimulus trials
-% if trialnumber == 1
+% if trial_number == 1
 %     StimProbOld = Stim_Probability;
 % end
 
 %% Compute stimulus probability
 Stim_Probability = (AStim_Weight + WhStim_Weight)/(AStim_Weight + WhStim_Weight + Nostim_Weight);
-if trialnumber == 1
+if trial_number == 1
     StimProbOld = Stim_Probability;
 end
 
 Stim_Probability_Aud = (AStim_Weight)/(AStim_Weight + WhStim_Weight + Nostim_Weight);
-if trialnumber == 1
+if trial_number == 1
     StimProbOldAud = Stim_Probability_Aud;
 end
 
 Stim_Probability_Wh = (WhStim_Weight)/(AStim_Weight + WhStim_Weight + Nostim_Weight);
-if trialnumber == 1
+if trial_number == 1
     StimProbOldWh = Stim_Probability_Wh;
 end
 
@@ -173,7 +173,7 @@ Light_Freq=handles2give.LightFreq; % frequency of the pulse train
 Light_Duty=handles2give.LightDuty; % duty cycle (0-1)
 
 
-if trialnumber>1
+if trial_number>1
     Results=importdata([folder_name '\Results.txt']);
     NCompletedTrials=sum(Results.data(:,10)~=6);
 else
@@ -235,7 +235,7 @@ Auditory_Block = [Stim_Light(1)*ones(1,round(round(((1-Block_Probability)*Block_
 Auditory_Block = Auditory_Block(randperm(numel(Auditory_Block)));
 
 % % Select next trial from pool
-% if trialnumber < Block_Size
+% if trial_number < Block_Size
 %     Trial_Type = Auditory_Block(mod(NCompletedTrials,Hlaf_Main_Pool_Size)+1); % select from auditory detection block first
 % else
 %     Trial_Type = Main_Pool(mod(NCompletedTrials,Hlaf_Main_Pool_Size)+1); %0 noLight 1 Light
@@ -291,19 +291,19 @@ DelayedReward=handles2give.RewardDelay;% delay in milisecond for delivering rewa
 DelayedRewardOn=handles2give.RewardDelayFlag;
 PartialReward=handles2give.PartialRewardFlag;
 Aud_Rew = handles2give.AudRew;
-Wh_Rew = handles2give.WhRew;
+Wh_Rew = handles2give.wh_rew;
 
 if PartialReward
     Reward_Probability=handles2give.RewardProb; % proportion of rewarded hits
     if isempty('RewardProbOld')
         RewardProbOld = Reward_Probability;
     end
-    if mod(trialnumber,N_pool)==1 || RewardProbOld ~= Reward_Probability
+    if mod(trial_number,N_pool)==1 || RewardProbOld ~= Reward_Probability
         RewardProbOld = Reward_Probability;
         RewardPool=[zeros(1,round((1-Reward_Probability)*N_pool)) ones(1,round(Reward_Probability*N_pool))]; % zero for no stim, one for Reward
         RewardPool=RewardPool(randperm(numel(RewardPool)));
     end
-    Reward_NoReward=RewardPool(mod(trialnumber,N_pool)+1); % select the next trial from the pool,  0 noReward 1 Reward
+    Reward_NoReward=RewardPool(mod(trial_number,N_pool)+1); % select the next trial from the pool,  0 noReward 1 Reward
 else
     Reward_NoReward=1;
 end
@@ -338,11 +338,11 @@ Trial_Duration = max(Trial_Duration, (Light_PreStim + ArtifactWindow+BaselineWin
 
 %% Stimuli
 N_stimpool=2;
-if  trialnumber==1
+if  trial_number==1
     PoolSize=1;
 end
 
-if trialnumber==1 || mod(trialnumber,PoolSize)==1
+if trial_number==1 || mod(trial_number,PoolSize)==1
     StimIndexPool=[];
     for i=1:handles2give.NumStim %Different whisker stimuli
         StimIndexPool=[StimIndexPool i*ones(1,Stim_Weights(i)*N_stimpool)];
@@ -353,8 +353,8 @@ if trialnumber==1 || mod(trialnumber,PoolSize)==1
     StimPool=randsample(StimIndexPool,PoolSize); %random sampling without replacement: shuffling
 end
 
-if mod(trialnumber,PoolSize)>0
-    StimIndex=StimPool(mod(trialnumber,PoolSize));
+if mod(trial_number,PoolSize)>0
+    StimIndex=StimPool(mod(trial_number,PoolSize));
 else
     StimIndex=StimPool(end);
 end
@@ -545,12 +545,12 @@ else
     
 end
 
-% if mod(trialnumber,N_pool)==1
+% if mod(trial_number,N_pool)==1
 % %     StimProbOld = Stim_Probability;
 %     StimPool=[zeros(1,round((1-Stim_Probability)*N_pool)) ones(1,round(Stim_Probability*N_pool))]; % zero for no stim, one for stim
 %     StimPool=StimPool(randperm(numel(StimPool)));
 % end
-% Stim_NoStim=StimPool(mod(trialnumber,N_pool)+1); % select the next trial from the pool, 0 noStim 1 Stim
+% Stim_NoStim=StimPool(mod(trial_number,N_pool)+1); % select the next trial from the pool, 0 noStim 1 Stim
 
 
 
@@ -669,30 +669,30 @@ end
 
 
 %% Online performance for plotting
-if trialnumber>1
+if trial_number>1
     % Load Results data
     %EarlyLicks=importdata([folder_name '\EarlyLicks.txt']);
     Results=importdata([folder_name '\Results.txt']);
     
-    Perf = Results.data(Results.data(:,10) ~= 6,10);
-    AudStim = Results.data(Results.data(:,10) ~= 6,8);
-    WhStim = Results.data(Results.data(:,10) ~= 6,7);
-    Stim = Results.data(Results.data(:,10) ~= 6,6);
+    perf = Results.data(Results.data(:,10) ~= 6,10);
+    aud_trials = Results.data(Results.data(:,10) ~= 6,8);
+    wh_trials = Results.data(Results.data(:,10) ~= 6,7);
+    stim = Results.data(Results.data(:,10) ~= 6,6);
     LightP = Results.data(Results.data(:,10) ~= 6,11);
     
     % Compute performance and metrics
-    WHitRate=round(sum(Perf==2)/sum(WhStim==1)*100)/100;
-    AHitRate=round(sum(Perf==3)/sum(AudStim==1)*100)/100;
-    FalseAlarm=round(sum(Perf==5)/sum(Stim==0)*100)/100;
-    StimTrial_num=sum(Stim==1);
-    LA= sum((AudStim==1).*(LightP == 1));
-    LW = sum((WhStim==1).*(LightP == 1));
-    LStim = sum((Stim==1).*(LightP == 1));
-    LNoStim = sum((Stim==0).*(LightP == 1));
-    LAH = round(sum((Perf==3).*(LightP == 1))/LA*100)/100;
-    LWH = round(sum((Perf==2).*(LightP == 1))/LW*100)/100;
-    WStim = sum(WhStim==1);
-    AStim = sum(AudStim==1);
+    WHitRate=round(sum(perf==2)/sum(wh_trials==1)*100)/100;
+    AHitRate=round(sum(perf==3)/sum(aud_trials==1)*100)/100;
+    FalseAlarm=round(sum(perf==5)/sum(stim==0)*100)/100;
+    StimTrial_num=sum(stim==1);
+    LA= sum((aud_trials==1).*(LightP == 1));
+    LW = sum((wh_trials==1).*(LightP == 1));
+    LStim = sum((stim==1).*(LightP == 1));
+    LNoStim = sum((stim==0).*(LightP == 1));
+    LAH = round(sum((perf==3).*(LightP == 1))/LA*100)/100;
+    LWH = round(sum((perf==2).*(LightP == 1))/LW*100)/100;
+    WStim = sum(wh_trials==1);
+    AStim = sum(aud_trials==1);
     
     % Display trial counts on GUI (no light)
     set(handles2give.PerformanceText1Tag,'String',['AH =' num2str(AHitRate) '  WH=' num2str(WHitRate)...
@@ -738,11 +738,11 @@ else
         char(AssociationTitles(Association+1))  '       ' char(LightTitles(Light_NoLight+1))],'ForegroundColor','k');
 end
 
-if trialnumber~=1
+if trial_number~=1
     fclose(fid3);
     delete(lh3)
 end
-fid3=fopen([folder_name '\LickTrace' num2str(trialnumber) '.bin'],'w');
+fid3=fopen([folder_name '\LickTrace' num2str(trial_number) '.bin'],'w');
 lh3 = addlistener(Stim_S,'DataAvailable',@(src, event)logLickData(src, event,Trial_Duration) );
 
 TrialLickData=[];

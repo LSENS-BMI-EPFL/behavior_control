@@ -202,7 +202,7 @@ set(handles.RewardProbTag,'Enable','off');
 set(handles.RewardProbTag,'String','1'); handles.RewardProb = str2double(get(handles.RewardProbTag,'String'));
 set(handles.AudRewTag,'Value',1); handles.AudRew = get(handles.AudRewTag,'Value');
 set(handles.AudRewTag,'Enable','off');
-set(handles.WhRewTag,'Value',1); handles.WhRew = get(handles.WhRewTag,'Value');%% Behaviour camera settings
+set(handles.WhRewTag,'Value',1); handles.wh_rew = get(handles.WhRewTag,'Value');%% Behaviour camera settings
 set(handles.CameraFrameRateTag,'String','200'); handles.CameraFrameRate = str2double(get(handles.CameraFrameRateTag,'String'));
 
 %% Initialize axes
@@ -2160,7 +2160,7 @@ function WhRewTag_Callback(hObject, eventdata, handles)
 
 % Hint: get(hObject,'Value') returns toggle state of WhRewTag
 global handles2give
-handles.WhRew = get(handles.WhRewTag,'Value');
+handles.wh_rew = get(handles.WhRewTag,'Value');
 handles2give=handles;
 guidata(hObject, handles)
 

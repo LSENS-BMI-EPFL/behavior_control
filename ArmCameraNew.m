@@ -12,14 +12,14 @@ load('D:\camera\TemplateConfigFile\VideoFileInfo.mat'); % Reading the camera tem
 if ~exist(VideoFileInfo.directory, 'dir') % Create directory for frames if inexistant
     disp(VideoFileInfo.directory)
     mkdir(VideoFileInfo.directory);
-    %mkdir([VideoFileInfo.directory 'trial_' num2str(VideoFileInfo.trialnumber)]);
+    %mkdir([VideoFileInfo.directory 'trial_' num2str(VideoFileInfo.trial_number)]);
 end
 
 dos(['"C:\Program Files\LSENS_EPFL\fastCamRecord.exe" ' ... %Excute fastCamRecord specifying parameters
      num2str(VideoFileInfo.nOfFramesToGrab) ... # Number of frames to grab in total
      ' 512 512 60 1 ' ...                       # Frame dimension settings
      char(VideoFileInfo.directory) ...
-     'trial_' num2str(VideoFileInfo.trialnumber) ... # Path to frame block aligned at onset of trial "trialnumber"
+     'trial_' num2str(VideoFileInfo.trial_number) ... # Path to frame block aligned at onset of trial "trial_number"
      ' &']);
 
 display('Camera armed.')
