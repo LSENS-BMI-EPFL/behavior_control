@@ -677,18 +677,18 @@ if trial_number>1
     perf = Results.data(Results.data(:,10) ~= 6,10);
     aud_trials = Results.data(Results.data(:,10) ~= 6,8);
     wh_trials = Results.data(Results.data(:,10) ~= 6,7);
-    stim = Results.data(Results.data(:,10) ~= 6,6);
+    stim_trials = Results.data(Results.data(:,10) ~= 6,6);
     LightP = Results.data(Results.data(:,10) ~= 6,11);
     
     % Compute performance and metrics
     WHitRate=round(sum(perf==2)/sum(wh_trials==1)*100)/100;
     AHitRate=round(sum(perf==3)/sum(aud_trials==1)*100)/100;
-    FalseAlarm=round(sum(perf==5)/sum(stim==0)*100)/100;
-    StimTrial_num=sum(stim==1);
+    FalseAlarm=round(sum(perf==5)/sum(stim_trials==0)*100)/100;
+    StimTrial_num=sum(stim_trials==1);
     LA= sum((aud_trials==1).*(LightP == 1));
     LW = sum((wh_trials==1).*(LightP == 1));
-    LStim = sum((stim==1).*(LightP == 1));
-    LNoStim = sum((stim==0).*(LightP == 1));
+    LStim = sum((stim_trials==1).*(LightP == 1));
+    LNoStim = sum((stim_trials==0).*(LightP == 1));
     LAH = round(sum((perf==3).*(LightP == 1))/LA*100)/100;
     LWH = round(sum((perf==2).*(LightP == 1))/LW*100)/100;
     WStim = sum(wh_trials==1);
