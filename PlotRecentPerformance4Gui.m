@@ -80,8 +80,12 @@ if sum(Results.data(:,10)==6) >= 1
         indices=max(1,i-perf_win_size):i;
         EarlyLicksCount(i)=sum(Results.data(indices,10)==6)/length(indices); %Early lick rate from Results, at each "real" trial
     end
-    stairs(handles2give.EarlyLickAxes, 1:size(Results.data,1),EarlyLicksCount, 'LineWidth',lw, 'Color','k') 
-    set(handles2give.EarlyLickAxes,'XTick', 1:ceil(size(Results.data,1)/10):size(Results.data,1))
+    stairs(handles2give.EarlyLickAxes, 1:size(Results.data,1),EarlyLicksCount, 'LineWidth',lw, 'Color','k')
+    h_ticks = 1:ceil(size(Results.data,1)/10):size(Results.data,1);
+    if ~ismember(h_ticks, size(Results.data,1))
+        h_ticks = [h_ticks  size(Results.data,1)];
+    end
+    set(handles2give.EarlyLickAxes,'XTick', h_ticks)
     ylabel(handles2give.EarlyLickAxes,'Early Lick rate')
     xlabel(handles2give.EarlyLickAxes,'Trial number')
     ylim(handles2give.EarlyLickAxes,[0 1])
