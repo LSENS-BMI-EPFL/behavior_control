@@ -504,10 +504,26 @@ else
         
     % WHISKER STIMULUS SELECTED - DEFINE VECTOR
     else 
-        
         % Biphasic stimulus
-        Wh_vec=StimAmp*[zeros(1,(BaselineWindow)*Stim_S_SR/1000)...
-                ones(1,StimDurationRise) -ones(1,StimDurationDecrease)/ScaleFactor]; % biphasic stim
+        stim_amp = 2.3;
+        stim_duration_up = 1.5;
+        stim_duration_down = 1.5;
+        scale_factor = .6;
+
+        stim_duration_up = stim_duration_up*Stim_S_SR/1000;
+        stim_duration_down = stim_duration_down*Stim_S_SR/1000;
+
+        impulse_up = tukeywin(stim_duration_up,1);
+        impulse_up = impulse_up(1:end-1);
+        impulse_down = -tukeywin(stim_duration_down,1);
+        impulse_down = impulse_down(2:end);
+        impulse = [impulse_up' scale_factor*impulse_down'];
+
+        Wh_vec = stim_amp * [zeros(1,BaselineWindow*Stim_S_SR/1000) impulse];
+        Wh_vec = [Wh_vec zeros(1,Trial_Duration*Stim_S_SR/1000 - numel(Wh_vec))];
+
+%         Wh_vec=StimAmp*[zeros(1,(BaselineWindow)*Stim_S_SR/1000)...
+%                 ones(1,StimDurationRise) -ones(1,StimDurationDecrease)/ScaleFactor]; % biphasic stim
       % Monophasic stimulus
 %         Wh_vec=StimAmp*[zeros(1,(BaselineWindow)*Stim_S_SR/1000)...
 %                 ones(1,2*StimDurationRise)]; % monophasic stim
@@ -536,7 +552,7 @@ else
 %             StimAmp/2+StimAmp/2*cos(2*pi*StimFreq*(0:1/Stim_S_SR:StimDuration/1000)-pi)];
 %         Wh_vec=[Wh_vec zeros(1,(10000)*(Stim_S_SR/1000)) Wh_vec]; % to be removed later
         
-        Wh_vec=[Wh_vec zeros(1,(Trial_Duration)*(Stim_S_SR/1000)-numel(Wh_vec))];
+%         Wh_vec=[Wh_vec zeros(1,(Trial_Duration)*(Stim_S_SR/1000)-numel(Wh_vec))];
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
         Aud_vec=zeros(1,(Trial_Duration)*(Stim_S_SR/1000));
