@@ -5,11 +5,11 @@ session_sampling_rate = 100000;
 session.Rate = session_sampling_rate;
 
 % Send coil impulse to amplifier.
-addAnalogOutputChannel(session,'Dev1','ao1', 'Voltage');
+addAnalogOutputChannel(session,'Dev2','ao0', 'Voltage');
 % channel_coil = addAnalogOutputChannel(session,'PXI1Slot2','ao0', 'Voltage');
 
 % Read teslameter or displacement sensor output.
-addAnalogInputChannel(session,'Dev1','ai2', 'Voltage');
+addAnalogInputChannel(session,'Dev2','ai1', 'Voltage');
 
 %% Define coil impulses.
 
@@ -246,16 +246,209 @@ biphasic_hann_3ms_15 = stim_amp * [zeros(1,baseline_dur*sr) impulse];
 biphasic_hann_3ms_15 = [biphasic_hann_3ms_15 zeros(1,trial_dur*sr - numel(biphasic_hann_3ms_15))];
 
 
-% plot(biphasic_hann);
+%%%%
+
+% Monophasic Hann window 1 ms 35 mT.
+
+stim_amp = 4;
+stim_duration_up = 1;
+stim_duration_down = 0;
+
+stim_duration_up = stim_duration_up*sr;
+stim_duration_down = stim_duration_down*sr;
+
+impulse_up = tukeywin(stim_duration_up,1);
+impulse_up = impulse_up(1:end-1);
+impulse_down = -tukeywin(stim_duration_down,1);
+impulse_down = impulse_down(2:end);
+impulse = [impulse_up' scale_factor*impulse_down'];
+
+monophasic_hann_1ms_35 = stim_amp * [zeros(1,baseline_dur*sr) impulse];
+monophasic_hann_1ms_35 = [monophasic_hann_1ms_35 zeros(1,trial_dur*sr - numel(monophasic_hann_1ms_35))];
+
+
+% Monophasic Hann window 1 ms 30 mT.
+
+stim_amp = 3.2;
+stim_duration_up = 1;
+stim_duration_down = 0;
+
+stim_duration_up = stim_duration_up*sr;
+stim_duration_down = stim_duration_down*sr;
+
+impulse_up = tukeywin(stim_duration_up,1);
+impulse_up = impulse_up(1:end-1);
+impulse_down = -tukeywin(stim_duration_down,1);
+impulse_down = impulse_down(2:end);
+impulse = [impulse_up' scale_factor*impulse_down'];
+
+monophasic_hann_1ms_30 = stim_amp * [zeros(1,baseline_dur*sr) impulse];
+monophasic_hann_1ms_30 = [monophasic_hann_1ms_30 zeros(1,trial_dur*sr - numel(monophasic_hann_1ms_30))];
+
+% Monophasic Hann window 1 ms 25 mT.
+
+stim_amp = 2.6;
+stim_duration_up = 1;
+stim_duration_down = 0;
+
+stim_duration_up = stim_duration_up*sr;
+stim_duration_down = stim_duration_down*sr;
+
+impulse_up = tukeywin(stim_duration_up,1);
+impulse_up = impulse_up(1:end-1);
+impulse_down = -tukeywin(stim_duration_down,1);
+impulse_down = impulse_down(2:end);
+impulse = [impulse_up' scale_factor*impulse_down'];
+
+monophasic_hann_1ms_25 = stim_amp * [zeros(1,baseline_dur*sr) impulse];
+monophasic_hann_1ms_25 = [monophasic_hann_1ms_25 zeros(1,trial_dur*sr - numel(monophasic_hann_1ms_25))];
+
+
+% Monophasic Hann window 1 ms 20 mT.
+
+stim_amp = 2;
+stim_duration_up = 1;
+stim_duration_down = 0;
+
+stim_duration_up = stim_duration_up*sr;
+stim_duration_down = stim_duration_down*sr;
+
+impulse_up = tukeywin(stim_duration_up,1);
+impulse_up = impulse_up(1:end-1);
+impulse_down = -tukeywin(stim_duration_down,1);
+impulse_down = impulse_down(2:end);
+impulse = [impulse_up' scale_factor*impulse_down'];
+
+monophasic_hann_1ms_20 = stim_amp * [zeros(1,baseline_dur*sr) impulse];
+monophasic_hann_1ms_20 = [monophasic_hann_1ms_20 zeros(1,trial_dur*sr - numel(monophasic_hann_1ms_20))];
+
+
+% Monophasic Hann window 1 ms 15 mT.
+
+stim_amp = 1.45;
+stim_duration_up = 1;
+stim_duration_down = 0;
+
+stim_duration_up = stim_duration_up*sr;
+stim_duration_down = stim_duration_down*sr;
+
+impulse_up = tukeywin(stim_duration_up,1);
+impulse_up = impulse_up(1:end-1);
+impulse_down = -tukeywin(stim_duration_down,1);
+impulse_down = impulse_down(2:end);
+impulse = [impulse_up' scale_factor*impulse_down'];
+
+monophasic_hann_1ms_15 = stim_amp * [zeros(1,baseline_dur*sr) impulse];
+monophasic_hann_1ms_15 = [monophasic_hann_1ms_15 zeros(1,trial_dur*sr - numel(monophasic_hann_1ms_15))];
+
+
+%%%%
+
+% Monophasic Hann window 3 ms 35 mT.
+
+stim_amp = 1.6;
+stim_duration_up = 3;
+stim_duration_down = 0;
+
+stim_duration_up = stim_duration_up*sr;
+stim_duration_down = stim_duration_down*sr;
+
+impulse_up = tukeywin(stim_duration_up,1);
+impulse_up = impulse_up(1:end-1);
+impulse_down = -tukeywin(stim_duration_down,1);
+impulse_down = impulse_down(2:end);
+impulse = [impulse_up' scale_factor*impulse_down'];
+
+monophasic_hann_3ms_35 = stim_amp * [zeros(1,baseline_dur*sr) impulse];
+monophasic_hann_3ms_35 = [monophasic_hann_3ms_35 zeros(1,trial_dur*sr - numel(monophasic_hann_3ms_35))];
+
+
+% Monophasic Hann window 3 ms 30 mT.
+
+stim_amp = 1.4;
+stim_duration_up = 3;
+stim_duration_down = 0;
+
+stim_duration_up = stim_duration_up*sr;
+stim_duration_down = stim_duration_down*sr;
+
+impulse_up = tukeywin(stim_duration_up,1);
+impulse_up = impulse_up(1:end-1);
+impulse_down = -tukeywin(stim_duration_down,1);
+impulse_down = impulse_down(2:end);
+impulse = [impulse_up' scale_factor*impulse_down'];
+
+monophasic_hann_3ms_30 = stim_amp * [zeros(1,baseline_dur*sr) impulse];
+monophasic_hann_3ms_30 = [monophasic_hann_3ms_30 zeros(1,trial_dur*sr - numel(monophasic_hann_3ms_30))];
+
+% Monophasic Hann window 3 ms 25 mT.
+
+stim_amp = 1.1;
+stim_duration_up = 3;
+stim_duration_down = 0;
+
+stim_duration_up = stim_duration_up*sr;
+stim_duration_down = stim_duration_down*sr;
+
+impulse_up = tukeywin(stim_duration_up,1);
+impulse_up = impulse_up(1:end-1);
+impulse_down = -tukeywin(stim_duration_down,1);
+impulse_down = impulse_down(2:end);
+impulse = [impulse_up' scale_factor*impulse_down'];
+
+monophasic_hann_3ms_25 = stim_amp * [zeros(1,baseline_dur*sr) impulse];
+monophasic_hann_3ms_25 = [monophasic_hann_3ms_25 zeros(1,trial_dur*sr - numel(monophasic_hann_3ms_25))];
+
+
+% Monophasic Hann window 3 ms 20 mT.
+
+stim_amp = .85;
+stim_duration_up = 3;
+stim_duration_down = 0;
+
+stim_duration_up = stim_duration_up*sr;
+stim_duration_down = stim_duration_down*sr;
+
+impulse_up = tukeywin(stim_duration_up,1);
+impulse_up = impulse_up(1:end-1);
+impulse_down = -tukeywin(stim_duration_down,1);
+impulse_down = impulse_down(2:end);
+impulse = [impulse_up' scale_factor*impulse_down'];
+
+monophasic_hann_3ms_20 = stim_amp * [zeros(1,baseline_dur*sr) impulse];
+monophasic_hann_3ms_20 = [monophasic_hann_3ms_20 zeros(1,trial_dur*sr - numel(monophasic_hann_3ms_20))];
+
+
+% Monophasic Hann window 3 ms 15 mT.
+
+stim_amp = 0.6;
+stim_duration_up = 3;
+stim_duration_down = 0;
+
+stim_duration_up = stim_duration_up*sr;
+stim_duration_down = stim_duration_down*sr;
+
+impulse_up = tukeywin(stim_duration_up,1);
+impulse_up = impulse_up(1:end-1);
+impulse_down = -tukeywin(stim_duration_down,1);
+impulse_down = impulse_down(2:end);
+impulse = [impulse_up' scale_factor*impulse_down'];
+
+monophasic_hann_3ms_15 = stim_amp * [zeros(1,baseline_dur*sr) impulse];
+monophasic_hann_3ms_15 = [monophasic_hann_3ms_15 zeros(1,trial_dur*sr - numel(monophasic_hann_3ms_15))];
+
+
 %%
 
-% stim = biphasic_square_30;
-% stim = biphasic_hann_15;
-stim = biphasic_hann_3ms_15;
+% stim = biphasic_square_35;
+% stim = biphasic_hann_35;
+stim = biphasic_hann_3ms_30;
+% stim = monophasic_hann_1ms_35;
+% stim = monophasic_hann_3ms_35;
 % stim = blank;
 
 
-ntrial = 5;
+ntrial = 1;
 len = numel(stim);
 
 data = zeros(ntrial,len);
@@ -291,9 +484,19 @@ linkaxes([ax1,ax2],'x')
 %% Save calibration data.
 
 path_write = 'K:\calibration';
-% file = '220731_calibration_coil_fakemouse_biphasic_hann_3ms_15mT.m';
-file = '220731_calibration_displacement_fakemouse_biphasic_hann_3ms_15mT.m';
-% file = '220731_calibration_sensor_fakemouse_blank_450?m.m';
+% file = '220819_calibration_coil_fakemouse_biphasic_square_1ms_35mT.m';
+% file = '220819_calibration_coil_fakemouse_biphasic_hann_1.6ms_30mT.m';
+% file = '220819_calibration_coil_fakemouse_biphasic_hann_3ms_35mT.m';
+% file = '220819_calibration_coil_fakemouse_monophasic_hann_1ms_15mT.m';
+% file = '220819_calibration_coil_fakemouse_monophasic_hann_3ms_15mT.m';
+
+% file = '220819_calibration_displacement_fakemouse_biphasic_square_1ms_30mT.m';
+% file = '220819_calibration_displacement_fakemouse_biphasic_hann_1.6ms_15mT.m';
+% file = '220819_calibration_displacement_fakemouse_biphasic_hann_3ms_15mT.m';
+% file = '220819_calibration_displacement_fakemouse_monophasic_hann_1ms_15mT.m';
+file = '220819_calibration_displacement_fakemouse_monophasic_hann_3ms_15mT.m';
+
+% file = '220819_calibration_sensor_fakemouse_blank_800um.m';
 file = fullfile(path_write, file);
 save(file,'data','stim')
 disp('Saved')
