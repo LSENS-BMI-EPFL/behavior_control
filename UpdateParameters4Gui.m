@@ -14,7 +14,7 @@ global    Association ResponseWindow Trial_Duration Quietwindow Lick_Threshold..
     PerformanceAndSaveBoolian lh3 RewardDelivered UpdateParametersBoolean...
     Reward_NoReward RewardPool PartialReward RewardProbOld FA_Timeout LastTrialFA...
     StimIndexPool PoolSize Light_Duration Light_Freq Light_Amp Camera_freq SITrigger_vec Main_Pool TrialLickData...
-    DelayedRewardOn DelayedReward cameraStartTime
+    cameraStartTime
 
 outputSingleScan(Trigger_S,[0 0 0])
 pause(.5)
@@ -288,7 +288,6 @@ end
 %% Reward Settings
 RewardValue=handles2give.ValveOpening; % duration valve open in milliseconds
 DelayedReward=handles2give.RewardDelay;% delay in milisecond for delivering reward after stim (if Association=1)
-DelayedRewardOn=handles2give.RewardDelayFlag;
 PartialReward=handles2give.PartialRewardFlag;
 Aud_Rew = handles2give.AudRew;
 Wh_Rew = handles2give.wh_rew;
@@ -307,9 +306,8 @@ if PartialReward
 else
     Reward_NoReward=1;
 end
-if ~DelayedRewardOn
-    DelayedReward=0;
-end
+
+DelayedReward=0;
 
 % Define reward vector
 Reward_vec=[zeros(1,DelayedReward) 5*ones(1,RewardValue*Reward_S_SR/1000) zeros(1,Reward_S_SR/2)];
@@ -679,9 +677,6 @@ RewardSound_vec=[Reward_part zeros(1,length(Reward_part))...
     Reward_part zeros(1,length(Reward_part))...
     Reward_part zeros(1,length(Reward_part))];
 
-if DelayedRewardOn
-    RewardSound_vec=[zeros(1,(DelayedReward)*Fs_Reward/1000)  RewardSound_vec];
-end
 
 
 %% Online performance for plotting

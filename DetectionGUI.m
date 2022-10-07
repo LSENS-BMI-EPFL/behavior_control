@@ -84,7 +84,7 @@ set(handles.ArtifactWindowTag,'String','50'); handles.ArtifactWindow = str2doubl
 set(handles.MinISITag,'String','6000'); handles.MinISI = str2double(get(handles.MinISITag,'String'));
 set(handles.MaxISITag,'String','10000'); handles.MaxISI = str2double(get(handles.MaxISITag,'String'));
 set(handles.BaselineWindowTag,'String','0'); handles.BaselineWindow = str2double(get(handles.BaselineWindowTag,'String'));
-set(handles.TrialDurationTag,'String','2000'); handles.TrialDuration = str2double(get(handles.TrialDurationTag,'String'));
+set(handles.TrialDurationTag,'String','7000'); handles.TrialDuration = str2double(get(handles.TrialDurationTag,'String'));
 
 %% Set Light parameters
 set(handles.OptoLightCheckbox,'Value',0); handles.LightFlag = get(handles.OptoLightCheckbox,'Value');
@@ -191,7 +191,7 @@ set(handles.MaxTrialsInRowTag,'String','3'); handles.MaxTrialsInRow = str2double
 set(handles.MaxTrialsInRowTag,'Enable','off');
 
 %% Set reward parameters
-set(handles.ValveOpeningTag,'String','50'); handles.ValveOpening = str2double(get(handles.ValveOpeningTag,'String'));
+set(handles.ValveOpeningTag,'String','54'); handles.ValveOpening = str2double(get(handles.ValveOpeningTag,'String'));
 set(handles.RewardDelayCheckbox,'Value',0); handles.RewardDelayFlag = get(handles.RewardDelayCheckbox,'Value');
 set(handles.RewardDelayCheckbox,'Enable','off');
 set(handles.RewardDelayTag,'String','50'); handles.RewardDelay = str2double(get(handles.RewardDelayTag,'String'));
@@ -217,7 +217,7 @@ axes(handles.PerformanceAxes); set(gca,'XTick',[]); set(gca,'XColor','w'); set(g
 set(handles.LastRecentTrialsTag,'String','5'); handles.LastRecentTrials = str2double(get(handles.LastRecentTrialsTag,'String'));
 axes(handles.LickTraceAxes); set(gca,'XTick',[]); set(gca,'XColor','w'); set(gca,'YTick',[]); set(gca,'YColor','w');
 axes(handles.LickTraceAxes2); set(gca,'XTick',[]); set(gca,'XColor','w'); set(gca,'YTick',[]); set(gca,'YColor','w');
-set(handles.LickThresholdTag,'String','0.01'); handles.LickThreshold = str2double(get(handles.LickThresholdTag,'String'));
+set(handles.LickThresholdTag,'String','0.1'); handles.LickThreshold = str2double(get(handles.LickThresholdTag,'String'));
 
 %% Initialize text display
 % set(handles.PerformanceText1Tag,'String',''); set(handles.PerformanceText1Tag,'Enable','off');

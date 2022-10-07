@@ -31,11 +31,12 @@ Trial_Duration=handles2give.TrialDuration; % ms
 
 
 %% Create and open log files
+
 folder_name=[char(handles2give.BehaviorDirectory) '\' char(handles2give.MouseName) ...
     '\' [char(handles2give.MouseName) '_' char(handles2give.Date) '_' char(handles2give.FolderName)]]; % Folder to behaviour data output
 
 
-fid1=fopen([folder_name '\Results.txt'], 'w'); % Results file for session
+fid1=fopen([folder_name '\Results.txt'], 'wt'); % Results file for session
 fprintf(fid1,'%5s %15s %15s %7s %15s %14s %16s %16s %7s %8s %15s %12s %12s %13s %13s %13s %13s %15s %15s %15s %15s %15s %15s %15s %15s \n',...
     'trial_number','WhStimDuration','Quietwindow','ITI', 'Association',...
     'Stim/NoStim', 'Whisker/NoWhisker', 'Auditory/NoAuditory','Lick',...
@@ -82,13 +83,13 @@ Reward_S.ExternalTriggerTimeout = 2000;
 %% Create a session for Stimulus/Stimuli
 
 Stim_S = daq.createSession('ni');
-aich2=addAnalogInputChannel(Stim_S,'PXI1Slot2','ai0', 'Voltage'); % Reading the Lick signal for logging
+aich2=addAnalogInputChannel(Stim_S,'Dev2','ai0', 'Voltage'); % Reading the Lick signal for logging
 aich2.TerminalConfig='SingleEnded';
 
-aoch_coil=addAnalogOutputChannel(Stim_S,'PXI1Slot2','ao0', 'Voltage'); % Whisker stim (coil/piezo) channel
+aoch_coil=addAnalogOutputChannel(Stim_S,'Dev2','ao0', 'Voltage'); % Whisker stim (coil/piezo) channel
 aoch_coil.TerminalConfig='SingleEnded';
 
-aoch_aud=addAnalogOutputChannel(Stim_S,'PXI1Slot2','ao1', 'Voltage'); % Auditory  stim (tone) channel
+aoch_aud=addAnalogOutputChannel(Stim_S,'Dev2','ao1', 'Voltage'); % Auditory  stim (tone) channel
 aoch_aud.TerminalConfig='SingleEnded';
 
 % Not the right output channel. Just two on that device. Use Dev 3.
@@ -101,10 +102,10 @@ aoch_aud.TerminalConfig='SingleEnded';
 % aoch_cam=addAnalogOutputChannel(Stim_S,'PXI1Slot2','ao3', 'Voltage'); % Camera Channel
 % aoch_cam.TerminalConfig='SingleEnded';
 
-addDigitalChannel(Stim_S,'PXI1Slot2', 'Port0/Line0', 'OutputOnly'); %  Camera Channel
-addDigitalChannel(Stim_S,'PXI1Slot2', 'Port0/Line1', 'OutputOnly'); %  ScanImage Trigger Channel (2P-imaging)
+addDigitalChannel(Stim_S,'Dev2', 'Port0/Line0', 'OutputOnly'); %  Camera Channel
+addDigitalChannel(Stim_S,'Dev2', 'Port0/Line1', 'OutputOnly'); %  ScanImage Trigger Channel (2P-imaging)
 
-addTriggerConnection(Stim_S,'External','PXI1Slot2/PFI0','StartTrigger'); 
+addTriggerConnection(Stim_S,'External','Dev2/PFI0','StartTrigger'); 
 
 Stim_S.Rate = Stim_S_SR;
 Stim_S.IsContinuous=true;
