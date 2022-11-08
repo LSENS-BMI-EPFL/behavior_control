@@ -4,9 +4,9 @@ function log_lick_data(~, evt, TrialDuration)
 
 global fid3 handles2give Lick_Threshold Stim_S_SR TrialLickData
 
-%% Get lick data and write in .bin files
+%% Get lick data and write downsample in .bin files
 data = [evt.TimeStamps(:,1), evt.Data(:,:)]';
-fwrite(fid3,downsample(data, 10),'double');
+fwrite(fid3, downsample(data, 10),'double');
 
 %% Plotting lick data
 % Plot progress bar 

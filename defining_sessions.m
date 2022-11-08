@@ -140,12 +140,10 @@
 
     % Axel's setup.
     % %% Create a CameraClK session
-    % cameraClk = daq.createSession('ni');
-    % 
-    % ch = addCounterOutputChannel(cameraClk, 'Dev1', 'ctr0', 'PulseGeneration'); % Behaviour camera
-    % ch.Frequency = handles2give.CameraFrameRate; % Hz
-    % ch.DutyCycle = 0.5;
-    % cameraClk.IsContinuous = true;
+    % Camera_S = daq('ni');
+    % cam_ch = addoutput(Camera_S, 'Dev1', 'ctr0', 'PulseGeneration'); % Camera frames
+    % cam_ch.Frequency = handles2give.CameraFrameRate; %Hz
+    % cam_ch.DutyCycle = 0.5;
 
     %% Run the Main Control
 
@@ -166,6 +164,7 @@
     TimeOut=tic;
 
     % Start acquisition
-    Main_S.startBackground(); 
+    %Main_S.startBackground(); 
+    start(Main_S, 'Continuous');
 
 end

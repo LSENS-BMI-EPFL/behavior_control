@@ -2,6 +2,8 @@ clear all
 clc
 % global fid3
 
+%% FILE TO DELETE ??? %
+
 %% Create the main control session
 Main_Control = daq.createSession('ni');
 addAnalogInputChannel(Main_Control,'Dev2','ai0', 'Voltage'); % Reading the Lick signal
