@@ -130,13 +130,13 @@
     %addDigitalChannel(Stim_S,'Dev2', 'Port0/Line0', 'OutputOnly'); %  Camera Channel
     %addDigitalChannel(Stim_S,'Dev2', 'Port0/Line1', 'OutputOnly'); %  ScanImage Trigger Channel (2P-imaging)
 
-    addtrigger(Stim_S,'Digital','StartTrigger','External','Dev2/PFI0'); 
-    %addTriggerConnection(Stim_S,'External','Dev2/PFI0','StartTrigger'); 
+    addtrigger(Stim_S,'Digital','StartTrigger','External','Dev2/PFI1'); 
+    addTriggerConnection(Stim_S,'External','Dev2/PFI0','StartTrigger'); 
 
     Stim_S.Rate = Stim_S_SR;
-    %Stim_S.IsContinuous=true;
-    Stim_S.NumDigitalTriggersPerRun =1;
-    %Stim_S.ExternalTriggerTimeout = 2000;
+    Stim_S.IsContinuous=true;
+    Stim_S.TriggersPerRun=1;
+    Stim_S.ExternalTriggerTimeout = 2000;
 
     % Axel's setup.
     % %% Create a CameraClK session

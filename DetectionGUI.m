@@ -25,7 +25,6 @@ function varargout = DetectionGUI(varargin)
 % Last Modified by GUIDE v2.5 24-Oct-2019 09:52:32
 
 % Begin initialization code - DO NOT EDIT
-% global handles2give
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
                    'gui_Singleton',  gui_Singleton, ...
