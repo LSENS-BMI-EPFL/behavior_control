@@ -1,26 +1,28 @@
-function ArmCameraNew(~,event)
+function arm_camera(~, event)
 % ARMCAMERANEW Re-arm camera for frame acquisition.
 %   EVENT
 
 
-% global Arm_Threshold
-
-dos('Taskkill /im "fastCamRecord.exe"  /f') % First kill existing execution
+% First kill existing execution
+dos('Taskkill /im "fastCamRecord.exe"  /f') 
 dos('Taskkill /im cmd.exe /f')
 
-load('D:\camera\TemplateConfigFile\VideoFileInfo.mat'); % Reading the camera template config file
-if ~exist(VideoFileInfo.directory, 'dir') % Create directory for frames if inexistant
+% Reading the camera template config file
+load('D:\camera\TemplateConfigFile\VideoFileInfo.mat'); 
+
+% Create directory for frames if inexistant
+if ~exist(VideoFileInfo.directory, 'dir') 
     disp(VideoFileInfo.directory)
     mkdir(VideoFileInfo.directory);
-    %mkdir([VideoFileInfo.directory 'trial_' num2str(VideoFileInfo.trial_number)]);
 end
 
-dos(['"C:\Program Files\LSENS_EPFL\fastCamRecord.exe" ' ... %Excute fastCamRecord specifying parameters
+%Execute fastCamRecord specifying parameters
+dos(['"C:\Program Files\LSENS_EPFL\fastCamRecord.exe" ' ... 
      num2str(VideoFileInfo.nOfFramesToGrab) ... # Number of frames to grab in total
-     ' 512 512 60 1 ' ...                       # Frame dimension settings
+     ' 512 512 60 1 ' ...                       # Frame dimension settings + timeout + number of sweeps
      char(VideoFileInfo.directory) ...
      'trial_' num2str(VideoFileInfo.trial_number) ... # Path to frame block aligned at onset of trial "trial_number"
      ' &']);
 
-display('Camera armed.')
+disp('Camera armed.');
 end
