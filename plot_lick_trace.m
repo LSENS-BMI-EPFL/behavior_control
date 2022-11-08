@@ -1,4 +1,4 @@
-function PlotLickTraceNew(~,event,TrialDuration)
+function plot_lick_trace(~,event,TrialDuration)
 % PLOTLICKTRACENEW Plot lick trace from piezo sensor.
 % 	EVENT
 %   TRIALDURATION Duration of current trial.

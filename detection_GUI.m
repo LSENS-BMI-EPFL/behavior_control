@@ -1,4 +1,4 @@
-function varargout = DetectionGUI(varargin)
+function varargout = detection_GUI(varargin)
 % DETECTIONGUI MATLAB code for DetectionGUI.fig
 %      DETECTIONGUI, by itself, creates a new DETECTIONGUI or raises the existing
 %      singleton*.

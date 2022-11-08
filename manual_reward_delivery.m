@@ -1,4 +1,4 @@
-function ManualRewardDelivery
+function manual_reward_delivery
 
 global Trigger_S
 
