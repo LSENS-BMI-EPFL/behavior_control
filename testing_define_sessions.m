@@ -1,6 +1,7 @@
 clear all
 clc
 % global fid3
+
 %% Create the main control session
 Main_Control = daq.createSession('ni');
 addAnalogInputChannel(Main_Control,'Dev2','ai0', 'Voltage'); % Reading the Lick signal
@@ -9,6 +10,7 @@ Main_Control.IsContinuous = true;
 % lh1 = addlistener(Main_Control,'DataAvailable',@main_control);
 lh2 = addlistener(Main_Control,'DataAvailable',@PlotLickTrace );
 Main_Control.NotifyWhenDataAvailableExceeds=200; % minimum is 50 samples (if sr is 1000) otherwise you get a warning!
+
 %% Create a Trigger session
 Trigger = daq.createSession('ni');
 addDigitalChannel(Trigger,'Dev2', 'Port0/Line0', 'OutputOnly'); % Trigger signal for trial start
