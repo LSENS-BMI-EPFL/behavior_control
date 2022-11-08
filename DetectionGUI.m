@@ -63,8 +63,8 @@ formatOut = 'yyyy/mm/dd';
 Date2Display = datestr(now,formatOut);
 set(handles.SetDateTag,'String',Date2Display);
 set(handles.SetDateTag,'Enable','off');
-set(handles.MouseNameTag,'String','ARXXX'); handles.MouseName = get(handles.MouseNameTag,'String');
-handles.BehaviorDirectory = 'D:\AR';
+set(handles.MouseNameTag,'String','ABXXX'); handles.MouseName = get(handles.MouseNameTag,'String');
+handles.BehaviorDirectory = 'C:\Users\bisi\Desktop\BehaviourData';
 set(handles.BehaviorDirectoryTag,'String',handles.BehaviorDirectory);
 
 %% Set general settings

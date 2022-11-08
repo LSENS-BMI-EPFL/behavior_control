@@ -17,10 +17,12 @@ function update_parameters
         StimIndexPool PoolSize Light_Duration Light_Freq Light_Amp Camera_freq SITrigger_vec Main_Pool TrialLickData...
        
 
-    outputSingleScan(Trigger_S,[0 0 0])
+    %outputSingleScan(Trigger_S,[0 0 0])
+    write(Trigger_S, [0 0 0]);
     pause(.5)
-    outputSingleScan(Trigger_S,[0 0 0])
-
+    %outputSingleScan(Trigger_S,[0 0 0])
+    write(Trigger_S, [0 0 0]);
+    
     % Light parameters
     ramp_down_duration=100; % in miliseconds
     Light_Amp = handles2give.LightAmp;
@@ -56,8 +58,9 @@ function update_parameters
         VideoFileInfo.nOfFramesToGrab = Trial_Duration*Camera_freq/1000;
 
         save('D:\Behavior\TemplateConfigFile\VideoFileInfo','VideoFileInfo');
-        ArmCameraNew()
+        arm_camera()
 
+    % TO KEEP - Block design of camera acquisition
     %     if trial_number~=1
     %         cameraClk.stop()
     %         pause(0.05)
@@ -85,14 +88,12 @@ function update_parameters
 
     % GET PARAMETERS FROM GUI
     Association=handles2give.AssociationFlag; % 0 detection 1 assosiation
-    % Cue=handles2give.CueFlag;
     Light=handles2give.LightFlag;
-    PLAYNOISE=handles2give.EarlyLickPunishmentFlag;
-    % RewardSound=handles2give.RewardSoundFlag;
-    % FalseAlarmPunishment=handles2give.FalseAlarmPunishmentFlag;
+
     % Camera settings
     Camera_freq=handles2give.CameraFrameRate; % Hz
     Camera_DutyCycle=0.5;
+    
     Trial_Duration=handles2give.TrialDuration; % ms
 
     % Lick Sensor Sensitivity
@@ -130,11 +131,6 @@ function update_parameters
     AStimFreq = Astim_Freq;
     Nostim_Weight=handles2give.NostimWeight;
     StimDurations= handles2give.StimDuration(1:handles2give.NumStim);  % in miliseconds
-
-    % Stim_Probability=handles2give.StimProb; % proportion of stimulus trials
-    % if trial_number == 1
-    %     StimProbOld = Stim_Probability;
-    % end
 
     %% Compute stimulus probability
     Stim_Probability = (AStim_Weight + WhStim_Weight)/(AStim_Weight + WhStim_Weight + Nostim_Weight);
@@ -174,7 +170,7 @@ function update_parameters
     Light_Duty=handles2give.LightDuty; % duty cycle (0-1)
 
 
-    if trial_number>1
+    if trial_number > 1
         Results=importdata([folder_name '\Results.txt']);
         NCompletedTrials=sum(Results.data(:,10)~=6);
     else
@@ -328,8 +324,8 @@ function update_parameters
         ITI=randsample(ITImin:.1:ITImax,1);
     end
 
-    if LastTrialFA
-        ITI=ITI+FA_Timeout;
+    if LastTrialFA % this is never TRUE
+        ITI=ITI + FA_Timeout;
     end
 
     %% Get trial duration
@@ -357,24 +353,6 @@ function update_parameters
     else
         StimIndex=StimPool(end);
     end
-
-    % if ~StimIndex
-    %     Stim_NoStim=0;
-    %     Aud_NoAud = 0;
-    %     Wh_NoWh = 0;
-    % else
-    %     if StimIndex == 7
-    %     Stim_NoStim=1;
-    %     Aud_NoAud = 1;
-    %     Wh_NoWh = 0;
-    %     else
-    %     Stim_NoStim=1;
-    %     Aud_NoAud = 0;
-    %     Wh_NoWh = 1;
-    %     end
-    % end
-    %
-    % Stim_NoStim
 
 
     %% Limit Stim/NoStim Trials in a row
@@ -521,66 +499,12 @@ function update_parameters
             Wh_vec = stim_amp * [zeros(1,BaselineWindow*Stim_S_SR/1000) impulse];
             Wh_vec = [Wh_vec zeros(1,Trial_Duration*Stim_S_SR/1000 - numel(Wh_vec))];
 
-    %         Wh_vec=StimAmp*[zeros(1,(BaselineWindow)*Stim_S_SR/1000)...
-    %                 ones(1,StimDurationRise) -ones(1,StimDurationDecrease)/ScaleFactor]; % biphasic stim
-        % Monophasic stimulus
-    %         Wh_vec=StimAmp*[zeros(1,(BaselineWindow)*Stim_S_SR/1000)...
-    %                 ones(1,2*StimDurationRise)]; % monophasic stim
-    %       % Raised cosine biphasic stimulus
-    %         cos_frac = 0.6; % Two-sided fraction of rectangle replaced by cosine
-    %         Whisk_rise = tukeywin(StimDurationRise, cos_frac);
-    %         Whisk_decrease = -tukeywin(StimDurationDecrease, cos_frac);
-    %         disp(size(zeros(1,(BaselineWindow)*Stim_S_SR/1000)));
-    %         disp(size(transpose(Whisk_rise)));
-    %         disp(size(transpose(Whisk_decrease)));
-    %         Wh_vec=StimAmp*[zeros(1,(BaselineWindow)*Stim_S_SR/1000)...
-    %                 transpose(Whisk_rise) transpose(Whisk_decrease)/ScaleFactor];
-
-                % When there is light
-                % Wh_vec=StimAmp*[zeros(1,(BaselineWindow+max(Cue_PreStim,Light_PreStim))*Stim_S_SR/1000)...
-                % ones(1,StimDuration*Stim_S_SR/1000)];
-
-
-            %%% added from Vahid's code %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-            % Piezo stimulus vector
-    %         StimDuration=StimDurations(1);
-    %         StimAmp=StimAmps(1);
-    %         StimFreq=100; % whisker stimulus frequency
-
-    %         Wh_vec=[zeros(1,(BaselineWindow)*Stim_S_SR/1000)...
-    %             StimAmp/2+StimAmp/2*cos(2*pi*StimFreq*(0:1/Stim_S_SR:StimDuration/1000)-pi)];
-    %         Wh_vec=[Wh_vec zeros(1,(10000)*(Stim_S_SR/1000)) Wh_vec]; % to be removed later
-
-    %         Wh_vec=[Wh_vec zeros(1,(Trial_Duration)*(Stim_S_SR/1000)-numel(Wh_vec))];
-            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
             Aud_vec=zeros(1,(Trial_Duration)*(Stim_S_SR/1000));
 
         end
 
     end
 
-    % if mod(trial_number,N_pool)==1
-    % %     StimProbOld = Stim_Probability;
-    %     StimPool=[zeros(1,round((1-Stim_Probability)*N_pool)) ones(1,round(Stim_Probability*N_pool))]; % zero for no stim, one for stim
-    %     StimPool=StimPool(randperm(numel(StimPool)));
-    % end
-    % Stim_NoStim=StimPool(mod(trial_number,N_pool)+1); % select the next trial from the pool, 0 noStim 1 Stim
-
-
-
-    %% Making Cue
-    % toneFreq = 10000;  %# Tone frequency, in Hertz
-    % Cue_Amp=.1;
-    %
-    % if Cue_NoCue
-    %     Cue_vec = Cue_Amp*[zeros(1,BaselineWindow*Stim_S_SR/1000) zeros(1,(Light_PreStim-Cue_PreStim)*Stim_S_SR/1000)...
-    %         sin(linspace(0, CueDuration*toneFreq*2*pi/1000, round(CueDuration*Stim_S_SR/1000)))...
-    %         zeros(1,((Cue_PreStim-CueDuration+max(StimDuration,Light_Duration-Light_PreStim))*Stim_S_SR/1000)) 0]  ;
-    %     Cue_vec=[Cue_vec zeros(1,Trial_Duration*Stim_S_SR/1000-length(Cue_vec))];
-    % else
-    %     Cue_vec=zeros(1,numel(Wh_vec));
-    % end
 
     %% Light - opto define vector
     if Light_NoLight
@@ -640,13 +564,7 @@ function update_parameters
     set(handles2give.CameraAxes,'XTick',[])
     xlim(handles2give.CameraAxes,[0 TrialTime])
     ylabel(handles2give.CameraAxes,'Camera')
-    % ylim(handles2give.CameraAxes,[-Cue_Amp Cue_Amp])
 
-    % plot(handles2give.CueAxes,timevec(1:10:end),Cue_vec(1:10:end),'k')
-    % set(handles2give.CueAxes,'XTick',[])
-    % xlim(handles2give.CueAxes,[0 TrialTime])
-    % ylabel(handles2give.CueAxes,'Cue')
-    % ylim(handles2give.CueAxes,[-Cue_Amp Cue_Amp])
 
     plot(handles2give.AudAxes,timevec(1:1:end),Aud_vec(1:1:end),'Color', 'b')
     set(handles2give.AudAxes,'XTick',[])
@@ -665,25 +583,11 @@ function update_parameters
     % xlim(handles2give.LightAxes,[0 TrialTime])
     % ylabel(handles2give.LightAxes,'Light')
 
-    %% Creating Punishment and reward sounds
-    % Punishment = 4*wgn(5000,1,0);
-
-    RewardSound_Amp=5;
-    RewardSound_Duration=10*RewardValue/1000;
-    Fs_Reward=200000;
-    Reward_part=RewardSound_Amp*ones(1,round(RewardSound_Duration*Fs_Reward/10));
-    RewardSound_vec=[Reward_part zeros(1,length(Reward_part))...
-        Reward_part zeros(1,length(Reward_part))...
-        Reward_part zeros(1,length(Reward_part))...
-        Reward_part zeros(1,length(Reward_part))...
-        Reward_part zeros(1,length(Reward_part))];
-
-
 
     %% Online performance for plotting
     if trial_number>1
+        
         % Load Results data
-        %EarlyLicks=importdata([folder_name '\EarlyLicks.txt']);
         Results=importdata([folder_name '\Results.txt']);
 
         perf = Results.data(Results.data(:,10) ~= 6,10);
@@ -711,17 +615,9 @@ function update_parameters
             '  FA=' num2str(FalseAlarm) '  Stim='  num2str(StimTrial_num) '  WS=' num2str(WStim) '  AS=' num2str(AStim)  '  EL='  num2str(EarlylickCounter) ]);
         set(handles2give.PerformanceText1Tag, 'FontWeight', 'Bold');
 
-    %     % Display trial counts on GUI (light)
-    %     set(handles2give.PerformanceText2Tag,'String',['LAH =' num2str(LAH) '  LWH=' num2str(LWH)...
-    %         '  LStim='  num2str(LStim) '  LNoStim=' num2str(LNoStim) '  LA=' num2str(LA)  '  LW='  num2str(LW) ]);
-    %     set(handles2give.PerformanceText2Tag, 'FontWeight', 'Bold');
-
         % Make performance plot
         plot_performance(Results, perf_win_size);
     end
-
-    %% Checking if Pause is requested (???)
-
 
     %% Printing out the next trial specs
     TrialTitles={'NoStim',['WS Amp=' num2str(StimAmp) ', ''WS Dur=' num2str(StimDuration)],['AS Amp=' num2str(AStimAmp) ', ' 'AS Dur=' num2str(AStimDuration) ', '...
@@ -729,7 +625,6 @@ function update_parameters
     RewardTitles={'Not Rewarded','Rewarded'};
     LightTitles={'Light:Off','Light:On'};
     AssociationTitles={'','Association'};
-
 
     if Stim_NoStim
 
@@ -750,43 +645,54 @@ function update_parameters
             char(AssociationTitles(Association+1))  '       ' char(LightTitles(Light_NoLight+1))],'ForegroundColor','k');
     end
 
+    %% Update all
+    
     if trial_number~=1
         fclose(fid3);
         delete(lh3)
     end
+    
+    % Open lick trace file
     fid3=fopen([folder_name '\LickTrace' num2str(trial_number) '.bin'],'w');
-    lh3 = addlistener(Stim_S,'DataAvailable',@(src, event)log_lick_data(src, event,Trial_Duration) );
-
+    %lh3 = addlistener(Stim_S,'DataAvailable',@(src, event)log_lick_data(src, event,Trial_Duration) );
+    Stim_S.ScansAvailableFcn = @(src, event)log_lick_data(src, event, Trial_Duration);
+    
     TrialLickData=[];
 
     % queueOutputData(Stim_S,[Wh_vec; Aud_vec]')
     SITrigger_vec=[ones(1,numel(Wh_vec)-2) 0 0];
 
     % queueOutputData(Stim_S,[Wh_vec; Aud_vec;Light_vec;Camera_vec;SITrigger_vec]')
-    queueOutputData(Stim_S,[Wh_vec; Aud_vec;Camera_vec;SITrigger_vec]')
-
-    while Stim_S.IsRunning
-        disp('I am at line 332 of UpdateParams')
+    %queueOutputData(Stim_S,[Wh_vec; Aud_vec;Camera_vec;SITrigger_vec]')
+    preload(Stim_S, [Wh_vec; Aud_vec; Camera_vec; SITrigger_vec]');
+    while Stim_S.Running
+        disp('I am at line 332 of UpdateParams') %?????
     end
-    Stim_S.startBackground()
-    ScansTobeAcquired=Stim_S.ScansQueued;
+    start(Stim_S, 'Continuous');
+    %Stim_S.startBackground()
+    %ScansTobeAcquired=Stim_S.ScansQueued; %this is not used
 
-    outputSingleScan(Trigger_S,[0 0 0])
+    %outputSingleScan(Trigger_S,[0 0 0])
+    write(Trigger_S, [0 0 0]);
 
+    %if ~Reward_S.ScansQueued % I think not currently used also
+    %    %queueOutputData(Reward_S,Reward_vec')
+    %    write(Reward_S, Reward_vec');
+    %    while Reward_S.IsRunning
+    %        disp('I am at line 342 of UpdateParams') %sthg? not real line because update
+    %    end
+    %    start(Reward_S);
+    %    %Reward_S.startBackground();
+    %end
 
-    if ~Reward_S.ScansQueued
-        queueOutputData(Reward_S,Reward_vec')
-        while Reward_S.IsRunning
-            disp('I am at line 342 of UpdateParams') %sthg? not real line because update
-        end
-        Reward_S.startBackground();
-    end
-
-    % Define response window bounds
+    %% Define response window boundaries
+    
     ResponseWindowStart=(ArtifactWindow+BaselineWindow)/1000;
-    ResponseWindowEnd=(ArtifactWindow+BaselineWindow+ResponseWindow)/1000 ;
+    ResponseWindowEnd=(ArtifactWindow+BaselineWindow+ResponseWindow)/1000;
 
-    handles2give.ReportPause=1; %?
+    
+    %% Update current trial flags
+    handles2give.ReportPause=1; %not currently paused
 
     TrialStarted=0;
     StimBoolian=1;

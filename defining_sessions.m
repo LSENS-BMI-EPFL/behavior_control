@@ -24,7 +24,8 @@
     LastTrialFA=0;
 
     Main_S_SR=1000;
-    Main_S_Ratio=100;
+    %Main_S_Ratio=100;
+    Main_S_Ratio=10;
     Stim_S_SR=100000;
     Reward_S_SR=2000;
     Trigger_S_SR=1000;
@@ -61,12 +62,13 @@
 
     % Callback functions to be exectuted
     Main_S.ScansAvailableFcn = @main_control;
-    Main_S.ScansAvailableFcn = @(src, event) plot_lick_trace(src, event, Trial_Duration));
+    Main_S.ScansAvailableFcn = @(src, event) plot_lick_trace(src, event, Trial_Duration);
 
     %lh1 = addlistener(Main_S,'DataAvailable', @main_control);
     %lh2 = addlistener(Main_S,'DataAvailable', @(src, event) PlotLickTraceNew(src, event, Trial_Duration));
     % lh3 = addlistener(Main_S,'DataAvailable',@(src, event)log_lick_data ); 
     %Main_S.NotifyWhenDataAvailableExceeds=Main_S_SR/Main_S_Ratio; % maximum is 20 hz, so sr should be divided by 20 to not get the reward!
+    
     % Define count to initiate callback functions
     Main_S.ScansAvailableFcnCount = Main_S_SR/Main_S_Ratio;
 
@@ -74,9 +76,9 @@
 
     %Trigger_S = daq.createSession('ni');
     Trigger_S = daq('ni');
-    addoutput(Trigger_S,'Dev1','port0/line1','Digital'); % Trigger_S signal for stimulus
+    addoutput(Trigger_S,'Dev1','port0/line0','Digital'); % Trigger_S signal for stimulus
     addoutput(Trigger_S,'Dev1','port0/line1','Digital'); % Trigger_S signal for valve-1
-    addoutput(Trigger_S,'Dev1','port0/line1','Digital'); % Trigger_S signal for camera arming 
+    addoutput(Trigger_S,'Dev1','port0/line2','Digital'); % Trigger_S signal for camera arming 
 
     %addDigitalChannel(Trigger_S,'Dev1', 'Port0/Line0', 'OutputOnly'); % Trigger_S signal for stimulus
     %addDigitalChannel(Trigger_S,'Dev1', 'Port0/Line1', 'OutputOnly'); % Trigger_S signal for valve-1
@@ -85,7 +87,7 @@
 
     %% Create a session Reward
 
-    Reward_S = daq.createSession('ni');
+    %Reward_S = daq.createSession('ni');
     Reward_S = daq('ni');
 
     addoutput(Reward_S, 'Dev1', 'ao0', 'Voltage');
@@ -108,11 +110,11 @@
     aich2 = addinput(Stim_S,'Dev2','ai0','Voltage'); % lick signal for logging
     aich2.TerminalConfig='SingleEnded';
 
-    aoch_coil = addouput(Stim_S,'Dev2','ao0','Voltage'); % whisker stim channel (coil or piezo)
+    aoch_coil = addoutput(Stim_S,'Dev2','ao0','Voltage'); % whisker stim channel (coil or piezo)
     aoch_coil.TerminalConfig='SingleEnded';
 
 
-    aoch_aud = addouput(Stim_S,'Dev2','ao1','Voltage'); % auditory stim (tone) channel
+    aoch_aud = addoutput(Stim_S,'Dev2','ao1','Voltage'); % auditory stim (tone) channel
     aoch_aud.TerminalConfig='SingleEnded';
     
 
