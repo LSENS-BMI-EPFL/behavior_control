@@ -1,9 +1,9 @@
 function plot_performance(Results, perf_win_size)
-% Plot performance metrics on GUI, given Results
+% PLOT_PERFORMANCE Plot performance metrics on GUI, given Results
 % data and sliding window length (in number of trials).
-
-% Results: Results structure to compute metrics from.
-% perf_win_size: Length of window to compute metrics in.
+%
+% RESULTS: Results structure to compute metrics from.
+% PERF_WIN_SIZE: Length of window to compute metrics in.
 
 global handles2give wh_rew
 

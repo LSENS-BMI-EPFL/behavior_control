@@ -1,4 +1,5 @@
  function defining_sessions
+ % DEFINING_SESSIONS Define sessions for data acquisition.
 
     %% Define all global variables
 

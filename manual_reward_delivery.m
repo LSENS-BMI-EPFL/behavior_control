@@ -1,4 +1,5 @@
 function manual_reward_delivery
+% MANUAL_REWARD_DELIVERY Give unitary reward manually from GUI button.
 
 global Trigger_S
 

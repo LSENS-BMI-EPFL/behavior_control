@@ -1,6 +1,6 @@
 function main_control(~,event)
-% Defines main control commands for the behaviour (lick, detection, stimuli delivery, ...)
-
+% MAIN_CONTROL Defines main control commands for the behaviour (lick, detection, stimuli delivery, ...)
+% EVENT
 
     global Stim_S Reward_S LickTime Quietwindow Trial_Duration ITI  ...
          LickEarlyAlreadyDetected ArtifactWindow StimAmp...

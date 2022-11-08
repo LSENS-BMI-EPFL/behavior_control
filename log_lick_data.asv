@@ -1,8 +1,7 @@
 function log_lick_data(~, evt, TrialDuration)
 % LOG_LICK_DATA Save trial lick data in .bin files and plots lick data for
-% GUI.
-% EVT
-% TRIALDURATION Duration of current trial.
+% GUI
+% GUI
 
 global fid3 handles2give Lick_Threshold Stim_S_SR TrialLickData
 
