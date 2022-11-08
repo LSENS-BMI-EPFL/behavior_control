@@ -1,4 +1,4 @@
-function varargout = detection_GUI(varargin)
+function varargout = DetectionGUI(varargin)
 % DETECTIONGUI MATLAB code for DetectionGUI.fig
 %      DETECTIONGUI, by itself, creates a new DETECTIONGUI or raises the existing
 %      singleton*.
@@ -57,7 +57,7 @@ global handles2give
 % Choose default command line output for DetectionGUI
 handles.output = hObject;
 
-%% Set experimental name for saving data
+%% Set experimental name for saving data [TO CUSTOM BY EACH USER]
 formatOut = 'yyyymmdd';
 handles.Date = datestr(now,formatOut);
 formatOut = 'yyyy/mm/dd';
