@@ -1,7 +1,7 @@
 function stop_sessions
 %% Stopping all sessions and deleting all listeners and close the open log files
 global  Reward_S Stim_S Main_S Trigger_S...
-    lh1 lh2 lh3 handles2give Stim_S_SR Reward_S_SR cameraClk
+    lh1 lh2 lh3 handles2give Stim_S_SR Reward_S_SR
 
 
 outputSingleScan(Trigger_S,[0 0 1])
