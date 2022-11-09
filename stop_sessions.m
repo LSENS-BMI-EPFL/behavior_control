@@ -19,7 +19,7 @@ end
 %Main_S.release();
 flush(Main_S);
 
-Reward_S.stop();
+%Reward_S.stop();
 stop(Reward_S);
 while Reward_S.Running
     continue
@@ -27,7 +27,7 @@ end
 flush(Reward_S);
 %Reward_S.release();
 
-Stim_S.stop();
+%Stim_S.stop();
 stop(Stim_S);
 while Stim_S.Running
     continue

@@ -21,7 +21,7 @@ function main_control(~,event)
     % --------------------------------------------
 
     % A lick is defined as a single scan crossing the lick threshold.
-    %if sum( abs(event.Data(1:end-1,1)) < Lick_Threshold & abs(event.Data(2:end,1)) > Lick_Threshold )
+    %if sum( abs(data_main(1:end-1,1)) < Lick_Threshold & abs(data_main(2:end,1)) > Lick_Threshold )
     %    LickTime=tic;
     %end
     
@@ -35,13 +35,14 @@ function main_control(~,event)
 
     if  StimBoolian && toc(LickTime) > Quietwindow/1000 && toc(TrialFinished) > ITI/1000 &&...
             toc(TimeOut) > TimeOutEarlyLick/1000
-        size(event.Data)
+        size(data_main)
 
         StimBoolian=0;
         set(handles2give.OnlineTextTag,'String','Trial Started','FontWeight','bold');
         TrialTime=tic;
 
-        outputSingleScan(Trigger_S,[1 0 0])
+        %outputSingleScan(Trigger_S,[1 0 0])
+        write(Trigger_S, [1 0 0]);
 
         % Free reward.
         if Association && Stim_NoStim
@@ -61,23 +62,24 @@ function main_control(~,event)
 
     if TrialStarted && ~Association  && ...
         toc(TrialTime)>ResponseWindowStart && toc(TrialTime)<ResponseWindowEnd &&...
-        sum(abs(event.Data(1:end-1,1))<Lick_Threshold & abs(event.Data(2:end,1))>Lick_Threshold) &&...
-        ~sum(abs(event.Data(1:end-1,1))<10000*Lick_Threshold & abs(event.Data(2:end,1))>10000*Lick_Threshold)
+        sum(abs(data_main(1:end-1,1))<Lick_Threshold & abs(data_main(2:end,1))>Lick_Threshold) &&...
+        ~sum(abs(data_main(1:end-1,1))<10000*Lick_Threshold & abs(data_main(2:end,1))>10000*Lick_Threshold)
 
         TrialStarted=0;
 
         if Aud_Rew && ~Wh_Rew
             if Aud_NoAud
                 HitTime=toc(TrialTime);
-                reward_delivery %deliver reward
-                FirstThresholdCross=find(abs(event.Data(1:end-1,1))<Lick_Threshold & abs(event.Data(2:end,1))>Lick_Threshold',1,'first');
+                % Deliver reward
+                reward_delivery;
+                FirstThresholdCross=find(abs(data_main(1:end-1,1))<Lick_Threshold & abs(data_main(2:end,1))>Lick_Threshold',1,'first');
                 HitTimeAdjusted=HitTime-FirstThresholdCross/Main_S_SR;
                 ReactionTime=HitTimeAdjusted-(BaselineWindow)/1000;
                 AnimalLicked=1;
                 PerformanceAndSaveBoolian=1;
             elseif Wh_NoWh
                 HitTime=toc(TrialTime);
-                FirstThresholdCross=find(abs(event.Data(1:end-1,1))<Lick_Threshold & abs(event.Data(2:end,1))>Lick_Threshold',1,'first');
+                FirstThresholdCross=find(abs(data_main(1:end-1,1))<Lick_Threshold & abs(data_main(2:end,1))>Lick_Threshold',1,'first');
                 pause(5); %timeout for FA
                 HitTimeAdjusted=HitTime-FirstThresholdCross/Main_S_SR;
                 ReactionTime=HitTimeAdjusted-(BaselineWindow)/1000;
@@ -85,7 +87,7 @@ function main_control(~,event)
                 PerformanceAndSaveBoolian=1;
             else
                 HitTime=toc(TrialTime);
-                FirstThresholdCross=find(abs(event.Data(1:end-1,1))<Lick_Threshold & abs(event.Data(2:end,1))>Lick_Threshold',1,'first');
+                FirstThresholdCross=find(abs(data_main(1:end-1,1))<Lick_Threshold & abs(data_main(2:end,1))>Lick_Threshold',1,'first');
                 pause(5); %timeout for FA
                 HitTimeAdjusted=HitTime-FirstThresholdCross/Main_S_SR;
                 ReactionTime=HitTimeAdjusted-(BaselineWindow)/1000;
@@ -95,7 +97,7 @@ function main_control(~,event)
         elseif ~Aud_Rew && Wh_Rew
             if Aud_NoAud
                 HitTime=toc(TrialTime);
-                FirstThresholdCross=find(abs(event.Data(1:end-1,1))<Lick_Threshold & abs(event.Data(2:end,1))>Lick_Threshold',1,'first');
+                FirstThresholdCross=find(abs(data_main(1:end-1,1))<Lick_Threshold & abs(data_main(2:end,1))>Lick_Threshold',1,'first');
                 pause(5) %timeout for FA
                 HitTimeAdjusted=HitTime-FirstThresholdCross/Main_S_SR;
                 ReactionTime=HitTimeAdjusted-(BaselineWindow)/1000;
@@ -104,15 +106,16 @@ function main_control(~,event)
 
             elseif Wh_NoWh
                 HitTime=toc(TrialTime);
-                reward_delivery
-                FirstThresholdCross=find(abs(event.Data(1:end-1,1))<Lick_Threshold & abs(event.Data(2:end,1))>Lick_Threshold',1,'first');
+                % Deliver reward
+                reward_delivery;
+                FirstThresholdCross=find(abs(data_main(1:end-1,1))<Lick_Threshold & abs(data_main(2:end,1))>Lick_Threshold',1,'first');
                 HitTimeAdjusted=HitTime-FirstThresholdCross/Main_S_SR;
                 ReactionTime=HitTimeAdjusted-(BaselineWindow)/1000;
                 AnimalLicked=1;
                 PerformanceAndSaveBoolian=1;
             else
                 HitTime=toc(TrialTime);
-                FirstThresholdCross=find(abs(event.Data(1:end-1,1))<Lick_Threshold & abs(event.Data(2:end,1))>Lick_Threshold',1,'first');
+                FirstThresholdCross=find(abs(data_main(1:end-1,1))<Lick_Threshold & abs(data_main(2:end,1))>Lick_Threshold',1,'first');
                 pause(5); %timeout for FA
                 HitTimeAdjusted=HitTime-FirstThresholdCross/Main_S_SR;
                 ReactionTime=HitTimeAdjusted-(BaselineWindow)/1000;
@@ -121,8 +124,9 @@ function main_control(~,event)
             end
         elseif Aud_Rew && Wh_Rew
             HitTime=toc(TrialTime);
-            reward_delivery
-            FirstThresholdCross=find(abs(event.Data(1:end-1,1))<Lick_Threshold & abs(event.Data(2:end,1))>Lick_Threshold',1,'first');
+            % Deliver reward
+            reward_delivery;
+            FirstThresholdCross=find(abs(data_main(1:end-1,1))<Lick_Threshold & abs(data_main(2:end,1))>Lick_Threshold',1,'first');
             HitTimeAdjusted=HitTime-FirstThresholdCross/Main_S_SR;
             ReactionTime=HitTimeAdjusted-(BaselineWindow)/1000;
             AnimalLicked=1;
@@ -138,7 +142,6 @@ function main_control(~,event)
 
 
     % Defining Performance (perf) and Saving Session Results Data
-
     if PerformanceAndSaveBoolian
         PerformanceAndSaveBoolian=0;
         if Association
@@ -198,7 +201,7 @@ function main_control(~,event)
     if UpdateParametersBoolean && Stim_S.IsDone &&...
             (~RewardDelivered || Reward_S.ScansQueued==0) && ~handles2give.PauseRequested
         UpdateParametersBoolean=0;
-        update_parameters
+        update_parameters;
     elseif UpdateParametersBoolean && Stim_S.IsDone &&...
             (~RewardDelivered || Reward_S.ScansQueued==0) && handles2give.PauseRequested && handles2give.ReportPause
         handles2give.ReportPause=0;
@@ -209,7 +212,7 @@ function main_control(~,event)
 
     if TrialStarted && ~LickEarlyAlreadyDetected...
        && toc(TrialTime)<ResponseWindowStart-(ArtifactWindow)/1000 ...
-       && sum(abs(event.Data(1:end-1,1))<Lick_Threshold & abs(event.Data(2:end,1))>Lick_Threshold)
+       && sum(abs(data_main(1:end-1,1))<Lick_Threshold & abs(data_main(2:end,1))>Lick_Threshold)
 
         TimeOut=tic;
         TrialStarted=0;
@@ -217,22 +220,28 @@ function main_control(~,event)
         EarlyLick = 1;
         EarlylickCounter=EarlylickCounter+1;
         RewardShouldBeDelivered=0;
-        Stim_S.stop();
+        %Stim_S.stop();
+        stop(Stim_S);
 
-        outputSingleScan(Trigger_S,[0 0 0]);
-
+        %outputSingleScan(Trigger_S,[0 0 0]);
+        write(Trigger_S, [0 0 0]);
+        
         set(handles2give.OnlineTextTag,'String','Early Lick','FontWeight','bold');
 
-        while Stim_S.IsRunning
+        %while Stim_S.IsRunning
+        while Stim_S.Running
             continue
         end
-        Stim_S.release();
+        
+        %Stim_S.release();
+        flush(Stim_S);
 
-
-        queueOutputData(Stim_S,[zeros(1,Stim_S_SR/2);zeros(1,Stim_S_SR/2); zeros(1,Stim_S_SR/2); zeros(1,Stim_S_SR/2)]')
-%     queueOutputData(Stim_S,[zeros(1,Stim_S_SR/2); zeros(1,Stim_S_SR/2); zeros(1,Stim_S_SR/2)]')
-        Stim_S.prepare();
-        Stim_S.startBackground();
+        %queueOutputData(Stim_S, [zeros(1,Stim_S_SR/2);zeros(1,Stim_S_SR/2); zeros(1,Stim_S_SR/2); zeros(1,Stim_S_SR/2)]')       
+        %queueOutputData(Stim_S,[zeros(1,Stim_S_SR/2); zeros(1,Stim_S_SR/2); zeros(1,Stim_S_SR/2)]')
+        preload(Stim_S,[zeros(1,Stim_S_SR/2);zeros(1,Stim_S_SR/2); zeros(1,Stim_S_SR/2); zeros(1,Stim_S_SR/2)]');
+        start(Stim_S, 'Continuous'); 
+        %Stim_S.prepare();
+        %Stim_S.startBackground();
 
         Lick = 1;
         perf = 6;
@@ -243,32 +252,33 @@ function main_control(~,event)
             '%6.0f %14.1f %17.0f %11.0f %9.0f %15.0f %15.0f %12.0f %8.0f %8.0f %15.0f %15.1f %13.2f %10.0f %14.0f %15.0f %15.0f %15.1f %15.1f %15.1f %15.1f %15.1f %15.1f %15.1f %15.1f \n',...
             Results);
 
-
-
-    %     EarlyLickDetails = [trial_number Quietwindow ITI TimeOutEarlyLick Association (toc(TrialTime)-toc(LickTime))*1000] ;
-    %     fprintf(fid2,'%6.0f %14.0f %11.0f %7.0f %11.0f %17.0f \n',EarlyLickDetails);
-
-        while ~Stim_S.IsRunning
+        %while ~Stim_S.IsRunning
+        while Stim_S.Running
             continue
         end
 
-        outputSingleScan(Trigger_S,[1 0 0]);
+        %outputSingleScan(Trigger_S,[1 0 0]);
+        write(Trigger_S, [1 0 0 ]);
+        
+        %while Stim_S.ScansQueued==0 %CHECK IF SCANSQUEUE MAKE SENSE WITH 
+        %    continue020
+        %end
 
-        while Stim_S.ScansQueued==0
+        %Stim_S.stop();
+        %Stim_S.release();
+        %outputSingleScan(Trigger_S,[0 0 0]);
+        stop(Stim_S);
+        flush(Stim_S);
+        write(Trigger_S, [0 0 0]);
+
+        %while Stim_S.IsRunning
+        while Stim_S.Running
             continue
         end
 
-        Stim_S.stop();
-        Stim_S.release();
-        outputSingleScan(Trigger_S,[0 0 0]);
-
-        while Stim_S.IsRunning
-            continue
-        end
-
-
+        % What is fid3?
         fclose(fid3);
-        delete(lh3);
+        %delete(lh3);
 
         trial_number = trial_number + 1;
 
@@ -294,39 +304,49 @@ function main_control(~,event)
         lh3 = addlistener(Stim_S,'DataAvailable',@(src, event)log_lick_data(src, event,Trial_Duration) );
 
         TrialLickData=[];
-
+        
+        % Output signals
         % queueOutputData(Stim_S,[Wh_vec; Aud_vec;Light_vec;Camera_vec;SITrigger_vec]')
-        queueOutputData(Stim_S,[Wh_vec; Aud_vec; Camera_vec;SITrigger_vec]')
+        %queueOutputData(Stim_S, [Wh_vec; Aud_vec; Camera_vec;SITrigger_vec]')
+        write(Stim_S, [Wh_vec; Aud_vec; Camera_vec;SITrigger_vec]');
+        start(Stim_s, 'Continuous');
+        %Stim_S.startBackground();
 
-        Stim_S.startBackground();
-
-        while ~Stim_S.IsRunning
+        %while ~Stim_S.IsRunning
+        while ~Stim_S.Running
             continue
         end
 
         ReactionTime = 0;
         EarlyLick = 0;
         StimBoolian=1;
+        
     end
 
 
     %% Rewarding the stimulus trials in Association
+    
+    % Rewarded conditions
     if  TrialStarted && Association && RewardShouldBeDelivered &&...
             toc(TrialTime)>(Light_PreStim +BaselineWindow)/1000
 
         RewardShouldBeDelivered=0;
-        outputSingleScan(Trigger_S,[0 1 0])
-        if RewardSound
-            sound(RewardSound_vec,Fs_Reward)
-        end
+        %outputSingleScan(Trigger_S,[0 1 0])
+        % Trigger reward
+        write(Trigger_S, [0 1 0]);
+        
         RewardTime=tic;
         RewardDelivered=1;
-        outputSingleScan(Trigger_S,[0 0 0]);
+        
+        write(Trigger_S, [0 0 0]);
+        
         TrialStarted=0;
         PerformanceAndSaveBoolian=1;
 
+    % Unrewarded conditions
     elseif TrialStarted && Association && ~RewardShouldBeDelivered &&...
             toc(TrialTime)>(Light_PreStim + BaselineWindow)/1000
+        
         TrialStarted=0;
         PerformanceAndSaveBoolian=1;
     end

@@ -55,21 +55,21 @@
     %Main_S = daq.createSession('ni');
     Main_S = daq('ni');
     aich1 = addinput(Main_S, 'Dev1',  [0 1 2 3], 'Voltage')
-    %aich1=addAnalogInputChannel(Main_S,'Dev1', [0 1 2 3], 'Voltage'); % Reading the Lick signal (Ch0) and copies of trial onset and other stimuli
+    %aich1=addAnalogInputChannel(Main_S, 'Dev1', [0 1 2 3], 'Voltage'); % Reading the Lick signal (Ch0) and copies of trial onset and other stimuli
     aich1(1).TerminalConfig='SingleEnded';
     Main_S.Rate = Main_S_SR;
     %Main_S.IsContinuous = true;
 
     % Callback functions to be exectuted
-    Main_S.ScansAvailableFcn = @main_control;
+    Main_S.ScansAvailableFcn = @main_control_daq;
     %Main_S.ScansAvailableFcn = @(src, event) plot_lick_trace(src, event, Trial_Duration);
 
     %lh1 = addlistener(Main_S,'DataAvailable', @main_control);
     %lh2 = addlistener(Main_S,'DataAvailable', @(src, event) PlotLickTraceNew(src, event, Trial_Duration));
     % lh3 = addlistener(Main_S,'DataAvailable',@(src, event)log_lick_data ); 
-    %Main_S.NotifyWhenDataAvailableExceeds=Main_S_SR/Main_S_Ratio; % maximum is 20 hz, so sr should be divided by 20 to not get the reward!
     
     % Define count to initiate callback functions
+    %Main_S.NotifyWhenDataAvailableExceeds=Main_S_SR/Main_S_Ratio; % maximum is 20 hz, so sr should be divided by 20 to not get the reward!
     Main_S.ScansAvailableFcnCount = Main_S_SR/Main_S_Ratio;
 
     %% Create trigger session
