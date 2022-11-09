@@ -25,7 +25,7 @@ while Reward_S.Running
     continue
 end
 flush(Reward_S);
-Reward_S.release();
+%Reward_S.release();
 
 Stim_S.stop();
 stop(Stim_S);

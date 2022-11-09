@@ -61,8 +61,8 @@
     %Main_S.IsContinuous = true;
 
     % Callback functions to be exectuted
-    Main_S.ScansAvailableFcn = @main_control;
-    %Main_S.ScansAvailableFcn = @(src, event) plot_lick_trace(src, event, Trial_Duration);
+    %Main_S.ScansAvailableFcn = @main_control;
+    Main_S.ScansAvailableFcn = @(src, event) plot_lick_trace(src, event, Trial_Duration);
 
     %lh1 = addlistener(Main_S,'DataAvailable', @main_control);
     %lh2 = addlistener(Main_S,'DataAvailable', @(src, event) PlotLickTraceNew(src, event, Trial_Duration));
