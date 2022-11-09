@@ -1,4 +1,4 @@
-function main_control(~,event)
+function main_control_daq(~,event)
 % MAIN_CONTROL Defines main control commands for the behaviour (lick, detection, stimuli delivery, ...)
 % EVENT
 
@@ -197,15 +197,27 @@ function main_control(~,event)
 
     end
 
-    % if UpdateParametersBoolean && Stim_S.ScansQueued==0  && Stim_S.ScansAcquired==ScansTobeAcquired && Stim_S.IsDone &&...
-    if UpdateParametersBoolean && Stim_S.IsDone &&...
-            (~RewardDelivered || Reward_S.ScansQueued==0) && ~handles2give.PauseRequested
+    % UPDATE PARAMETERS FOR NEXT TRIAL
+    
+    %if UpdateParametersBoolean && Stim_S.IsDone &&...
+    %        (~RewardDelivered || Reward_S.ScansQueued==0) && ~handles2give.PauseRequested
+        
+    if UpdateParametersBoolean && Stim_S.Running && RewardDelivered && ~handles2give.PauseRequested
+        
         UpdateParametersBoolean=0;
+   
+        % Call update parameter function
         update_parameters;
-    elseif UpdateParametersBoolean && Stim_S.IsDone &&...
-            (~RewardDelivered || Reward_S.ScansQueued==0) && handles2give.PauseRequested && handles2give.ReportPause
-        handles2give.ReportPause=0;
+        
+    % PAUSE SESSION
+    %elseif UpdateParametersBoolean && Stim_S.IsDone &&...
+    %        (~RewardDelivered || Reward_S.ScansQueued==0) && handles2give.PauseRequested && handles2give.ReportPause
+    
+    elseif UpdateParametersBoolean && Stim_S.Running && RewardDelivered && handles2give.PauseRequested && handles2give.ReportPause
+        
+        handles2give.ReportPause=0; 
         set(handles2give.OnlineTextTag,'String','Session Paused','FontWeight','bold');
+        
     end
 
     %% Detecting early licks (licks between cue and stim or between light start and stim)
