@@ -7,7 +7,7 @@
         Stimcounter NoStimcounter Trigger_S  Stim_S_SR Main_S...
         lh1 lh2  fid1  Reward_S_SR LocalCounter Times Data cameraStartTime ...
         folder_name handles2give EarlylickCounter SessionStart...
-        Main_S_SR Reward_Ch LastTrialFA Trial_Duration LightCounter
+        Main_S_SR Reward_Ch LastTrialFA trial_duration LightCounter
 
     %% Initialize variables
 
@@ -27,7 +27,8 @@
     Stim_S_SR=100000;
     Reward_S_SR=2000;
     Trigger_S_SR=1000;
-    Trial_Duration=handles2give.TrialDuration; % ms
+    
+    trial_duration=handles2give.TrialDuration; % ms
 
 
     %% Create and open log files
@@ -56,7 +57,7 @@
     Main_S.Rate = Main_S_SR;
     Main_S.IsContinuous = true;
     lh1 = addlistener(Main_S,'DataAvailable', @main_control);
-    lh2 = addlistener(Main_S,'DataAvailable', @(src, event) PlotLickTraceNew(src, event, Trial_Duration));
+    lh2 = addlistener(Main_S,'DataAvailable', @(src, event) PlotLickTraceNew(src, event, trial_duration));
     % lh3 = addlistener(Main_S,'DataAvailable',@(src, event)log_lick_data ); 
     Main_S.NotifyWhenDataAvailableExceeds=Main_S_SR/Main_S_Ratio; % maximum is 20 hz, so sr should be divided by 20 to not get the reward!
 
