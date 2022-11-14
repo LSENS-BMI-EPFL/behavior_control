@@ -1,5 +1,5 @@
 function arm_camera(~, event)
-% ARMCAMERANEW Re-arm camera for frame acquisition.
+% ARM_CAMERA Re-arm camera for frame acquisition.
 %   EVENT
 
 

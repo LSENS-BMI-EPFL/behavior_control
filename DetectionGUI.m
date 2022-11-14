@@ -1,4 +1,4 @@
-function varargout = detection_GUI(varargin)
+function varargout = DetectionGUI(varargin)
 % DETECTIONGUI MATLAB code for DetectionGUI.fig
 %      DETECTIONGUI, by itself, creates a new DETECTIONGUI or raises the existing
 %      singleton*.
@@ -25,7 +25,6 @@ function varargout = detection_GUI(varargin)
 % Last Modified by GUIDE v2.5 24-Oct-2019 09:52:32
 
 % Begin initialization code - DO NOT EDIT
-% global handles2give
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
                    'gui_Singleton',  gui_Singleton, ...
@@ -57,15 +56,15 @@ global handles2give
 % Choose default command line output for DetectionGUI
 handles.output = hObject;
 
-%% Set experimental name for saving data
+%% Set experimental name for saving data [TO CUSTOM BY EACH USER]
 formatOut = 'yyyymmdd';
 handles.Date = datestr(now,formatOut);
 formatOut = 'yyyy/mm/dd';
 Date2Display = datestr(now,formatOut);
 set(handles.SetDateTag,'String',Date2Display);
 set(handles.SetDateTag,'Enable','off');
-set(handles.MouseNameTag,'String','ARXXX'); handles.MouseName = get(handles.MouseNameTag,'String');
-handles.BehaviorDirectory = 'D:\AR';
+set(handles.MouseNameTag,'String','ABXXX'); handles.MouseName = get(handles.MouseNameTag,'String');
+handles.BehaviorDirectory = 'C:\Users\bisi\Desktop\BehaviourData';
 set(handles.BehaviorDirectoryTag,'String',handles.BehaviorDirectory);
 
 %% Set general settings

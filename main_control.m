@@ -7,7 +7,7 @@ function main_control(~,event)
         ReactionTime  Aud_vec Aud_Rew Wh_Rew Wh_vec Wh_NoWh Aud_NoAud AStimDuration AStimAmp AStimFreq  trial_time ...
          trial_finished stim_flag  Association...
         timeout_early_lick timeout Trigger_S EarlyLick TrialStarted RewardTime ...
-        RewardSound_vec RewardSound folder_name Fs_Reward Stim_NoStim Light_PreStim...
+        RewardSound_vec RewardSound folder_name Fs_Reward is_stim Light_PreStim...
         lick_threshold handles2give ResponseWindowStart fid3 lh3 ResponseWindowEnd StimDuration...
         BaselineWindow RewardShouldBeDelivered EarlylickCounter trial_number...
         fid1 Light_NoLight  HitTime AnimalLicked  SITrigger_vec...
@@ -38,7 +38,7 @@ function main_control(~,event)
         outputSingleScan(Trigger_S,[1 0 0])
 
         % Free reward.
-        if Association && Stim_NoStim
+        if Association && is_stim
             RewardShouldBeDelivered=1;
         end
 
@@ -140,37 +140,37 @@ function main_control(~,event)
             Lick=0;
             perf=6; % 6 for All in association
         else
-            if Stim_NoStim==1 && AnimalLicked==0 && Wh_NoWh
+            if is_stim==1 && AnimalLicked==0 && Wh_NoWh
                 set(handles2give.OnlineTextTag,'String','WMiss','FontWeight','bold');
                 Lick=0;
                 perf=0;
                 EarlyLick = 0;
 
-            elseif Stim_NoStim==1 && AnimalLicked==0 && Aud_NoAud
+            elseif is_stim==1 && AnimalLicked==0 && Aud_NoAud
                 set(handles2give.OnlineTextTag,'String','AMiss','FontWeight','bold');
                 Lick=0;
                 perf=1;
                 EarlyLick = 0;
 
-            elseif Stim_NoStim==1 && AnimalLicked==1 && Wh_NoWh
+            elseif is_stim==1 && AnimalLicked==1 && Wh_NoWh
                 set(handles2give.OnlineTextTag,'String','WHit','FontWeight','bold');
                 Lick=1;
                 perf=2;
                 EarlyLick = 0;
 
-            elseif Stim_NoStim==1 && AnimalLicked==1 && Aud_NoAud
+            elseif is_stim==1 && AnimalLicked==1 && Aud_NoAud
                 set(handles2give.OnlineTextTag,'String','AHit','FontWeight','bold');
                 Lick=1;
                 perf=3;
                 EarlyLick = 0;
 
-            elseif Stim_NoStim==0 && AnimalLicked==0
+            elseif is_stim==0 && AnimalLicked==0
                 set(handles2give.OnlineTextTag,'String','Correct Rejection','FontWeight','bold');
                 Lick=0;
                 perf=4;
                 EarlyLick = 0;
 
-            elseif Stim_NoStim==0 && AnimalLicked==1
+            elseif is_stim==0 && AnimalLicked==1
                 set(handles2give.OnlineTextTag,'String','False Alarm','FontWeight','bold');
                 Lick=1;
                 perf=5; %FA catch trials
@@ -179,7 +179,7 @@ function main_control(~,event)
         end
 
         % Save as .txt file
-        Results = [trial_number StimDuration quiet_window ITI Association Stim_NoStim Wh_NoWh Aud_NoAud Lick perf Light_NoLight ReactionTime*1000 StimAmp Time Reward_NoReward Aud_Rew Wh_Rew AStimDuration AStimAmp AStimFreq EarlyLick Light_Amp Light_Duration Light_Freq Light_PreStim];
+        Results = [trial_number StimDuration quiet_window ITI Association is_stim Wh_NoWh Aud_NoAud Lick perf Light_NoLight ReactionTime*1000 StimAmp Time Reward_NoReward Aud_Rew Wh_Rew AStimDuration AStimAmp AStimFreq EarlyLick Light_Amp Light_Duration Light_Freq Light_PreStim];
         fprintf(fid1,...
             '%6.0f %14.1f %17.0f %11.0f %9.0f %15.0f %15.0f %12.0f %8.0f %8.0f %15.0f %15.1f %13.2f %10.0f %14.0f %15.0f %15.0f %15.1f %15.1f %15.1f %15.1f %15.1f %15.1f %15.1f %15.1f \n',...
             Results);
@@ -232,7 +232,7 @@ function main_control(~,event)
         perf = 6;
 
 
-        Results = [trial_number StimDuration quiet_window ITI Association Stim_NoStim Wh_NoWh Aud_NoAud Lick perf Light_NoLight ReactionTime*1000 StimAmp Time Reward_NoReward Aud_Rew Wh_Rew AStimDuration AStimAmp AStimFreq EarlyLick Light_Amp Light_Duration Light_Freq Light_PreStim] ;
+        Results = [trial_number StimDuration quiet_window ITI Association is_stim Wh_NoWh Aud_NoAud Lick perf Light_NoLight ReactionTime*1000 StimAmp Time Reward_NoReward Aud_Rew Wh_Rew AStimDuration AStimAmp AStimFreq EarlyLick Light_Amp Light_Duration Light_Freq Light_PreStim] ;
         fprintf(fid1,...
             '%6.0f %14.1f %17.0f %11.0f %9.0f %15.0f %15.0f %12.0f %8.0f %8.0f %15.0f %15.1f %13.2f %10.0f %14.0f %15.0f %15.0f %15.1f %15.1f %15.1f %15.1f %15.1f %15.1f %15.1f %15.1f \n',...
             Results);

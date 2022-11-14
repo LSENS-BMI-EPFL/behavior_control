@@ -1,16 +1,20 @@
 function log_lick_data(~, evt, TrialDuration)
-% Save trial lick data in .bin files and plots lick data for
-% GUI
+% LOG_LICK_DATA Save trial lick data in .bin files and plots lick data for
+% GUI.
+% EVT
+% TRIALDURATION Duration of current trial.
 
-global fid3 handles2give Lick_Threshold Stim_S_SR TrialLickData
+global Stim_S fid3 handles2give Lick_Threshold Stim_S_SR TrialLickData
 
-%% Get lick data and write in .bin files
-data = [evt.TimeStamps(:,1), evt.Data(:,:)]';
-fwrite(fid3,downsample(data, 10),'double');
+%% Get lick data and write downsample in .bin files
+[data_stim, timestamps, trigger_time] = read(Stim_S, Stim_S.ScansAvailableFcnCount,'OutputFormat','Matrix');
+
+data = [timestamps(:,1), data_stim(:,:)]';
+fwrite(fid3, downsample(data, 10),'double');
 
 %% Plotting lick data
 % Plot progress bar 
-plot(handles2give.ProgressBarAxes, [evt.TimeStamps(end) evt.TimeStamps(end)], [0 1], 'LineWidth',4, 'Color','w')
+plot(handles2give.ProgressBarAxes, [timestamps(end) timestamps(end)], [0 1], 'LineWidth',4, 'Color','w')
 set(handles2give.ProgressBarAxes, 'Color',[0.4 0.4 0.4]);
 xlim(handles2give.ProgressBarAxes, [0 TrialDuration/1000])
 set(handles2give.ProgressBarAxes, 'XTick',[], 'XColor','w', ...
