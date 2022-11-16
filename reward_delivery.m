@@ -10,8 +10,8 @@ function reward_delivery
         if (Aud_NoAud && Aud_Rew) || (Wh_NoWh && Wh_Rew) 
 
             %Trigger reward signal
-            %outputSingleScan(Trigger_S, [0 1 0]);
-            write(Trigger_S, [0 1 0]);
+            outputSingleScan(Trigger_S, [0 1 0]);
+            %write(Trigger_S, [0 1 0]);
 
             RewardTime=tic;
             RewardDelivered=1;
