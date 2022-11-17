@@ -1,10 +1,10 @@
 function log_lick_data(~, event, trial_duration)
 % LOG_LICK_DATA Save trial lick data in .bin files and plots lick data for
 % GUI.
-% EVT
-% TRIALDURATION Duration of current trial.
+% EVENT Data detected.
+% TRIAL_DURATION Duration of current trial.
 
-global Stim_S fid3 handles2give lick_threshold Stim_S_SR trial_lick_data
+global Stim_S Stim_S_SR fid3 handles2give lick_threshold trial_lick_data
 
 %% Get lick data and write downsample data in .bin files
 %[data_stim, timestamps, trigger_time] = read(Stim_S, Stim_S.ScansAvailableFcnCount,'OutputFormat','Matrix');
@@ -26,7 +26,7 @@ trial_lick_data = [trial_lick_data, abs(data(2,:))];
 
 % Plot trial lick data
 timevec=linspace(0, numel(trial_lick_data)/Stim_S_SR, numel(trial_lick_data)); %x-axis time vector
-plot(handles2give.LickTraceAxes2,timevec,trial_lick_data,'Color','k'); %licking trace
+plot(handles2give.LickTraceAxes2,timevec, trial_lick_data,'Color','k'); %licking trace
 
 % Show lick detection threshold line
 line([0 trial_duration/1000], [lick_threshold lick_threshold], ...

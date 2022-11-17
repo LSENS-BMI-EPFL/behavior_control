@@ -1,20 +1,20 @@
 function update_parameters
 % UPDATE_PARAMETERS Update parameters at each trial.
 
-    global    Association ResponseWindow Trial_Duration Quietwindow Lick_Threshold...
-        ArtifactWindow ITI CameraFlag Stim_NoStim Aud_NoAud Wh_NoWh Light_NoLight ...
-        RewardValue  Aud_Rew Wh_Rew Wh_vec Aud_vec Light_vec ...
-        Light_PreStim StimBoolian PLAYNOISE LickEarlyAlreadyDetected...
-        TimeOutEarlyLick RewardSound_vec Fs_Reward Stimcounter ...
-        NoStimcounter Stim_S StimDuration  AStimDuration  AStimAmp  AStimFreq  Stim_S_SR ScansTobeAcquired ...
-        Reward_S Reward_S_SR  Trigger_S fid3 AnimalLicked ReactionTime ...
-        TrialStarted  trial_number LightProbOld folder_name handles2give StimPool...
-        StimProbOld StimProbOldAud StimProbOldWh LightProbOldAud LightProbOldWh Light BaselineWindow Camera_vec...
-        RewardShouldBeDelivered EarlylickCounter...
-        StimAmp ResponseWindowStart ResponseWindowEnd...
-        PerformanceAndSaveBoolian lh3 RewardDelivered UpdateParametersBoolean...
-        Reward_NoReward RewardPool PartialReward RewardProbOld FA_Timeout LastTrialFA...
-        StimIndexPool PoolSize Light_Duration Light_Freq Light_Amp Camera_freq SITrigger_vec Main_Pool TrialLickData...
+    global    association_flag response_window trial_duration quiet_window lick_treshold...
+        artifact_window iti camera_flag is_stim is_auditory is_whisker is_light_stim ...
+        reward_value  aud_reward wh_reward wh_vec aud_vec light_vec ...
+        light_prestim stim_flag lick_early_already_detected_falg...
+        timeout_early_lick stim_counter ...
+        no_stim_counter Stim_S wh_stim_duration  aud_stim_duration  aud_stim_amp  aud_stim_freq  Stim_S_SR ScansTobeAcquired ...
+        Reward_S Reward_S_SR  Trigger_S fid3 mouse_licked_flag reaction_time ...
+        trial_started_flag  trial_number light_proba_old folder_name handles2give stim_pool...
+        stim_proba_old aud_stim_proba_old wh_stim_proba_old aud_light_proba_old wh_light_proba_old light_flag baseline_window camera_vec...
+        deliver_reward_flag early_lick_counter...
+        wh_stim_amp response_window_start response_window_end...
+        perf_and_save_flag lh3 reward_delivered_flag update_parameters_flag...
+        is_reward reward_pool partial_reward_flag reward_proba_old fa_timeout last_trial_fa...
+        stim_index_pool pool_size light_duration light_freq light_amp camera_freq SITrigger_vec main_trial_pool trial_lick_data...
        
 
     %outputSingleScan(Trigger_S,[0 0 0])
@@ -25,37 +25,40 @@ function update_parameters
     
     % Light parameters DELETE?
     ramp_down_duration=100; % in miliseconds
-    Light_Amp = handles2give.LightAmp;
-    Light_PreStim = handles2give.LightPrestimDelay;
-    LightDurations=[Light_Amp]+ramp_down_duration;
-    LightPreStims=[Light_PreStim];
-    Light_Duration = handles2give.LightDuration;
+    light_amp = handles2give.LightAmp;
+    light_prestim = handles2give.LightPrestimDelay;
+
+    LightDurations=[light_amp]+ramp_down_duration;
+    LightPreStims=[light_prestim];
+    light_duration = handles2give.LightDuration;
 
     % Trial pool
-    N_pool=10; % Making the Stim/NoStim, Light/NoLight, TrialStartCue/NoCue and Durations pool
-    Block_Duration = 300; % in seconds (added for continuous filming)
+    n_pool=10; % Making the Stim/NoStim, Light/NoLight, TrialStartCue/NoCue and Durations pool
+    camera_block_duration = 300; % in seconds (added for continuous filming)
 
     trial_number = trial_number+1;
 
+    fa_timeout=10000; %in ms 
 
     %% Update Video Parameters and Arm the Camera
 
-    CameraFlag = handles2give.CameraFlag;
+    camera_flag = handles2give.CameraFlag;
 
     % SAVING CAMERA FRAMES
     % if CameraFlag && (trial_number==1 || toc(cameraStartTime)>Block_Duration)
-    if CameraFlag
-        disp('ok')
-        Camera_freq=handles2give.CameraFrameRate; % Hz
+    if camera_flag
+        camera_freq=handles2give.CameraFrameRate; % Hz
 
         VideoFileInfo.trial_number=trial_number;
 
-        % TODO: remove hard coded basename
+        % TODO: remove hard coded basename - > ADD in GUI like for Results
         VideoFileInfo.directory=['D:\AR\' char(handles2give.MouseName)...
             '\' [char(handles2give.MouseName) '_' char(handles2give.Date) '_' char(handles2give.FolderName) '\']];
 
         % Define number of frames to save in block
-        VideoFileInfo.nOfFramesToGrab = Trial_Duration*Camera_freq/1000;
+        VideoFileInfo.nOfFramesToGrab = trial_duration*camera_freq/1000;
+        %VideoFileInfo.nOfFramesToGrab =
+        %camera_block_duration*camera_freq/1000; %KEEP
 
         save('D:\Behavior\TemplateConfigFile\VideoFileInfo','VideoFileInfo');
         arm_camera()
@@ -81,234 +84,232 @@ function update_parameters
     %     outputSingleScan(Trigger_S,[0 0 0])
     end
 
-    %% GENERAL SETTINGS
+    %% GENERAL SETTINGS FROM BEHAVIOUR GUI
 
-    FA_Timeout=10000; %in ms
-    N_pool=10; % Making the wh_trials/AStim/NoStim and Durations pool
-
-    % GET PARAMETERS FROM GUI
-    Association=handles2give.AssociationFlag; % 0 detection 1 assosiation
-    Light=handles2give.LightFlag;
+    association_flag=handles2give.AssociationFlag; % 0 detection 1 assosiation
+    light_flag=handles2give.LightFlag;
 
     % Camera settings
-    Camera_freq=handles2give.CameraFrameRate; % Hz
-    Camera_DutyCycle=0.5;
+    camera_freq=handles2give.CameraFrameRate; % Hz
+    camera_duty_cycle=0.5;
     
-    Trial_Duration=handles2give.TrialDuration; % ms
+    trial_duration=handles2give.TrialDuration; % ms
 
-    % Lick Sensor Sensitivity
-    Lick_Threshold=handles2give.LickThreshold; %in volts
+    % Lick sensor threshold
+    lick_treshold=handles2give.LickThreshold; %in volts
 
-    % Trial Timeline Settings
-    QuietwindowMin = handles2give.MinQuietWindow; % in miliseconds
-    QuietwindowMax = handles2give.MaxQuietWindow; % in miliseconds
-    Quietwindow=randsample(QuietwindowMin:.1:QuietwindowMax,1);
+    % Trial timeline settings
+    min_quiet_window = handles2give.MinQuietWindow; % in miliseconds
+    max_quiet_window = handles2give.MaxQuietWindow; % in miliseconds
+    quiet_window=randsample(min_quiet_window:.1:max_quiet_window,1);
 
     % Quietwindow = handles2give.QuietWindow; % in miliseconds
-    ResponseWindow=handles2give.ResponseWindow; % in miliseconds
-    ArtifactWindow=handles2give.ArtifactWindow; % in miliseconds
-    BaselineWindow=handles2give.BaselineWindow; % in miliseconds
+    response_window=handles2give.ResponseWindow; % in miliseconds
+    artifact_window=handles2give.ArtifactWindow; % in miliseconds
+    baseline_window=handles2give.BaselineWindow; % in miliseconds
 
-    ITImin=handles2give.MinISI; % InterStimInterval in miliseconds (min)
-    ITImax=handles2give.MaxISI; % InterStimInterval in miliseconds (max)
+    min_iti=handles2give.MinISI; % InterStimInterval in miliseconds (min)
+    max_iti=handles2give.MaxISI; % InterStimInterval in miliseconds (max)
 
     % Limiting number of similar trials (stim/nostim) in raw
-    LimitiTrialsinRow=handles2give.MaxTrialsInRowFlag; % 0 totaly random, 1 the limit will apply
-    MaxNumRepetition=handles2give.MaxTrialsInRow;
+    max_stim_trials_flag=handles2give.MaxTrialsInRowFlag; % 0 totaly random, 1 the limit will apply
+    max_stim_trials_number=handles2give.MaxTrialsInRow;
 
-    TimeOutEarlyLick=handles2give.EarlyLickTimeOut; % in milliseconds in case of early lick
+    timeout_early_lick=handles2give.EarlyLickTimeOut; % in milliseconds in case of early lick
 
     % Whisker and Auditory Stim parameters
-    StimAmps= handles2give.StimAmp(1:handles2give.NumStim); % in volts
+    wh_stim_amp_list= handles2give.StimAmp(1:handles2give.NumStim); % in volts
     Stim_Weights= handles2give.StimWeight(1:handles2give.NumStim);
     Astim_Amp =  handles2give.ToneAmp;
     Astim_Dur = handles2give.ToneDuration;
     Astim_Freq = handles2give.ToneFreq;
-    AStim_Weight = handles2give.AStimWeight;
-    WhStim_Weight = handles2give.StimWeight(1);
-    AStimDuration = Astim_Dur;
-    AStimAmp = Astim_Amp;
-    AStimFreq = Astim_Freq;
-    Nostim_Weight=handles2give.NostimWeight;
-    StimDurations= handles2give.StimDuration(1:handles2give.NumStim);  % in miliseconds
+    aud_stim_weight = handles2give.AStimWeight;
+    wh_stim_weight = handles2give.StimWeight(1);
+    aud_stim_duration = Astim_Dur;
+    aud_stim_amp = Astim_Amp;
+    aud_stim_freq = Astim_Freq;
+    no_stim_weight=handles2give.NostimWeight;
+    wh_stim_duration_list= handles2give.StimDuration(1:handles2give.NumStim);  % in miliseconds
+    
 
     %% Compute stimulus probability
-    Stim_Probability = (AStim_Weight + WhStim_Weight)/(AStim_Weight + WhStim_Weight + Nostim_Weight);
+    stim_proba = (aud_stim_weight + wh_stim_weight)/(aud_stim_weight + wh_stim_weight + no_stim_weight);
     if trial_number == 1
-        StimProbOld = Stim_Probability;
+        stim_proba_old = stim_proba;
     end
 
-    Stim_Probability_Aud = (AStim_Weight)/(AStim_Weight + WhStim_Weight + Nostim_Weight);
+    aud_stim_proba = (aud_stim_weight)/(aud_stim_weight + wh_stim_weight + no_stim_weight);
     if trial_number == 1
-        StimProbOldAud = Stim_Probability_Aud;
+        aud_stim_proba_old = aud_stim_proba;
     end
 
-    Stim_Probability_Wh = (WhStim_Weight)/(AStim_Weight + WhStim_Weight + Nostim_Weight);
+    wh_stim_proba = (wh_stim_weight)/(aud_stim_weight + wh_stim_weight + no_stim_weight);
     if trial_number == 1
-        StimProbOldWh = Stim_Probability_Wh;
+        wh_stim_proba_old = wh_stim_proba;
     end
 
 
     %% Light probability and light parameters
-    Light_Probability=handles2give.LightProb; % proportion of light trials
-    if isempty(LightProbOld)
-        LightProbOld = Light_Probability;
+    light_proba=handles2give.LightProb; % proportion of light trials
+    if isempty(light_proba_old)
+        light_proba_old = light_proba;
     end
 
-    Light_Probability_Aud=handles2give.LightProbAud; % proportion of light trials
-    if isempty(LightProbOldAud)
-        LightProbOldAud = Light_Probability_Aud;
+    light_aud_proba=handles2give.LightProbAud; % proportion of light trials
+    if isempty(aud_light_proba_old)
+        aud_light_proba_old = light_aud_proba;
     end
-    Light_Probability_Wh=handles2give.LightProbWh; % proportion of light trials
-    if isempty(LightProbOldWh)
-        LightProbOldWh = Light_Probability_Wh;
+    light_wh_proba=handles2give.LightProbWh; % proportion of light trials
+    if isempty(wh_light_proba_old)
+        wh_light_proba_old = light_wh_proba;
     end
 
-    Light_Shape='rect'; % "rect" or "sin" %%% for now only use 'rect'
-    Light_Amp=handles2give.LightAmp;
-    Light_Freq=handles2give.LightFreq; % frequency of the pulse train
-    Light_Duty=handles2give.LightDuty; % duty cycle (0-1)
+    light_stim_shape='rect'; % "rect" or "sin" %%% for now only use 'rect'
+    light_amp=handles2give.LightAmp;
+    light_freq=handles2give.LightFreq; % frequency of the pulse train
+    light_duty=handles2give.LightDuty; % duty cycle (0-1)
 
 
     if trial_number > 1
         Results=importdata([folder_name '\Results.txt']);
-        NCompletedTrials=sum(Results.data(:,10)~=6);
+        n_completed_trials=sum(Results.data(:,10)~=6);
     else
-        NCompletedTrials=1;
+        n_completed_trials=1;
     end
 
     % Size of pool (i.e. trial block) to get trials from
-    Hlaf_Main_Pool_Size=80;
+    main_pool_size = 20;
 
-    Stim_Light=[900,901,902,903,904,905]; % code for each stimuli
+    stim_light_list=[900,901,902,903,904,905]; % code for each stimuli
 
-    LightProbOldAud =Light_Probability_Aud;
-    LightProbOld =Light_Probability;
-    LightProbOldWh = Light_Probability_Wh;
+    aud_light_proba_old =light_aud_proba;
+    light_proba_old =light_proba;
+    wh_light_proba_old = light_wh_proba;
 
-    StimProbOldAud = Stim_Probability_Aud;
-    StimProbOldWh = Stim_Probability_Wh;
+    aud_stim_proba_old = aud_stim_proba;
+    wh_stim_proba_old = wh_stim_proba;
 
     % CREATE NEW TRIAL POOL WHEN CURRENT POOL FINISHED
 
-    if mod(NCompletedTrials, Hlaf_Main_Pool_Size)==1 || LightProbOld ~= Light_Probability || LightProbOldAud ~= Light_Probability_Aud ||  LightProbOldWh ~= Light_Probability_Wh ||StimProbOld ~= Stim_Probability || StimProbOldAud ~= Stim_Probability_Aud|| StimProbOldWh ~= Stim_Probability_Wh
+    if mod(n_completed_trials, main_pool_size)==1 || light_proba_old ~= light_proba || aud_light_proba_old ~= light_aud_proba ||  wh_light_proba_old ~= light_wh_proba ||stim_proba_old ~= stim_proba || aud_stim_proba_old ~= aud_stim_proba|| wh_stim_proba_old ~= wh_stim_proba
+        
         % Stim. probability and trial pool when light stimulus
-        if Light
+        if light_flag
 
-            NoStimLightProb =(1-Stim_Probability)*Light_Probability;
-            NoStimNoLightProb = (1-Stim_Probability)*(1-Light_Probability);
-            StimNoLight = Stim_Probability*(1-Light_Probability);
-            AudStimLight = Stim_Probability_Aud*Light_Probability_Aud;
-            AudStimNoLight = Stim_Probability_Aud*(1-Light_Probability_Aud);
-            WhStimLight = Stim_Probability_Wh*Light_Probability_Wh;
-            WhStimNoLight = Stim_Probability_Wh*(1-Light_Probability_Wh);
+            NoStimLightProb =(1-stim_proba)*light_proba;
+            NoStimNoLightProb = (1-stim_proba)*(1-light_proba);
+            StimNoLight = stim_proba*(1-light_proba);
+            AudStimLight = aud_stim_proba*light_aud_proba;
+            AudStimNoLight = aud_stim_proba*(1-light_aud_proba);
+            WhStimLight = wh_stim_proba*light_wh_proba;
+            WhStimNoLight = wh_stim_proba*(1-light_wh_proba);
 
-            Main_Pool=[Stim_Light(1)*ones(1,round(round(NoStimNoLightProb*Hlaf_Main_Pool_Size*100))/100) ,...
-                Stim_Light(2)*ones(1,round(round(AudStimNoLight*Hlaf_Main_Pool_Size*100)/100)) ,...
-                Stim_Light(3)*ones(1,round(round(WhStimNoLight*Hlaf_Main_Pool_Size*100)/100)) ,...
-                Stim_Light(4)*ones(1,round(round(NoStimLightProb*Hlaf_Main_Pool_Size*100)/100)) ,...
-                Stim_Light(5)*ones(1,round(round(AudStimLight*Hlaf_Main_Pool_Size*100)/100)) ,...
-                Stim_Light(6)*ones(1,round(round(WhStimLight*Hlaf_Main_Pool_Size*100)/100)) ,...
+            main_trial_pool=[stim_light_list(1)*ones(1,round(round(NoStimNoLightProb*main_pool_size*100))/100) ,...
+                stim_light_list(2)*ones(1,round(round(AudStimNoLight*main_pool_size*100)/100)) ,...
+                stim_light_list(3)*ones(1,round(round(WhStimNoLight*main_pool_size*100)/100)) ,...
+                stim_light_list(4)*ones(1,round(round(NoStimLightProb*main_pool_size*100)/100)) ,...
+                stim_light_list(5)*ones(1,round(round(AudStimLight*main_pool_size*100)/100)) ,...
+                stim_light_list(6)*ones(1,round(round(WhStimLight*main_pool_size*100)/100)) ,...
                 ];
 
         % Stim. probability and trial pool when no light stimulus
         else
-            Main_Pool=[Stim_Light(1)*ones(1,round(round(((1-Stim_Probability)*Hlaf_Main_Pool_Size)*100)/100)) ,...
-                Stim_Light(2)*ones(1,round(round(Stim_Probability_Aud*Hlaf_Main_Pool_Size*100)/100)),...
-                Stim_Light(3)*ones(1,round(round(Stim_Probability_Wh*Hlaf_Main_Pool_Size*100)/100)),...
+            main_trial_pool=[stim_light_list(1)*ones(1,round(round(((1-stim_proba)*main_pool_size)*100)/100)) ,...
+                stim_light_list(2)*ones(1,round(round(aud_stim_proba*main_pool_size*100)/100)),...
+                stim_light_list(3)*ones(1,round(round(wh_stim_proba*main_pool_size*100)/100)),...
                 ];
         end
 
-        %Randomize occurence of pool trials
-        Main_Pool=Main_Pool(randperm(numel(Main_Pool)));
+        %Randomize occurence of trials in pool
+        main_trial_pool=main_trial_pool(randperm(numel(main_trial_pool)));
 
     end
 
-    % Create auditory detection block
-    Block_Size = 30;
-    Block_Probability=0.5;
-    Auditory_Block = [Stim_Light(1)*ones(1,round(round(((1-Block_Probability)*Block_Size)*100)/100)) ,...
-            Stim_Light(2)*ones(1,round(round(Block_Probability*Block_Size*100)/100))];
-    Auditory_Block = Auditory_Block(randperm(numel(Auditory_Block)));
+    % NOT IN USE - Create auditory detection block
+    %aud_block_size = 30;
+    %aud_stim_proba_block=0.5;
+    %aud_block_pool = [stim_light_list(1)*ones(1,round(round(((1-aud_stim_proba_block)*aud_block_size)*100)/100)) ,...
+    %        stim_light_list(2)*ones(1,round(round(aud_stim_proba_block*aud_block_size*100)/100))];
+    %aud_block_pool = aud_block_pool(randperm(numel(aud_block_pool)));
 
     % % Select next trial from pool
-    % if trial_number < Block_Size
-    %     Trial_Type = Auditory_Block(mod(NCompletedTrials,Hlaf_Main_Pool_Size)+1); % select from auditory detection block first
+    % if trial_number < aud_block_size
+    %     Trial_Type = aud_block_pool(mod(n_completed_trials,main_pool_size)+1); % select from auditory detection block first
     % else
-    %     Trial_Type = Main_Pool(mod(NCompletedTrials,Hlaf_Main_Pool_Size)+1); %0 noLight 1 Light
+    %     Trial_Type = main_trial_pool(mod(n_completed_trials,main_pool_size)+1); %0 noLight 1 Light
     % end
 
-    Trial_Type = Main_Pool(mod(NCompletedTrials,Hlaf_Main_Pool_Size)+1); %0 noLight 1 Light
+    trial_type = main_trial_pool(mod(n_completed_trials,main_pool_size)+1); %0 noLight 1 Light
 
-    switch Trial_Type
-        case Stim_Light(1) % CATCH TRIAL
-            Stim_NoStim=0;
-            Light_NoLight=0;
-            Aud_NoAud = 0;
-            Wh_NoWh =0;
-        case Stim_Light(2) % AUDITORY TRIAL
-            Stim_NoStim=1;
-            Light_NoLight=0;
-            Aud_NoAud = 1;
-            Wh_NoWh =0;
-        case Stim_Light(3) % WHISKER TRIAL
-            Stim_NoStim=1;
-            Light_NoLight=0;
-            Aud_NoAud = 0;
-            Wh_NoWh =1;
-        case Stim_Light(4) % LIGHT ONLY TRIAL
-            Stim_NoStim=0;
-            Light_NoLight=1;
-            Aud_NoAud = 0;
-            Wh_NoWh =0;
-        case Stim_Light(5) % LIGHT AUDITORY TRIAL
-            Stim_NoStim=1;
-            Light_NoLight=1;
-            Aud_NoAud = 1;
-            Wh_NoWh =0;
-        case Stim_Light(6)  % LIGHT WHISKER TRIAL
-            Stim_NoStim=1;
-            Light_NoLight=1;
-            Aud_NoAud = 0;
-            Wh_NoWh =1;
+    switch trial_type
+        case stim_light_list(1) % CATCH TRIAL
+            is_stim=0;
+            is_light_stim=0;
+            is_auditory = 0;
+            is_whisker =0;
+        case stim_light_list(2) % AUDITORY TRIAL
+            is_stim=1;
+            is_light_stim=0;
+            is_auditory = 1;
+            is_whisker =0;
+        case stim_light_list(3) % WHISKER TRIAL
+            is_stim=1;
+            is_light_stim=0;
+            is_auditory = 0;
+            is_whisker =1;
+        case stim_light_list(4) % LIGHT ONLY TRIAL
+            is_stim=0;
+            is_light_stim=1;
+            is_auditory = 0;
+            is_whisker =0;
+        case stim_light_list(5) % LIGHT AUDITORY TRIAL
+            is_stim=1;
+            is_light_stim=1;
+            is_auditory = 1;
+            is_whisker =0;
+        case stim_light_list(6)  % LIGHT WHISKER TRIAL
+            is_stim=1;
+            is_light_stim=1;
+            is_auditory = 0;
+            is_whisker =1;
     end
 
     % Set light parameters to zero if not a light trial
-    if ~Light_NoLight || ~Light
-        Light_NoLight=0;
-        Light_PreStim=0;
-        Light_Amp=0;
-        Light_Duration=0;
-        Light_Freq=0;
+    if ~is_light_stim || ~light_flag
+        is_light_stim=0;
+        light_prestim=0;
+        light_amp=0;
+        light_duration=0;
+        light_freq=0;
     end
 
     %% Reward Settings
-    RewardValue=handles2give.ValveOpening; % duration valve open in milliseconds
+    reward_value=handles2give.ValveOpening; % duration valve open in milliseconds
     DelayedReward=handles2give.RewardDelay;% delay in milisecond for delivering reward after stim (if Association=1)
-    PartialReward=handles2give.PartialRewardFlag;
-    Aud_Rew = handles2give.AudRew;
-    Wh_Rew = handles2give.wh_rew;
+    partial_reward_flag=handles2give.PartialRewardFlag;
+    aud_reward = handles2give.AudRew;
+    wh_reward = handles2give.wh_rew;
 
-    if PartialReward
+    if partial_reward_flag
         Reward_Probability=handles2give.RewardProb; % proportion of rewarded hits
         if isempty('RewardProbOld')
-            RewardProbOld = Reward_Probability;
+            reward_proba_old = Reward_Probability;
         end
-        if mod(trial_number,N_pool)==1 || RewardProbOld ~= Reward_Probability
-            RewardProbOld = Reward_Probability;
-            RewardPool=[zeros(1,round((1-Reward_Probability)*N_pool)) ones(1,round(Reward_Probability*N_pool))]; % zero for no stim, one for Reward
-            RewardPool=RewardPool(randperm(numel(RewardPool)));
+        if mod(trial_number,n_pool)==1 || reward_proba_old ~= Reward_Probability
+            reward_proba_old = Reward_Probability;
+            reward_pool=[zeros(1,round((1-Reward_Probability)*n_pool)) ones(1,round(Reward_Probability*n_pool))]; % zero for no stim, one for Reward
+            reward_pool=reward_pool(randperm(numel(reward_pool)));
         end
-        Reward_NoReward=RewardPool(mod(trial_number,N_pool)+1); % select the next trial from the pool,  0 noReward 1 Reward
+        is_reward=reward_pool(mod(trial_number,n_pool)+1); % select the next trial from the pool,  0 noReward 1 Reward
     else
-        Reward_NoReward=1;
+        is_reward=1;
     end
 
     DelayedReward=0;
 
     % Define reward vector
-    Reward_vec=[zeros(1,DelayedReward) 5*ones(1,RewardValue*Reward_S_SR/1000) zeros(1,Reward_S_SR/2)];
-    if ~Reward_NoReward
+    Reward_vec=[zeros(1,DelayedReward) 5*ones(1,reward_value*Reward_S_SR/1000) zeros(1,Reward_S_SR/2)];
+    if ~is_reward
         Reward_vec=zeros(1,numel(Reward_vec));
     end
 
@@ -316,58 +317,58 @@ function update_parameters
     perf_win_size=handles2give.LastRecentTrials;
 
     % Inter trial interval
-    if ITImin>ITImax
+    if min_iti>max_iti
         set(handles2give.OnlineTextTag,'String','ITImin should be smaller than ITImax');
-    elseif ITImin==ITImax
-        ITI=ITImin;
+    elseif min_iti==max_iti
+        iti=min_iti;
     else
-        ITI=randsample(ITImin:.1:ITImax,1);
+        iti=randsample(min_iti:.1:max_iti,1);
     end
 
-    if LastTrialFA % this is never TRUE
-        ITI=ITI + FA_Timeout;
+    if last_trial_fa % this is never TRUE
+        iti=iti + fa_timeout;
     end
 
     %% Get trial duration
-    Trial_Duration = max(Trial_Duration, (Light_PreStim + ArtifactWindow+BaselineWindow + max(ResponseWindow,(Light_Duration-Light_PreStim))) /1000);
+    trial_duration = max(trial_duration, (light_prestim + artifact_window+baseline_window + max(response_window,(light_duration-light_prestim))) /1000);
 
     %% Stimuli
     N_stimpool=2;
     if  trial_number==1
-        PoolSize=1;
+        pool_size=1;
     end
 
-    if trial_number==1 || mod(trial_number,PoolSize)==1
-        StimIndexPool=[];
+    if trial_number==1 || mod(trial_number,pool_size)==1
+        stim_index_pool=[];
         for i=1:handles2give.NumStim %Different whisker stimuli
-            StimIndexPool=[StimIndexPool i*ones(1,Stim_Weights(i)*N_stimpool)];
+            stim_index_pool=[stim_index_pool i*ones(1,Stim_Weights(i)*N_stimpool)];
         end
 
-        StimIndexPool=[zeros(1,Nostim_Weight*N_stimpool) StimIndexPool 7*ones(1,AStim_Weight*N_stimpool)];
-        PoolSize=numel(StimIndexPool); %number of elements in array
-        StimPool=randsample(StimIndexPool,PoolSize); %random sampling without replacement: shuffling
+        stim_index_pool=[zeros(1,no_stim_weight*N_stimpool) stim_index_pool 7*ones(1,aud_stim_weight*N_stimpool)];
+        pool_size=numel(stim_index_pool); %number of elements in array
+        stim_pool=randsample(stim_index_pool,pool_size); %random sampling without replacement: shuffling
     end
 
-    if mod(trial_number,PoolSize)>0
-        StimIndex=StimPool(mod(trial_number,PoolSize));
+    if mod(trial_number,pool_size)>0
+        StimIndex=stim_pool(mod(trial_number,pool_size));
     else
-        StimIndex=StimPool(end);
+        StimIndex=stim_pool(end);
     end
 
 
     %% Limit Stim/NoStim Trials in a row
-    if Stim_NoStim==1 && LimitiTrialsinRow==1 %applies if 1
-        Stimcounter=Stimcounter+1;
-    elseif Stim_NoStim==0 && LimitiTrialsinRow==1
-        NoStimcounter=NoStimcounter+1;
+    if is_stim==1 && max_stim_trials_flag==1 %applies if 1
+        stim_counter=stim_counter+1;
+    elseif is_stim==0 && max_stim_trials_flag==1
+        no_stim_counter=no_stim_counter+1;
     end
 
-    if Stimcounter>MaxNumRepetition
-        Stim_NoStim=1-Stim_NoStim;
-        Stimcounter=0;
-        NoStimcounter=1;
-    elseif NoStimcounter>MaxNumRepetition
-        Stim_NoStim=1-Stim_NoStim;
+    if stim_counter>max_stim_trials_number
+        is_stim=1-is_stim;
+        stim_counter=0;
+        no_stim_counter=1;
+    elseif no_stim_counter>max_stim_trials_number
+        is_stim=1-is_stim;
 
         if Aud_Weight
             StimIndex=randsample([1:length(Stim_Weights),7],1); %??what's 7??
@@ -375,109 +376,109 @@ function update_parameters
             StimIndex=randsample(1:length(Stim_Weights),1);
         end
         %
-        NoStimcounter=0;
-        Stimcounter=1;
+        no_stim_counter=0;
+        stim_counter=1;
     end
 
     %% Define stimulus parameters and vectors
     % Catch trials, set stimulus vectors to 0
-    if ~Stim_NoStim
-        AStimDuration = 0;
-        AStimAmp = 0;
-        AStimFreq = 0;
-        StimDuration = 0;
-        StimAmp = 0;
-        Wh_vec = zeros(1,(Trial_Duration)*(Stim_S_SR/1000));
-        Aud_vec = zeros(1,(Trial_Duration)*(Stim_S_SR/1000));
+    if ~is_stim
+        aud_stim_duration = 0;
+        aud_stim_amp = 0;
+        aud_stim_freq = 0;
+        wh_stim_duration = 0;
+        wh_stim_amp = 0;
+        wh_vec = zeros(1,(trial_duration)*(Stim_S_SR/1000));
+        aud_vec = zeros(1,(trial_duration)*(Stim_S_SR/1000));
 
     % Stimulus trial
     else
         % AUDITORY STIMULUS SELECTED - PARAMETERS
-        if Aud_NoAud
+        if is_auditory
 
-            AStimDuration = Astim_Dur;
-            AStimAmp = Astim_Amp;
-            AStimFreq = Astim_Freq;
-            StimDuration = 0;
-            StimAmp=0;
+            aud_stim_duration = Astim_Dur;
+            aud_stim_amp = Astim_Amp;
+            aud_stim_freq = Astim_Freq;
+            wh_stim_duration = 0;
+            wh_stim_amp=0;
 
         % WHISKER STIMULUS SELECTED - PARAMETERS
         else
 
-            AStimDuration = 0;
-            AStimAmp = 0;
-            AStimFreq = 0;
+            aud_stim_duration = 0;
+            aud_stim_amp = 0;
+            aud_stim_freq = 0;
 
-            StimDuration=StimDurations(1);
-            StimAmp=StimAmps(1);
+            wh_stim_duration=wh_stim_duration_list(1);
+            wh_stim_amp=wh_stim_amp_list(1);
 
             % CALIBRATE WHISKER STIMULUS SHAPE BASED ON GUI AMPLITUDE PARAM
-                switch StimAmp
+                switch wh_stim_amp
                     case 0.5
                         ScaleFactor=1.1;
-                        StimDurationRise = StimDuration*Stim_S_SR/2000;
-                        StimDurationDecrease = StimDuration*Stim_S_SR/2000;
+                        StimDurationRise = wh_stim_duration*Stim_S_SR/2000;
+                        StimDurationDecrease = wh_stim_duration*Stim_S_SR/2000;
 
                     case 1
                         ScaleFactor=1.15;
-                        StimDurationRise = StimDuration*Stim_S_SR/2000;
-                        StimDurationDecrease = StimDuration*Stim_S_SR/2000;
+                        StimDurationRise = wh_stim_duration*Stim_S_SR/2000;
+                        StimDurationDecrease = wh_stim_duration*Stim_S_SR/2000;
                     case 1.6
                         ScaleFactor=1.16;
-                        StimDurationRise = StimDuration*Stim_S_SR/2000;
-                        StimDurationDecrease = StimDuration*Stim_S_SR/2000;
+                        StimDurationRise = wh_stim_duration*Stim_S_SR/2000;
+                        StimDurationDecrease = wh_stim_duration*Stim_S_SR/2000;
                     case 1.8
                         ScaleFactor=1.165;
-                        StimDurationRise = StimDuration*Stim_S_SR/2000;
-                        StimDurationDecrease = StimDuration*Stim_S_SR/2000;
+                        StimDurationRise = wh_stim_duration*Stim_S_SR/2000;
+                        StimDurationDecrease = wh_stim_duration*Stim_S_SR/2000;
                     case 2.2
                         ScaleFactor=1.165;
-                        StimDurationRise = StimDuration*Stim_S_SR/2000;
-                        StimDurationDecrease = StimDuration*Stim_S_SR/2000;
+                        StimDurationRise = wh_stim_duration*Stim_S_SR/2000;
+                        StimDurationDecrease = wh_stim_duration*Stim_S_SR/2000;
                     case 2.6
                         ScaleFactor=1.167;
-                        StimDurationRise = StimDuration*Stim_S_SR/2000;
-                        StimDurationDecrease = StimDuration*Stim_S_SR/2000;
+                        StimDurationRise = wh_stim_duration*Stim_S_SR/2000;
+                        StimDurationDecrease = wh_stim_duration*Stim_S_SR/2000;
                     case 2.8
                         ScaleFactor=1.167;
-                        StimDurationRise = StimDuration*Stim_S_SR/2000;
-                        StimDurationDecrease = StimDuration*Stim_S_SR/2000;
+                        StimDurationRise = wh_stim_duration*Stim_S_SR/2000;
+                        StimDurationDecrease = wh_stim_duration*Stim_S_SR/2000;
                     case 3
                         ScaleFactor=1.17;
-                        StimDurationRise = StimDuration*Stim_S_SR/2000;
-                        StimDurationDecrease = StimDuration*Stim_S_SR/2000;
+                        StimDurationRise = wh_stim_duration*Stim_S_SR/2000;
+                        StimDurationDecrease = wh_stim_duration*Stim_S_SR/2000;
                     case 3.4
                         ScaleFactor=1.19;
-                        StimDurationRise = StimDuration*Stim_S_SR/2000;
-                        StimDurationDecrease = StimDuration*Stim_S_SR/2000;
+                        StimDurationRise = wh_stim_duration*Stim_S_SR/2000;
+                        StimDurationDecrease = wh_stim_duration*Stim_S_SR/2000;
                     case 4
                         ScaleFactor=0.75;
-                        StimDurationRise = StimDuration*Stim_S_SR/2000+1;
-                        StimDurationDecrease = StimDuration*Stim_S_SR/2000;
+                        StimDurationRise = wh_stim_duration*Stim_S_SR/2000+1;
+                        StimDurationDecrease = wh_stim_duration*Stim_S_SR/2000;
                     case 4.2
                         ScaleFactor=1;
-                        StimDurationRise = StimDuration*Stim_S_SR/2000+1;
-                        StimDurationDecrease = StimDuration*Stim_S_SR/2000;
+                        StimDurationRise = wh_stim_duration*Stim_S_SR/2000+1;
+                        StimDurationDecrease = wh_stim_duration*Stim_S_SR/2000;
                     case 5
                         ScaleFactor=0.9;
-                        StimDurationRise = StimDuration*Stim_S_SR/2000+6;
-                        StimDurationDecrease = StimDuration*Stim_S_SR/2000+1;
+                        StimDurationRise = wh_stim_duration*Stim_S_SR/2000+6;
+                        StimDurationDecrease = wh_stim_duration*Stim_S_SR/2000+1;
                     otherwise
                         ScaleFactor=0.9;
-                        StimDurationRise = StimDuration*Stim_S_SR/2000+15;
-                        StimDurationDecrease = StimDuration*Stim_S_SR/2000+1;
+                        StimDurationRise = wh_stim_duration*Stim_S_SR/2000+15;
+                        StimDurationDecrease = wh_stim_duration*Stim_S_SR/2000+1;
                 end
         end
 
         % AUDITORY STIMULUS SELECTED - DEFINE VECTOR
-        if Aud_NoAud
+        if is_auditory
 
-            Aud_vec = AStimAmp*[zeros(1,(BaselineWindow)*Stim_S_SR/1000)...
-                sin(linspace(0, AStimDuration* AStimFreq*2*pi/1000, round(AStimDuration*Stim_S_SR/1000))) 0];
+            aud_vec = aud_stim_amp*[zeros(1,(baseline_window)*Stim_S_SR/1000)...
+                sin(linspace(0, aud_stim_duration* aud_stim_freq*2*pi/1000, round(aud_stim_duration*Stim_S_SR/1000))) 0];
 
-            Aud_vec=[Aud_vec zeros(1,Trial_Duration*Stim_S_SR/1000-length(Aud_vec))];
+            aud_vec=[aud_vec zeros(1,trial_duration*Stim_S_SR/1000-length(aud_vec))];
 
-            Wh_vec=zeros(1,(Trial_Duration)*(Stim_S_SR/1000));
+            wh_vec=zeros(1,(trial_duration)*(Stim_S_SR/1000));
 
         % WHISKER STIMULUS SELECTED - DEFINE VECTOR
         else
@@ -496,10 +497,10 @@ function update_parameters
             impulse_down = impulse_down(2:end);
             impulse = [impulse_up' scale_factor*impulse_down'];
 
-            Wh_vec = stim_amp * [zeros(1,BaselineWindow*Stim_S_SR/1000) impulse];
-            Wh_vec = [Wh_vec zeros(1,Trial_Duration*Stim_S_SR/1000 - numel(Wh_vec))];
+            wh_vec = stim_amp * [zeros(1,baseline_window*Stim_S_SR/1000) impulse];
+            wh_vec = [wh_vec zeros(1,trial_duration*Stim_S_SR/1000 - numel(wh_vec))];
 
-            Aud_vec=zeros(1,(Trial_Duration)*(Stim_S_SR/1000));
+            aud_vec=zeros(1,(trial_duration)*(Stim_S_SR/1000));
 
         end
 
@@ -507,10 +508,10 @@ function update_parameters
 
 
     %% Light - opto define vector
-    if Light_NoLight
+    if is_light_stim
 
-        disp(['Light' num2str(Light_NoLight)])
-        t = 1/Stim_S_SR : 1/Stim_S_SR : (Light_Duration/1000);
+        disp(['Light' num2str(is_light_stim)])
+        t = 1/Stim_S_SR : 1/Stim_S_SR : (light_duration/1000);
         %     w=Light_Duty/Light_Freq;
         %     d = w/2 : 1/Light_Freq : (Light_Duration/1000);
         %     switch Light_Shape
@@ -522,57 +523,57 @@ function update_parameters
         %         case 'tri'
         %             Light_PulsTrain=pulstran(t,d,'tripuls');
         %     end
-        Light_PulsTrain=[ones(1,round(Stim_S_SR*(Light_Duty/Light_Freq))) zeros(1,round(Stim_S_SR*((1-Light_Duty)/Light_Freq)))];
-        Light_PulsTrain=repmat(Light_PulsTrain,1,Light_Duration*Light_Freq/1000);
+        Light_PulsTrain=[ones(1,round(Stim_S_SR*(light_duty/light_freq))) zeros(1,round(Stim_S_SR*((1-light_duty)/light_freq)))];
+        Light_PulsTrain=repmat(Light_PulsTrain,1,light_duration*light_freq/1000);
 
-        switch Light_Shape
+        switch light_stim_shape
             case 'sin'
-                Light_vec=Light_Amp/2+Light_Amp/2*[-ones(1,BaselineWindow*Stim_S_SR/1000) -ones(1,(Light_PreStim)*Stim_S_SR/1000) -cos(2*pi*Light_Freq*t)];
-                Light_vec=[Light_vec zeros(1,(Trial_Duration)*(Stim_S_SR/1000)-numel(Light_vec))];
+                light_vec=light_amp/2+light_amp/2*[-ones(1,baseline_window*Stim_S_SR/1000) -ones(1,(light_prestim)*Stim_S_SR/1000) -cos(2*pi*light_freq*t)];
+                light_vec=[light_vec zeros(1,(trial_duration)*(Stim_S_SR/1000)-numel(light_vec))];
 
-                Light_vec_shadow= [zeros(1,BaselineWindow*Stim_S_SR/1000) zeros(1,(Light_PreStim)*Stim_S_SR/1000) [ones(1,1*length(Light_PulsTrain)-ramp_down_duration*Stim_S_SR/1000) fliplr(linspace(0,1,ramp_down_duration*Stim_S_SR/1000))]];
-                Light_vec_shadow =[Light_vec_shadow zeros(1,(Trial_Duration)*(Stim_S_SR/1000)-numel(Light_vec_shadow))];
+                Light_vec_shadow= [zeros(1,baseline_window*Stim_S_SR/1000) zeros(1,(light_prestim)*Stim_S_SR/1000) [ones(1,1*length(Light_PulsTrain)-ramp_down_duration*Stim_S_SR/1000) fliplr(linspace(0,1,ramp_down_duration*Stim_S_SR/1000))]];
+                Light_vec_shadow =[Light_vec_shadow zeros(1,(trial_duration)*(Stim_S_SR/1000)-numel(Light_vec_shadow))];
 
-                Light_vec=Light_vec.*Light_vec_shadow;
+                light_vec=light_vec.*Light_vec_shadow;
 
             otherwise
-                Light_vec=Light_Amp*[(zeros(1,(BaselineWindow - Light_PreStim)*Stim_S_SR/1000)) Light_PulsTrain];
-                Light_vec=[Light_vec zeros(1,(Trial_Duration)*(Stim_S_SR/1000)-numel(Light_vec))];
+                light_vec=light_amp*[(zeros(1,(baseline_window - light_prestim)*Stim_S_SR/1000)) Light_PulsTrain];
+                light_vec=[light_vec zeros(1,(trial_duration)*(Stim_S_SR/1000)-numel(light_vec))];
                 %
-                Light_vec_shadow= [zeros(1,(BaselineWindow-Light_PreStim)*Stim_S_SR/1000) [ones(1,1*length(Light_PulsTrain)-ramp_down_duration*Stim_S_SR/1000) fliplr(linspace(0,1,ramp_down_duration*Stim_S_SR/1000))]];
-                Light_vec_shadow =[Light_vec_shadow zeros(1,(Trial_Duration)*(Stim_S_SR/1000)-numel(Light_vec_shadow))];
+                Light_vec_shadow= [zeros(1,(baseline_window-light_prestim)*Stim_S_SR/1000) [ones(1,1*length(Light_PulsTrain)-ramp_down_duration*Stim_S_SR/1000) fliplr(linspace(0,1,ramp_down_duration*Stim_S_SR/1000))]];
+                Light_vec_shadow =[Light_vec_shadow zeros(1,(trial_duration)*(Stim_S_SR/1000)-numel(Light_vec_shadow))];
 
-                Light_vec=Light_vec.*Light_vec_shadow;
+                light_vec=light_vec.*Light_vec_shadow;
 
         end
 
     else
-        Light_vec=zeros(1,(Trial_Duration)*(Stim_S_SR/1000));
+        light_vec=zeros(1,(trial_duration)*(Stim_S_SR/1000));
     end
 
     %% Making Pulse train to Trigger_S Camera
-    Camera_vec = [ones(1, Stim_S_SR*(Camera_DutyCycle/Camera_freq)) zeros(1,Stim_S_SR*((1-Camera_DutyCycle)/Camera_freq))];
-    Camera_vec = repmat(Camera_vec, 1, Trial_Duration*Camera_freq/1000);
+    camera_vec = [ones(1, Stim_S_SR*(camera_duty_cycle/camera_freq)) zeros(1,Stim_S_SR*((1-camera_duty_cycle)/camera_freq))];
+    camera_vec = repmat(camera_vec, 1, trial_duration*camera_freq/1000);
 
 
     %% Plotting the Whisker/Auditory Stim and Camera Signals
-    timevec=linspace(0, Trial_Duration/1000,(Trial_Duration)*Stim_S_SR/1000);
+    timevec=linspace(0, trial_duration/1000,(trial_duration)*Stim_S_SR/1000);
 
     TrialTime=max(timevec);
 
-    plot(handles2give.CameraAxes,timevec(1:10:end),Camera_vec(1:10:end),'k')
+    plot(handles2give.CameraAxes,timevec(1:10:end),camera_vec(1:10:end),'k')
     set(handles2give.CameraAxes,'XTick',[])
     xlim(handles2give.CameraAxes,[0 TrialTime])
     ylabel(handles2give.CameraAxes,'Camera')
 
 
-    plot(handles2give.AudAxes,timevec(1:1:end),Aud_vec(1:1:end),'Color', 'b')
+    plot(handles2give.AudAxes,timevec(1:1:end),aud_vec(1:1:end),'Color', 'b')
     set(handles2give.AudAxes,'XTick',[])
     xlim(handles2give.AudAxes,[0 TrialTime])
     ylabel(handles2give.AudAxes,'AStim')
     ylim(handles2give.AudAxes,[-10 10])
 
-    plot(handles2give.WhAxes,timevec(1:10:end),Wh_vec(1:10:end),'Color', 'gr')
+    plot(handles2give.WhAxes,timevec(1:10:end),wh_vec(1:10:end),'Color', 'gr')
     xlim(handles2give.WhAxes,[0 TrialTime])
     xlabel(handles2give.WhAxes,'time(s)')
     ylabel(handles2give.WhAxes,'WStim')
@@ -612,7 +613,7 @@ function update_parameters
 
         % Display trial counts on GUI (no light)
         set(handles2give.PerformanceText1Tag,'String',['AH =' num2str(AHitRate) '  WH=' num2str(WHitRate)...
-            '  FA=' num2str(FalseAlarm) '  Stim='  num2str(StimTrial_num) '  WS=' num2str(WStim) '  AS=' num2str(AStim)  '  EL='  num2str(EarlylickCounter) ]);
+            '  FA=' num2str(FalseAlarm) '  Stim='  num2str(StimTrial_num) '  WS=' num2str(WStim) '  AS=' num2str(AStim)  '  EL='  num2str(early_lick_counter) ]);
         set(handles2give.PerformanceText1Tag, 'FontWeight', 'Bold');
 
         % Make performance plot
@@ -620,29 +621,29 @@ function update_parameters
     end
 
     %% Printing out the next trial specs
-    TrialTitles={'NoStim',['WS Amp=' num2str(StimAmp) ', ''WS Dur=' num2str(StimDuration)],['AS Amp=' num2str(AStimAmp) ', ' 'AS Dur=' num2str(AStimDuration) ', '...
-        'AS Freq=' num2str(AStimFreq)]};
+    TrialTitles={'NoStim',['WS Amp=' num2str(wh_stim_amp) ', ''WS Dur=' num2str(wh_stim_duration)],['AS Amp=' num2str(aud_stim_amp) ', ' 'AS Dur=' num2str(aud_stim_duration) ', '...
+        'AS Freq=' num2str(aud_stim_freq)]};
     RewardTitles={'Not Rewarded','Rewarded'};
     LightTitles={'Light:Off','Light:On'};
     AssociationTitles={'','Association'};
 
-    if Stim_NoStim
+    if is_stim
 
-        if Aud_NoAud
+        if is_auditory
 
-            set(handles2give.TrialTimeLineTextTag,'String',['Next Trial:   "' char(TrialTitles(Stim_NoStim+2)) '" '...
-                char(AssociationTitles(Association+1)) '     ' char(RewardTitles(Aud_Rew+1)) '       ' char(LightTitles(Light_NoLight+1))],'ForegroundColor','b');
+            set(handles2give.TrialTimeLineTextTag,'String',['Next Trial:   "' char(TrialTitles(is_stim+2)) '" '...
+                char(AssociationTitles(association_flag+1)) '     ' char(RewardTitles(aud_reward+1)) '       ' char(LightTitles(is_light_stim+1))],'ForegroundColor','b');
 
         else
 
-            set(handles2give.TrialTimeLineTextTag,'String',['Next Trial:   "' char(TrialTitles(Stim_NoStim+1)) '" '...
-                char(AssociationTitles(Association+1)) '     ' char(RewardTitles(Wh_Rew+1)) '       ' char(LightTitles(Light_NoLight+1))],'ForegroundColor','green');
+            set(handles2give.TrialTimeLineTextTag,'String',['Next Trial:   "' char(TrialTitles(is_stim+1)) '" '...
+                char(AssociationTitles(association_flag+1)) '     ' char(RewardTitles(wh_reward+1)) '       ' char(LightTitles(is_light_stim+1))],'ForegroundColor','green');
 
         end
 
     else
-        set(handles2give.TrialTimeLineTextTag,'String',['Next Trial:   "' char(TrialTitles(Stim_NoStim+1)) '" '...
-            char(AssociationTitles(Association+1))  '       ' char(LightTitles(Light_NoLight+1))],'ForegroundColor','k');
+        set(handles2give.TrialTimeLineTextTag,'String',['Next Trial:   "' char(TrialTitles(is_stim+1)) '" '...
+            char(AssociationTitles(association_flag+1))  '       ' char(LightTitles(is_light_stim+1))],'ForegroundColor','k');
     end
 
     %% Update all
@@ -654,15 +655,15 @@ function update_parameters
     
     % Open lick trace file
     fid3=fopen([folder_name '\LickTrace' num2str(trial_number) '.bin'],'w');
-    lh3 = addlistener(Stim_S,'DataAvailable',@(src, event)log_lick_data(src, event,Trial_Duration) );
+    lh3 = addlistener(Stim_S,'DataAvailable',@(src, event)log_lick_data(src, event,trial_duration) );
     %Stim_S.ScansAvailableFcn = @(src, event)log_lick_data(src, event, Trial_Duration);
     
-    TrialLickData=[];
+    trial_lick_data=[];
 
     % queueOutputData(Stim_S,[Wh_vec; Aud_vec]')
-    SITrigger_vec=[ones(1,numel(Wh_vec)-2) 0 0];
+    SITrigger_vec=[ones(1,numel(wh_vec)-2) 0 0];
 
-    queueOutputData(Stim_S,[Wh_vec; Aud_vec;Camera_vec;SITrigger_vec]')
+    queueOutputData(Stim_S,[wh_vec; aud_vec;camera_vec;SITrigger_vec]')
     %preload(Stim_S, [Wh_vec; Aud_vec; Camera_vec; SITrigger_vec]');
     
     while Stim_S.IsRunning
@@ -688,23 +689,23 @@ function update_parameters
 
     %% Define response window boundaries
     
-    ResponseWindowStart=(ArtifactWindow+BaselineWindow)/1000;
-    ResponseWindowEnd=(ArtifactWindow+BaselineWindow+ResponseWindow)/1000;
+    response_window_start=(artifact_window+baseline_window)/1000;
+    response_window_end=(artifact_window+baseline_window+response_window)/1000;
 
     
     %% Update current trial flags
     handles2give.ReportPause=1; %not currently paused
 
-    TrialStarted=0;
-    StimBoolian=1;
-    LickEarlyAlreadyDetected=1;
-    RewardShouldBeDelivered=0;
-    PerformanceAndSaveBoolian=0;
+    trial_started_flag=0;
+    stim_flag=1;
+    lick_early_already_detected_flag=1;
+    deliver_reward_flag=0;
+    perf_and_save_flag=0;
 
-    ReactionTime=0;
-    AnimalLicked=0;
+    reaction_time=0;
+    mouse_licked_flag=0;
 
-    RewardDelivered=0;
-    UpdateParametersBoolean=0;
+    reward_delivered_flag=0;
+    update_parameters_flag=0;
 
 end
