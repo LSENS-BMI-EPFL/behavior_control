@@ -100,5 +100,5 @@ fclose('all');
 % stop(Camera_S);
 
 
-set(handles2give.OnlineTextTag,'String','Session Stopped');
+set(handles2give.OnlineTextTag,'String','Session Stopped', 'FontWeight', 'Bold');
 

@@ -15,6 +15,7 @@ function reward_delivery(is_stim, is_auditory, is_whisker, aud_reward, wh_reward
 
             reward_time=tic;
             reward_delivered_flag=1;
+            
         end
     end
 end

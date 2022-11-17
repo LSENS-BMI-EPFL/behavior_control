@@ -144,8 +144,8 @@
 
     % Setup with Camera session - KEEP
     % %% Create a CameraClK session
-    % Camera_S = daq('ni');
-    % cam_ch = addoutput(Camera_S, 'Dev1', 'ctr0', 'PulseGeneration'); % Camera frames
+    % Camera_S = daq.createSession('ni');
+    % cam_ch = addAnalogOutputChannel(Camera_S, 'Dev1', 'ctr0', 'PulseGeneration'); % Camera frames
     % cam_ch.Frequency = handles2give.CameraFrameRate; %Hz
     % cam_ch.DutyCycle = 0.5;
 

@@ -554,55 +554,56 @@ function update_parameters
         aud_trials = Results.data(Results.data(:,10) ~= 6,8);
         wh_trials = Results.data(Results.data(:,10) ~= 6,7);
         stim_trials = Results.data(Results.data(:,10) ~= 6,6);
-        LightP = Results.data(Results.data(:,10) ~= 6,11);
 
         % Compute performance and metrics
-        WHitRate=round(sum(perf==2)/sum(wh_trials==1)*100)/100;
-        AHitRate=round(sum(perf==3)/sum(aud_trials==1)*100)/100;
-        FalseAlarm=round(sum(perf==5)/sum(stim_trials==0)*100)/100;
-        StimTrial_num=sum(stim_trials==1);
-        LA= sum((aud_trials==1).*(LightP == 1));
-        LW = sum((wh_trials==1).*(LightP == 1));
-        LStim = sum((stim_trials==1).*(LightP == 1));
-        LNoStim = sum((stim_trials==0).*(LightP == 1));
-        LAH = round(sum((perf==3).*(LightP == 1))/LA*100)/100;
-        LWH = round(sum((perf==2).*(LightP == 1))/LW*100)/100;
-        WStim = sum(wh_trials==1);
-        AStim = sum(aud_trials==1);
+        wh_hit_rate = round(sum(perf==2)/sum(wh_trials==1)*100)/100;
+        aud_hit_rate = round(sum(perf==3)/sum(aud_trials==1)*100)/100;
+        fa_rate = round(sum(perf==5)/sum(stim_trials==0)*100)/100;
+        stim_trial_number = sum(stim_trials==1);
+        wh_stim_number = sum(wh_trials==1);
+        aud_stim_number = sum(aud_trials==1);
 
-        % Display trial counts on GUI (no light)
-        set(handles2give.PerformanceText1Tag,'String',['AHR =' num2str(AHitRate) '  WHR=' num2str(WHitRate)...
-            '  FAR=' num2str(FalseAlarm) '  Stim='  num2str(StimTrial_num) '  WS=' num2str(WStim) '  AS=' num2str(AStim)  '  EL='  num2str(early_lick_counter) ]);
-        set(handles2give.PerformanceText1Tag, 'FontWeight', 'Bold');
-
+        % Display current performance & trial counts on GUI
+        set(handles2give.PerformanceText1Tag, 'String', ...
+            ['AHR =' num2str(aud_hit_rate) ' ' ...
+            ' WHR=' num2str(wh_hit_rate)...
+            ' FAR=' num2str(fa_rate) ...
+            ' #Stim.='  num2str(stim_trial_number) ...
+            ' #WStim=' num2str(wh_stim_number) ...
+            ' #AStim=' num2str(aud_stim_number)], ...
+            'FontWeight', 'Bold');
+        
         % Make performance plot
         plot_performance(Results, perf_win_size);
+
     end
 
     %% Printing out the next trial specs
-    TrialTitles={'NoStim',['WS Amp=' num2str(wh_stim_amp) ', ''WS Dur=' num2str(wh_stim_duration)],['AS Amp=' num2str(aud_stim_amp) ', ' 'AS Dur=' num2str(aud_stim_duration) ', '...
-        'AS Freq=' num2str(aud_stim_freq)]};
-    RewardTitles={'Not Rewarded','Rewarded'};
-    LightTitles={'Light:Off','Light:On'};
-    AssociationTitles={'','Association'};
+    trial_titles={'NoStim', ...
+        ['WS Amp=' num2str(wh_stim_amp) ', ' 'WS Dur=' num2str(wh_stim_duration)], ...
+        ['AS Amp=' num2str(aud_stim_amp) ', ' 'AS Dur=' num2str(aud_stim_duration) ', ' 'AS Freq=' num2str(aud_stim_freq)]};
+
+    reward_titles={'Not rewarded', 'Rewarded'};
+    light_titles={'Light OFF', 'Light ON'};
+    association_titles={'', 'Association'};
 
     if is_stim
 
         if is_auditory
 
-            set(handles2give.TrialTimeLineTextTag,'String',['Next Trial:   "' char(TrialTitles(is_stim+2)) '" '...
-                char(AssociationTitles(association_flag+1)) '     ' char(RewardTitles(aud_reward+1)) '       ' char(LightTitles(is_light_stim+1))],'ForegroundColor','b');
+            set(handles2give.TrialTimeLineTextTag,'String', ['Next Trial:   "' char(trial_titles(is_stim+2)) '" '...
+                char(association_titles(association_flag+1)) '     ' char(reward_titles(aud_reward+1)) '       ' char(light_titles(is_light_stim+1))],'ForegroundColor','b');
 
         else
 
-            set(handles2give.TrialTimeLineTextTag,'String',['Next Trial:   "' char(TrialTitles(is_stim+1)) '" '...
-                char(AssociationTitles(association_flag+1)) '     ' char(RewardTitles(wh_reward+1)) '       ' char(LightTitles(is_light_stim+1))],'ForegroundColor','green');
+            set(handles2give.TrialTimeLineTextTag,'String',['Next Trial:   "' char(trial_titles(is_stim+1)) '" '...
+                char(association_titles(association_flag+1)) '     ' char(reward_titles(wh_reward+1)) '       ' char(light_titles(is_light_stim+1))],'ForegroundColor','gr');
 
         end
 
     else
-        set(handles2give.TrialTimeLineTextTag,'String',['Next Trial:   "' char(TrialTitles(is_stim+1)) '" '...
-            char(AssociationTitles(association_flag+1))  '       ' char(LightTitles(is_light_stim+1))],'ForegroundColor','k');
+        set(handles2give.TrialTimeLineTextTag,'String',['Next Trial:   "' char(trial_titles(is_stim+1)) '" '...
+            char(association_titles(association_flag+1))  '       ' char(light_titles(is_light_stim+1))], 'ForegroundColor','k');
     end
 
     %% Parameters are updated: now send signal vectors and triggers

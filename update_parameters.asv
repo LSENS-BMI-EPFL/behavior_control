@@ -4,7 +4,7 @@ function update_parameters
     global    association_flag response_window trial_duration quiet_window lick_treshold...
         artifact_window iti camera_flag is_stim is_auditory is_whisker is_light_stim ...
         reward_valve_duration  aud_reward wh_reward wh_vec aud_vec light_vec ...
-        light_prestim stim_flag lick_early_already_detected_falg...
+        light_prestim stim_flag ...
         timeout_early_lick stim_counter ...
         no_stim_counter Stim_S wh_stim_duration  aud_stim_duration  aud_stim_amp  aud_stim_freq  Stim_S_SR ScansTobeAcquired ...
         Reward_S Reward_S_SR  Trigger_S fid3 mouse_licked_flag reaction_time ...
@@ -12,7 +12,7 @@ function update_parameters
         stim_proba_old aud_stim_proba_old wh_stim_proba_old aud_light_proba_old wh_light_proba_old light_flag baseline_window camera_vec...
         deliver_reward_flag early_lick_counter...
         wh_stim_amp response_window_start response_window_end...
-        perf_and_save_flag lh3 reward_delivered_flag update_parameters_flag...
+        perf_and_save_results_flag lh3 reward_delivered_flag update_parameters_flag...
         is_reward reward_pool partial_reward_flag reward_proba_old fa_timeout last_trial_fa...
         stim_index_pool pool_size light_duration light_freq light_amp camera_freq SITrigger_vec main_trial_pool trial_lick_data...
        
@@ -283,7 +283,7 @@ function update_parameters
         light_freq=0;
     end
 
-    %% Reward Settings
+    %% _ Settings
     reward_valve_duration=handles2give.ValveOpening;    % duration valve open in milliseconds
     reward_delay_time=handles2give.RewardDelay;         % delay in milisecond for delivering reward after stim (if Association=1)
     partial_reward_flag=handles2give.PartialRewardFlag; 
@@ -457,7 +457,7 @@ function update_parameters
                 %        StimDurationDecrease = wh_stim_duration*Stim_S_SR/2000+1;
                 %end
 
-            %HARD-CODED STIM PARAMS
+            %HARD-CODED STIM PARAMS -> check magnetic field with calibration_coil.m 
 
             wh_stim_amp = 2.3; %volt
             wh_stim_duration_up = 1.5; %ms
@@ -524,23 +524,23 @@ function update_parameters
     %% Plotting the whisker/auditory stim and camera vector signals
     timevec=linspace(0, trial_duration/1000,(trial_duration)*Stim_S_SR/1000);
 
-    trial=max(timevec);
+    trial_time_window=max(timevec);
 
     plot(handles2give.CameraAxes,timevec(1:10:end),camera_vec(1:10:end),'k')
     set(handles2give.CameraAxes,'XTick',[])
-    xlim(handles2give.CameraAxes,[0 TrialTime])
+    xlim(handles2give.CameraAxes,[0 trial_time_window])
     ylabel(handles2give.CameraAxes,'Camera')
 
     plot(handles2give.AudAxes,timevec(1:1:end),aud_vec(1:1:end),'Color', 'b')
     set(handles2give.AudAxes,'XTick',[])
-    xlim(handles2give.AudAxes,[0 TrialTime])
-    ylabel(handles2give.AudAxes,'AStim')
+    xlim(handles2give.AudAxes,[0 trial_time_window])
+    ylabel(handles2give.AudAxes,'Auditory')
     ylim(handles2give.AudAxes,[-10 10])
 
     plot(handles2give.WhAxes,timevec(1:10:end),wh_vec(1:10:end),'Color', 'gr')
-    xlim(handles2give.WhAxes,[0 TrialTime])
+    xlim(handles2give.WhAxes,[0 trial_time_window])
     xlabel(handles2give.WhAxes,'time(s)')
-    ylabel(handles2give.WhAxes,'WStim')
+    ylabel(handles2give.WhAxes,'Whisker')
     ylim(handles2give.WhAxes,[-5 5])
 
 
@@ -554,75 +554,75 @@ function update_parameters
         aud_trials = Results.data(Results.data(:,10) ~= 6,8);
         wh_trials = Results.data(Results.data(:,10) ~= 6,7);
         stim_trials = Results.data(Results.data(:,10) ~= 6,6);
-        LightP = Results.data(Results.data(:,10) ~= 6,11);
 
         % Compute performance and metrics
-        WHitRate=round(sum(perf==2)/sum(wh_trials==1)*100)/100;
-        AHitRate=round(sum(perf==3)/sum(aud_trials==1)*100)/100;
-        FalseAlarm=round(sum(perf==5)/sum(stim_trials==0)*100)/100;
-        StimTrial_num=sum(stim_trials==1);
-        LA= sum((aud_trials==1).*(LightP == 1));
-        LW = sum((wh_trials==1).*(LightP == 1));
-        LStim = sum((stim_trials==1).*(LightP == 1));
-        LNoStim = sum((stim_trials==0).*(LightP == 1));
-        LAH = round(sum((perf==3).*(LightP == 1))/LA*100)/100;
-        LWH = round(sum((perf==2).*(LightP == 1))/LW*100)/100;
-        WStim = sum(wh_trials==1);
-        AStim = sum(aud_trials==1);
+        wh_hit_rate = round(sum(perf==2)/sum(wh_trials==1)*100)/100;
+        aud_hit_rate = round(sum(perf==3)/sum(aud_trials==1)*100)/100;
+        fa_rate = round(sum(perf==5)/sum(stim_trials==0)*100)/100;
+        stim_trial_number = sum(stim_trials==1);
+        wh_stim_number = sum(wh_trials==1);
+        aud_stim_number = sum(aud_trials==1);
 
-        % Display trial counts on GUI (no light)
-        set(handles2give.PerformanceText1Tag,'String',['AH =' num2str(AHitRate) '  WH=' num2str(WHitRate)...
-            '  FA=' num2str(FalseAlarm) '  Stim='  num2str(StimTrial_num) '  WS=' num2str(WStim) '  AS=' num2str(AStim)  '  EL='  num2str(early_lick_counter) ]);
-        set(handles2give.PerformanceText1Tag, 'FontWeight', 'Bold');
-
+        % Display current performance & trial counts on GUI
+        set(handles2give.PerformanceText1Tag, 'String', ...
+            ['AHR =' num2str(aud_hit_rate) ' ' ...
+            ' WHR=' num2str(wh_hit_rate)...
+            ' FAR=' num2str(fa_rate) ...
+            ' #Stim.='  num2str(stim_trial_number) ...
+            ' #WStim=' num2str(wh_stim_number) ...
+            ' #AStim=' num2str(aud_stim_number)], ...
+            'FontWeight', 'Bold');
+        
         % Make performance plot
         plot_performance(Results, perf_win_size);
+
     end
 
     %% Printing out the next trial specs
-    TrialTitles={'NoStim',['WS Amp=' num2str(wh_stim_amp) ', ''WS Dur=' num2str(wh_stim_duration)],['AS Amp=' num2str(aud_stim_amp) ', ' 'AS Dur=' num2str(aud_stim_duration) ', '...
+    trial_titles={'NoStim',['WS Amp=' num2str(wh_stim_amp) ', ''WS Dur=' num2str(wh_stim_duration)],['AS Amp=' num2str(aud_stim_amp) ', ' 'AS Dur=' num2str(aud_stim_duration) ', '...
         'AS Freq=' num2str(aud_stim_freq)]};
-    RewardTitles={'Not Rewarded','Rewarded'};
-    LightTitles={'Light:Off','Light:On'};
-    AssociationTitles={'','Association'};
+    reward_titles={'Not Rewarded','Rewarded'};
+    light_titles={'Light:Off','Light:On'};
+    association_titles={'','Association'};
 
     if is_stim
 
         if is_auditory
 
-            set(handles2give.TrialTimeLineTextTag,'String',['Next Trial:   "' char(TrialTitles(is_stim+2)) '" '...
-                char(AssociationTitles(association_flag+1)) '     ' char(RewardTitles(aud_reward+1)) '       ' char(LightTitles(is_light_stim+1))],'ForegroundColor','b');
+            set(handles2give.TrialTimeLineTextTag,'String',['Next Trial:   "' char(trial_titles(is_stim+2)) '" '...
+                char(association_titles(association_flag+1)) '     ' char(reward_titles(aud_reward+1)) '       ' char(light_titles(is_light_stim+1))],'ForegroundColor','b');
 
         else
 
-            set(handles2give.TrialTimeLineTextTag,'String',['Next Trial:   "' char(TrialTitles(is_stim+1)) '" '...
-                char(AssociationTitles(association_flag+1)) '     ' char(RewardTitles(wh_reward+1)) '       ' char(LightTitles(is_light_stim+1))],'ForegroundColor','green');
+            set(handles2give.TrialTimeLineTextTag,'String',['Next Trial:   "' char(trial_titles(is_stim+1)) '" '...
+                char(association_titles(association_flag+1)) '     ' char(reward_titles(wh_reward+1)) '       ' char(light_titles(is_light_stim+1))],'ForegroundColor','green');
 
         end
 
     else
-        set(handles2give.TrialTimeLineTextTag,'String',['Next Trial:   "' char(TrialTitles(is_stim+1)) '" '...
-            char(AssociationTitles(association_flag+1))  '       ' char(LightTitles(is_light_stim+1))],'ForegroundColor','k');
+        set(handles2give.TrialTimeLineTextTag,'String',['Next Trial:   "' char(trial_titles(is_stim+1)) '" '...
+            char(association_titles(association_flag+1))  '       ' char(light_titles(is_light_stim+1))],'ForegroundColor','k');
     end
 
-    %% Update all
+    %% Parameters are updated: now send signal vectors and triggers
     
+    % Close lick trace file for current trial
     if trial_number~=1
         fclose(fid3);
         delete(lh3)
     end
     
-    % Open lick trace file
+    % Open new lick trace file 
     fid3=fopen([folder_name '\LickTrace' num2str(trial_number) '.bin'],'w');
-    lh3 = addlistener(Stim_S,'DataAvailable',@(src, event)log_lick_data(src, event,trial_duration) );
+    % Listener for available data form piezo sensor
+    lh3 = addlistener(Stim_S,'DataAvailable',@(src, event) log_lick_data(src, event, trial_duration));
     %Stim_S.ScansAvailableFcn = @(src, event)log_lick_data(src, event, Trial_Duration);
     
     trial_lick_data=[];
 
     % queueOutputData(Stim_S,[Wh_vec; Aud_vec]')
-    SITrigger_vec=[ones(1,numel(wh_vec)-2) 0 0];
-
-    queueOutputData(Stim_S,[wh_vec; aud_vec;camera_vec;SITrigger_vec]')
+    SITrigger_vec=[ones(1,numel(wh_vec)-2) 0 0]; % ScanImage trigger vector
+    queueOutputData(Stim_S,[wh_vec; aud_vec; camera_vec; SITrigger_vec]')
     %preload(Stim_S, [Wh_vec; Aud_vec; Camera_vec; SITrigger_vec]');
     
     while Stim_S.IsRunning
@@ -630,7 +630,7 @@ function update_parameters
     end
     %start(Stim_S, 'Continuous');
     Stim_S.startBackground()
-    ScansTobeAcquired=Stim_S.ScansQueued; %this is not used
+    ScansTobeAcquired=Stim_S.ScansQueued; %this is not used?
 
     outputSingleScan(Trigger_S,[0 0 0])
     %write(Trigger_S, [0 0 0]);
@@ -648,8 +648,8 @@ function update_parameters
 
     %% Define response window boundaries
     
-    response_window_start=(artifact_window+baseline_window)/1000;
-    response_window_end=(artifact_window+baseline_window+response_window)/1000;
+    response_window_start = (artifact_window + baseline_window)/1000;
+    response_window_end = (artifact_window + baseline_window+response_window)/1000;
 
     
     %% Update current trial flags
@@ -657,14 +657,13 @@ function update_parameters
 
     trial_started_flag=0;
     stim_flag=1;
-    lick_early_already_detected_flag=1;
     deliver_reward_flag=0;
-    perf_and_save_flag=0;
-
-    reaction_time=0;
+    perf_and_save_results_flag=0;
     mouse_licked_flag=0;
-
     reward_delivered_flag=0;
     update_parameters_flag=0;
+
+    % Reset variables
+    reaction_time=0;
 
 end

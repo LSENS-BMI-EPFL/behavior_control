@@ -121,7 +121,7 @@ function main_control(~,event)
 
         % All other trials
         else
-            % Stim trials
+            % Stimulus trials
             if is_stim && ~mouse_licked_flag && is_whisker
                 set(handles2give.OnlineTextTag,'String','Whisker Miss','FontWeight','bold');
                 lick_flag=0;
