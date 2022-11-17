@@ -7,10 +7,10 @@ function main_control(~,event)
         reaction_time  aud_vec aud_reward wh_reward wh_vec is_whisker is_auditory aud_stim_duration aud_stim_amp aud_stim_freq ...
         trial_end_time stim_flag  association_flag...
         timeout Trigger_S early_lick trial_started_flag reward_time ...
-        RewardSound_vec RewardSound folder_name Fs_Reward is_stim light_prestim...
+        folder_name is_stim light_prestim...
         lick_threshold handles2give response_window_start fid3 lh3 response_window_end wh_stim_duration...
         baseline_window deliver_reward_flag early_lick_counter trial_number...
-        fid1 is_light  hit_time mouse_licked_flag  SITrigger_vec...
+        fid1 is_light hit_time mouse_licked_flag  SITrigger_vec...
         perf_and_save_results_flag session_start_time trial_start_time Main_S_SR reward_delivered_flag...
         update_parameters_flag Stim_S_SR camera_vec is_reward light_duration light_freq light_amp trial_lick_data...
 
@@ -33,6 +33,7 @@ function main_control(~,event)
 
         stim_flag=0; %reset
         set(handles2give.OnlineTextTag,'String','Trial Started','FontWeight','bold');
+        trial_start_time=tic;
         outputSingleScan(Trigger_S,[1 0 0])
 
         % Free reward
@@ -43,7 +44,7 @@ function main_control(~,event)
         trial_started_flag=1;
         perf_and_save_results_flag=0;
         mouse_licked_flag=0;
-        trial_start_time=toc(session_start_time); % time since session start
+        time=toc(session_start_time); % time since session start
     end
 
 
@@ -191,7 +192,7 @@ function main_control(~,event)
 
     %% Detecting early licks (licks between cue and stim or between light start and stim) <- CHECK THIS
 
-    if trial_started_flag && toc(trial_time)<response_window_start-(artifact_window)/1000 ...
+    if trial_started_flag && toc(trial_start_time)<response_window_start-(artifact_window)/1000 ...
        && sum(abs(event.Data(1:end-1,1))<lick_threshold & abs(event.Data(2:end,1))>lick_threshold)
 
         timeout=tic;
@@ -275,7 +276,7 @@ function main_control(~,event)
         % queueOutputData(Stim_S,[Wh_vec; Aud_vec;Light_vec;Camera_vec;SITrigger_vec]')
         queueOutputData(Stim_S,[wh_vec; aud_vec; camera_vec;SITrigger_vec]')
 
-        Stim_S.startBackground();
+        Stim_S.stno_artBackground();
 
         while ~Stim_S.IsRunning
             continue

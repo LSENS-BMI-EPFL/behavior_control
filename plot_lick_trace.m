@@ -3,7 +3,7 @@ function plot_lick_trace(~,event,trial_duration)
 % 	EVENT
 %   TRIALDURATION Duration of current trial.
 
-global local_counter lick_channel_times lick_data handles2give lick_treshold Main_S_SR
+global local_counter lick_channel_times lick_data handles2give lick_threshold Main_S_SR
 
 local_counter=local_counter+1; %-> what is this? useful?
 
@@ -23,14 +23,14 @@ if length(lick_data)>trial_duration*Main_S_SR/1000 && local_counter>40
     plot(handles2give.LickTraceAxes, lick_channel_times-lick_channel_times(1), abs(lick_data), 'Color','k'); 
 
     % Plot lick treshold
-    line([0 lick_channel_times(end)-lick_channel_times(1)],[lick_treshold lick_treshold], ...
+    line([0 lick_channel_times(end)-lick_channel_times(1)],[lick_threshold lick_threshold], ...
         'LineWidth',1, ...
         'LineStyle','--',... 
         'Color','r', ...
         'Parent', handles2give.LickTraceAxes);
 
     % Set axes limits
-    ylim(handles2give.LickTraceAxes, [0 lick_treshold*5]); 
+    ylim(handles2give.LickTraceAxes, [0 lick_threshold*5]); 
     xlim(handles2give.LickTraceAxes, [0 lick_channel_times(end)-lick_channel_times(1)]);
 
 end

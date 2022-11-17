@@ -85,6 +85,16 @@ set(handles.MaxISITag,'String','10000'); handles.MaxISI = str2double(get(handles
 set(handles.BaselineWindowTag,'String','0'); handles.BaselineWindow = str2double(get(handles.BaselineWindowTag,'String'));
 set(handles.TrialDurationTag,'String','7000'); handles.TrialDuration = str2double(get(handles.TrialDurationTag,'String'));
 
+%% Set Auditory parameters
+
+set(handles.ToneDurationTag,'Enable','on');
+set(handles.ToneAmpTag,'Enable','on');
+set(handles.ToneFreqTag,'Enable','on');
+
+set(handles.ToneDurationTag,'String','10'); handles.ToneDuration = str2double(get(handles.ToneDurationTag,'String'));
+set(handles.ToneAmpTag,'String','2'); handles.ToneAmp = str2double(get(handles.ToneAmpTag,'String'));
+set(handles.ToneFreqTag,'String','10000'); handles.ToneFreq= str2double(get(handles.ToneFreqTag,'String'));
+
 %% Set Light parameters
 set(handles.OptoLightCheckbox,'Value',0); handles.LightFlag = get(handles.OptoLightCheckbox,'Value');
 set(handles.OptoLightCheckbox,'Enable','off');
@@ -107,16 +117,6 @@ set(handles.LightDutyTag,'String','0.65'); handles.LightDuty = str2double(get(ha
 set(handles.LightProbAudTag,'String','0.4'); handles.LightProbAud = str2double(get(handles.LightProbAudTag,'String'));
 set(handles.LightProbWhTag,'String','0.4'); handles.LightProbWh = str2double(get(handles.LightProbWhTag,'String'));
 set(handles.LightProbNoStimTag,'String','0.4'); handles.LightProb = str2double(get(handles.LightProbNoStimTag,'String'));
-%% Set Auditory parameters
-
-set(handles.ToneDurationTag,'Enable','on');
-set(handles.ToneAmpTag,'Enable','on');
-set(handles.ToneFreqTag,'Enable','on');
-
-set(handles.ToneDurationTag,'String','10'); handles.ToneDuration = str2double(get(handles.ToneDurationTag,'String'));
-set(handles.ToneAmpTag,'String','2'); handles.ToneAmp = str2double(get(handles.ToneAmpTag,'String'));
-set(handles.ToneFreqTag,'String','8000'); handles.ToneFreq= str2double(get(handles.ToneFreqTag,'String'));
-
 %% Set Early Lick Punishment parameters
 
 set(handles.EarlyLickTimeOutTag,'String','3000'); handles.EarlyLickTimeOut = str2double(get(handles.EarlyLickTimeOutTag,'String'));
