@@ -61,7 +61,7 @@ function main_control(~,event)
         if aud_reward && ~wh_reward
             if is_auditory
                 hit_time=toc(trial_start_time);
-                reward_delivery; %deliver reward
+                reward_delivery(is_stim, is_auditory, is_whisker, aud_reward, wh_reward); %deliver reward
                 first_threshold_cross=find(abs(event.Data(1:end-1,1))<lick_threshold & abs(event.Data(2:end,1))>lick_threshold',1,'first');
                 hit_time_adjusted=hit_time-first_threshold_cross/Main_S_SR;
                 reaction_time=hit_time_adjusted-(baseline_window)/1000;
@@ -87,7 +87,7 @@ function main_control(~,event)
 
         elseif aud_reward && wh_reward
             hit_time=toc(trial_start_time);
-            reward_delivery;
+            reward_delivery(is_stim, is_auditory, is_whisker, aud_reward, wh_reward);
             first_threshold_cross=find(abs(event.Data(1:end-1,1))<lick_threshold & abs(event.Data(2:end,1))>lick_threshold',1,'first');
             hit_time_adjusted=hit_time-first_threshold_cross/Main_S_SR;
 
@@ -189,7 +189,7 @@ function main_control(~,event)
 
     end
 
-    %% Detecting early licks (licks between cue and stim or between light start and stim)
+    %% Detecting early licks (licks between cue and stim or between light start and stim) <- CHECK THIS
 
     if trial_started_flag && toc(trial_time)<response_window_start-(artifact_window)/1000 ...
        && sum(abs(event.Data(1:end-1,1))<lick_threshold & abs(event.Data(2:end,1))>lick_threshold)
@@ -249,9 +249,9 @@ function main_control(~,event)
 
         trial_number = trial_number + 1;
 
-        CameraFlag = handles2give.CameraFlag;
+        camera_flag = handles2give.CameraFlag;
 
-    %     if CameraFlag
+    %     if camera_flag
     %         Camera_freq=handles2give.CameraFrameRate; % Hz
     %
     %         VideoFileInfo.trial_number=trial_number;

@@ -1,11 +1,10 @@
-function reward_delivery
+function reward_delivery(is_stim, is_auditory, is_whisker, aud_reward, wh_reward)
 % REWARD_DELIVERY Gives unitary reward if conditions are met.
 
-    global  is_stim Trigger_S reward_time is_auditory is_whisker aud_reward wh_reward ...
-        reward_delivered_flag ...
+    global Trigger_S reward_time reward_delivered_flag ...
 
     % Reward only stimulus trials
-    if  Stim_NoStim
+    if  is_stim
 
         % Check if stimulus trials are rewarded
         if (is_auditory && aud_reward) || (is_whisker && wh_reward) 
