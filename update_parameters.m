@@ -4,7 +4,7 @@ function update_parameters
     global    association_flag response_window trial_duration quiet_window lick_treshold...
         artifact_window iti camera_flag is_stim is_auditory is_whisker is_light_stim ...
         reward_valve_duration  aud_reward wh_reward wh_vec aud_vec light_vec ...
-        light_prestim stim_flag lick_early_already_detected_falg...
+        light_prestim stim_flag ...
         timeout_early_lick stim_counter ...
         no_stim_counter Stim_S wh_stim_duration  aud_stim_duration  aud_stim_amp  aud_stim_freq  Stim_S_SR ScansTobeAcquired ...
         Reward_S Reward_S_SR  Trigger_S fid3 mouse_licked_flag reaction_time ...
@@ -283,7 +283,7 @@ function update_parameters
         light_freq=0;
     end
 
-    %% Reward Settings
+    %% _ Settings
     reward_valve_duration=handles2give.ValveOpening;    % duration valve open in milliseconds
     reward_delay_time=handles2give.RewardDelay;         % delay in milisecond for delivering reward after stim (if Association=1)
     partial_reward_flag=handles2give.PartialRewardFlag; 
@@ -524,21 +524,21 @@ function update_parameters
     %% Plotting the whisker/auditory stim and camera vector signals
     timevec=linspace(0, trial_duration/1000,(trial_duration)*Stim_S_SR/1000);
 
-    trial_time=max(timevec);
+    trial_time_window=max(timevec);
 
     plot(handles2give.CameraAxes,timevec(1:10:end),camera_vec(1:10:end),'k')
     set(handles2give.CameraAxes,'XTick',[])
-    xlim(handles2give.CameraAxes,[0 trial_time])
+    xlim(handles2give.CameraAxes,[0 trial_time_window])
     ylabel(handles2give.CameraAxes,'Camera')
 
     plot(handles2give.AudAxes,timevec(1:1:end),aud_vec(1:1:end),'Color', 'b')
     set(handles2give.AudAxes,'XTick',[])
-    xlim(handles2give.AudAxes,[0 trial_time])
+    xlim(handles2give.AudAxes,[0 trial_time_window])
     ylabel(handles2give.AudAxes,'Auditory')
     ylim(handles2give.AudAxes,[-10 10])
 
     plot(handles2give.WhAxes,timevec(1:10:end),wh_vec(1:10:end),'Color', 'gr')
-    xlim(handles2give.WhAxes,[0 trial_time])
+    xlim(handles2give.WhAxes,[0 trial_time_window])
     xlabel(handles2give.WhAxes,'time(s)')
     ylabel(handles2give.WhAxes,'Whisker')
     ylim(handles2give.WhAxes,[-5 5])
@@ -605,7 +605,7 @@ function update_parameters
             char(AssociationTitles(association_flag+1))  '       ' char(LightTitles(is_light_stim+1))],'ForegroundColor','k');
     end
 
-    %% Parameters are updated: send signal vectors and triggers
+    %% Parameters are updated: now send signal vectors and triggers
     
     % Close lick trace file for current trial
     if trial_number~=1
@@ -616,7 +616,7 @@ function update_parameters
     % Open new lick trace file 
     fid3=fopen([folder_name '\LickTrace' num2str(trial_number) '.bin'],'w');
     % Listener for available data form piezo sensor
-    lh3 = addlistener(Stim_S,'DataAvailable',@(src, event)log_lick_data(src, event,trial_duration));
+    lh3 = addlistener(Stim_S,'DataAvailable',@(src, event) log_lick_data(src, event, trial_duration));
     %Stim_S.ScansAvailableFcn = @(src, event)log_lick_data(src, event, Trial_Duration);
     
     trial_lick_data=[];

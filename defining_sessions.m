@@ -3,21 +3,21 @@
 
     %% Define all global variables
 
-    global  Reward_S Stim_S  LickTime  trial_number   ...
-        TrialTime  TrialFinished    TimeOut ...
+    global  Reward_S Stim_S  lick_time  trial_number   ...
+        trial_start_time  trial_finished_time    timeout_time ...
         Stimcounter NoStimcounter Trigger_S  Stim_S_SR Main_S...
-        lh1 lh2  fid1  Reward_S_SR LocalCounter Times Data cameraStartTime ...
-        folder_name handles2give EarlylickCounter SessionStart...
-        Main_S_SR Reward_Ch LastTrialFA trial_duration LightCounter
+        lh1 lh2  fid1  Reward_S_SR local_counter lick_channel_times lick_data camera_start_time ...
+        folder_name handles2give early_lick_counter session_start_time...
+        Main_S_SR Reward_Ch LastTrialFA trial_duration light_counter
 
     %% Initialize variables
 
     set(handles2give.OnlineTextTag, 'String', 'Session Started','FontWeight','bold');
 
     handles2give.ReportPause=1;
-    LocalCounter=0;
-    Times=[];
-    Data=[];
+    local_counter=0; %for plot_lick_trace
+    lick_channel_times=[];
+    lick_data=[];
     trial_number=0;
     Stimcounter=0;
     NoStimcounter =0;
@@ -61,7 +61,7 @@
     Main_S.Rate = Main_S_SR;
     Main_S.IsContinuous = true;
     lh1 = addlistener(Main_S,'DataAvailable', @main_control);
-    lh2 = addlistener(Main_S,'DataAvailable', @(src, event) PlotLickTraceNew(src, event, trial_duration));
+    lh2 = addlistener(Main_S,'DataAvailable', @(src, event) plot_lick_trace(src, event, trial_duration));
 
     % Callback functions to be exectuted
     %Main_S.ScansAvailableFcn = @main_control_daq;
@@ -153,19 +153,19 @@
 
     % Set counters
     handles2give.PauseRequested=0;
-    LightCounter = 0;
-    EarlylickCounter=0;
+    light_counter = 0;
+    early_lick_counter=0;
 
     % Update parameters in GUI
     update_parameters; 
 
     % Set time variables
-    cameraStartTime=tic;
-    SessionStart=tic;
-    TrialFinished=tic;
-    TrialTime=tic;
-    LickTime=tic;
-    TimeOut=tic;
+    camera_start_time=tic;
+    session_start_time=tic;
+    trial_finished_time=tic;
+    trial_start_time=tic;
+    lick_time=tic;
+    timeout_time=tic;
 
     % Start acquisition
     Main_S.startBackground(); 
