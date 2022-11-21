@@ -98,15 +98,7 @@ function update_parameters
     % Trial timeline settings
     min_quiet_window = handles2give.MinQuietWindow; % in ms
     max_quiet_window = handles2give.MaxQuietWindow; % in ms
-    if min_quiet_window > max_quiet_window
-        set(handles2give.OnlineTextTag,'String','Error: Minimum quiet window should be smaller than maximum quiet window!');
-    
-    elseif min_quiet_window==max_quiet_window
-        set(handles2give.OnlineTextTag,'String','Warning: quiet window will be constant.');
-        quiet_window=min_quiet_window;
-    else
-        quiet_window=randsample(min_quiet_window:.1:max_quiet_window,1);
-    end
+    quiet_window=randsample(min_quiet_window:.1:max_quiet_window,1);
 
     response_window=handles2give.ResponseWindow; % in ms
     artifact_window=handles2give.ArtifactWindow; % in ms
@@ -332,6 +324,10 @@ function update_parameters
         reward_vec=zeros(1,numel(reward_vec));
     end
 
+    %% Performance Measures
+    perf_win_size=handles2give.LastRecentTrials;
+    
+
     %% Get trial duration
     trial_duration = max(trial_duration, (light_prestim + artifact_window + baseline_window + max(response_window, (light_duration-light_prestim))) /1000);
 
@@ -467,6 +463,7 @@ function update_parameters
     end
     
     timevec=linspace(0, trial_duration/1000,(trial_duration)*Stim_S_SR/1000);
+
     trial_time_window=max(timevec);
 
     plot(handles2give.CameraAxes,timevec(1:10:end),camera_vec(1:10:end),'k')
@@ -517,7 +514,6 @@ function update_parameters
             'FontWeight', 'Bold');
         
         % Make performance plot
-        perf_win_size=handles2give.LastRecentTrials;
         plot_performance(results, perf_win_size);
 
     end
