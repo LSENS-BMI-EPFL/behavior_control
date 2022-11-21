@@ -5,16 +5,16 @@ function update_parameters
         artifact_window iti camera_flag is_stim is_auditory is_whisker is_light_stim ...
         reward_valve_duration  aud_reward wh_reward wh_vec aud_vec light_vec ...
         light_prestim stim_flag perf lick_flag ...
-        timeout_early_lick stim_counter ...
-        no_stim_counter Stim_S wh_stim_duration  aud_stim_duration  aud_stim_amp  aud_stim_freq  Stim_S_SR ScansTobeAcquired ...
+        timeout_early_lick ...
+        Stim_S wh_stim_duration  aud_stim_duration  aud_stim_amp  aud_stim_freq  Stim_S_SR ScansTobeAcquired ...
         Reward_S Reward_S_SR  Trigger_S fid3 mouse_licked_flag reaction_time ...
-        trial_started_flag  trial_number light_proba_old folder_name handles2give stim_pool...
+        trial_started_flag  trial_number light_proba_old folder_name handles2give...
         stim_proba_old aud_stim_proba_old wh_stim_proba_old aud_light_proba_old wh_light_proba_old light_flag baseline_window camera_vec...
         deliver_reward_flag ...
         wh_stim_amp response_window_start response_window_end...
         perf_and_save_results_flag lh3 reward_delivered_flag update_parameters_flag...
-        is_reward reward_pool partial_reward_flag reward_proba_old fa_timeout last_trial_fa...
-        stim_index_pool pool_size light_duration light_freq light_amp camera_freq SITrigger_vec main_trial_pool trial_lick_data...
+        is_reward reward_pool partial_reward_flag reward_proba_old...
+        light_duration light_freq light_amp camera_freq SITrigger_vec main_trial_pool trial_lick_data...
        
        
 
@@ -36,8 +36,6 @@ function update_parameters
     camera_block_duration = 300; % in seconds (added for continuous filming)
 
     trial_number = trial_number+1;
-
-    fa_timeout=10000; %in ms 
 
     %% Update Video Parameters and Arm the Camera
 
@@ -98,37 +96,29 @@ function update_parameters
     lick_threshold=handles2give.LickThreshold; %in volts
 
     % Trial timeline settings
-    min_quiet_window = handles2give.MinQuietWindow; % in miliseconds
-    max_quiet_window = handles2give.MaxQuietWindow; % in miliseconds
+    min_quiet_window = handles2give.MinQuietWindow; % in ms
+    max_quiet_window = handles2give.MaxQuietWindow; % in ms
     quiet_window=randsample(min_quiet_window:.1:max_quiet_window,1);
 
-    % Quietwindow = handles2give.QuietWindow; % in miliseconds
-    response_window=handles2give.ResponseWindow; % in miliseconds
-    artifact_window=handles2give.ArtifactWindow; % in miliseconds
-    baseline_window=handles2give.BaselineWindow; % in miliseconds
+    response_window=handles2give.ResponseWindow; % in ms
+    artifact_window=handles2give.ArtifactWindow; % in ms
+    baseline_window=handles2give.BaselineWindow; % in ms
 
-    min_iti=handles2give.MinISI; % InterStimInterval in miliseconds (min)
-    max_iti=handles2give.MaxISI; % InterStimInterval in miliseconds (max)
+    % Inter-trial interval range
+    min_iti=handles2give.MinISI; % InterStimInterval in ms
+    max_iti=handles2give.MaxISI; % InterStimInterval in ms
 
-    % Limiting number of similar trials (stim/nostim) in raw
-    max_stim_trials_flag=handles2give.MaxTrialsInRowFlag; % 0 totaly random, 1 the limit will apply
-    max_stim_trials_number=handles2give.MaxTrialsInRow;
+    timeout_early_lick=handles2give.EarlyLickTimeOut; % in ms in case of early lick
 
-    timeout_early_lick=handles2give.EarlyLickTimeOut; % in milliseconds in case of early lick
-
-    % Whisker and Auditory Stim parameters
-    wh_stim_amp_list= handles2give.StimAmp(1:handles2give.NumStim); % in volts
-    Stim_Weights= handles2give.StimWeight(1:handles2give.NumStim);
-    Astim_Amp =  handles2give.ToneAmp;
-    Astim_Dur = handles2give.ToneDuration;
-    Astim_Freq = handles2give.ToneFreq;
+    % Auditory and whisker stim parameters
+    aud_stim_amp =  handles2give.ToneAmp;
+    aud_stim_duration = handles2give.ToneDuration;
+    aud_stim_freq = handles2give.ToneFreq;
     aud_stim_weight = handles2give.AStimWeight;
-    wh_stim_weight = handles2give.StimWeight(1);
-    aud_stim_duration = Astim_Dur;
-    aud_stim_amp = Astim_Amp;
-    aud_stim_freq = Astim_Freq;
+    
+    wh_stim_weight = handles2give.StimWeight(1); %for whisker , hard-coded for now (see below)
+    
     no_stim_weight=handles2give.NostimWeight;
-    wh_stim_duration_list= handles2give.StimDuration(1:handles2give.NumStim);  % in miliseconds
     
 
     %% Compute stimulus probability
@@ -317,7 +307,6 @@ function update_parameters
 
 
     % Define reward vector
-    reward_delay_time=0; %hard-coded here, but defined above from GUI
     rew_vec_amp = 5; %volt
     reward_vec=[zeros(1, reward_delay_time) rew_vec_amp*ones(1,reward_valve_duration*Reward_S_SR/1000) zeros(1,Reward_S_SR/2)];
     
@@ -340,63 +329,10 @@ function update_parameters
         iti=randsample(min_iti:.1:max_iti,1);
     end
     
-    % Timeout punishment (TO REMOVE?)
-    if last_trial_fa 
-        iti=iti + fa_timeout;
-    end
 
     %% Get trial duration
     trial_duration = max(trial_duration, (light_prestim + artifact_window + baseline_window + max(response_window, (light_duration-light_prestim))) /1000);
 
-    %% Get whisker stimulus type - TO DELETE?
-    N_stimpool=2;
-
-    if  trial_number==1
-        pool_size=1;
-    end
-
-    if trial_number==1 || mod(trial_number,pool_size)==1
-        stim_index_pool=[];
-
-        for i=1:handles2give.NumStim %Different whisker stimuli
-            stim_index_pool = [stim_index_pool i*ones(1,Stim_Weights(i)*N_stimpool)];
-        end
-
-        stim_index_pool = [zeros(1,no_stim_weight*N_stimpool) stim_index_pool 7*ones(1,aud_stim_weight*N_stimpool)];
-        pool_size = numel(stim_index_pool); %number of elements in array
-        stim_pool = randsample(stim_index_pool,pool_size); %random sampling without replacement: shuffling
-    end
-
-    if mod(trial_number,pool_size)>0
-        StimIndex=stim_pool(mod(trial_number,pool_size));
-    else
-        StimIndex=stim_pool(end);
-    end
-
-
-    %% Limit Stim/NoStim Trials in a row - TO DELETE?
-    if is_stim==1 && max_stim_trials_flag==1 %applies if 1
-        stim_counter=stim_counter+1;
-    elseif is_stim==0 && max_stim_trials_flag==1
-        no_stim_counter=no_stim_counter+1;
-    end
-
-    if stim_counter>max_stim_trials_number
-        is_stim=1-is_stim;
-        stim_counter=0;
-        no_stim_counter=1;
-    elseif no_stim_counter>max_stim_trials_number
-        is_stim=1-is_stim;
-
-        if Aud_Weight
-            StimIndex=randsample([1:length(Stim_Weights),7],1); %??what's 7??
-        else
-            StimIndex=randsample(1:length(Stim_Weights),1);
-        end
-        %
-        no_stim_counter=0;
-        stim_counter=1;
-    end
 
     %% Define stimulus parameters and vectors
     % Catch trials, set stimulus vectors to 0
@@ -414,10 +350,6 @@ function update_parameters
     else
         % Sinusoidal auditory stimulus
         if is_auditory
-
-            aud_stim_duration = Astim_Dur; %ms
-            aud_stim_amp = Astim_Amp; %volt
-            aud_stim_freq = Astim_Freq; %Hz
 
             aud_vec = aud_stim_amp*[zeros(1,(baseline_window)*Stim_S_SR/1000)...
                 sin(linspace(0, aud_stim_duration* aud_stim_freq*2*pi/1000, round(aud_stim_duration*Stim_S_SR/1000))) 0];
@@ -437,9 +369,6 @@ function update_parameters
 
             aud_vec=zeros(1,(trial_duration)*(Stim_S_SR/1000));
             
-            % OLD PARAMS FROM GUI, BUT HARD CODED NOW (see BELOW)
-            %wh_stim_duration=wh_stim_duration_list(1);
-            %wh_stim_amp=wh_stim_amp_list(1);
 
             % CALIBRATE WHISKER STIMULUS SHAPE BASED ON GUI AMPLITUDE PARAM
             % - KEPT BUT COULD BE DELETED?
@@ -523,6 +452,18 @@ function update_parameters
 
 
     %% Plotting the whisker/auditory stim and camera vector signals
+    
+    % Set plotting params
+    acolor = [0 0.4470 0.7410];
+    acolor_str = '0 0.4470 0.7410';
+    if wh_reward
+        wcolor = [0.4660 0.6740 0.1880]';
+        wcolor_str = '0.4660 0.6740 0.1880';
+    else
+        wcolor = [0.6350 0.0780 0.1840];
+        wcolor_str = '0.6350 0.0780 0.1840';
+    end
+    
     timevec=linspace(0, trial_duration/1000,(trial_duration)*Stim_S_SR/1000);
 
     trial_time_window=max(timevec);
@@ -532,15 +473,15 @@ function update_parameters
     xlim(handles2give.CameraAxes,[0 trial_time_window])
     ylabel(handles2give.CameraAxes,'Camera')
 
-    plot(handles2give.AudAxes,timevec(1:1:end),aud_vec(1:1:end),'Color', 'b')
+    plot(handles2give.AudAxes,timevec(1:1:end),aud_vec(1:1:end),'Color', acolor)
     set(handles2give.AudAxes,'XTick',[])
     xlim(handles2give.AudAxes,[0 trial_time_window])
     ylabel(handles2give.AudAxes,'Auditory')
     ylim(handles2give.AudAxes,[-10 10])
 
-    plot(handles2give.WhAxes,timevec(1:10:end),wh_vec(1:10:end),'Color', 'gr')
+    plot(handles2give.WhAxes,timevec(1:10:end),wh_vec(1:10:end),'Color', wcolor)
     xlim(handles2give.WhAxes,[0 trial_time_window])
-    xlabel(handles2give.WhAxes,'time(s)')
+    xlabel(handles2give.WhAxes,'Time(s)')
     ylabel(handles2give.WhAxes,'Whisker')
     ylim(handles2give.WhAxes,[-5 5])
 
@@ -551,12 +492,12 @@ function update_parameters
         % Load results data
         results=importdata([folder_name '\Results.txt']);
 
-        perf = results.data(results.data(:,2) ~= 6,10);
+        perf = results.data(results.data(:,2) ~= 6,2);
         aud_trials = results.data(results.data(:,2) ~= 6,9);
         wh_trials = results.data(results.data(:,2) ~= 6,8);
         stim_trials = results.data(results.data(:,2) ~= 6,7);
 
-        % Compute performance and metrics
+        % Compute performance and metrics -> modularize
         wh_hit_rate = round(sum(perf==2)/sum(wh_trials==1)*100)/100;
         aud_hit_rate = round(sum(perf==3)/sum(aud_trials==1)*100)/100;
         fa_rate = round(sum(perf==5)/sum(stim_trials==0)*100)/100;
@@ -580,9 +521,9 @@ function update_parameters
     end
 
     %% Printing out the next trial specs
-    trial_titles={'NoStim', ...
-        ['WS Amp=' num2str(wh_stim_amp) ', ' 'WS Dur=' num2str(wh_stim_duration)], ...
-        ['AS Amp=' num2str(aud_stim_amp) ', ' 'AS Dur=' num2str(aud_stim_duration) ', ' 'AS Freq=' num2str(aud_stim_freq)]};
+    trial_titles={'No stimulus', ...
+        ['Wh. Amp=' num2str(wh_stim_amp) ', ' 'Wh. Dur=' num2str(wh_stim_duration)], ...
+        ['Aud. Amp=' num2str(aud_stim_amp) ', ' 'Aud. Dur=' num2str(aud_stim_duration) ', ' 'Aud. Freq=' num2str(aud_stim_freq)]};
 
     reward_titles={'Not rewarded', 'Rewarded'};
     light_titles={'Light OFF', 'Light ON'};
@@ -593,12 +534,12 @@ function update_parameters
         if is_auditory
 
             set(handles2give.TrialTimeLineTextTag,'String', ['Next Trial:   "' char(trial_titles(is_stim+2)) '" '...
-                char(association_titles(association_flag+1)) '     ' char(reward_titles(aud_reward+1)) '       ' char(light_titles(is_light_stim+1))],'ForegroundColor','b');
+                char(association_titles(association_flag+1)) '     ' char(reward_titles(aud_reward+1)) '       ' char(light_titles(is_light_stim+1))],'ForegroundColor',acolor);
 
         else
 
             set(handles2give.TrialTimeLineTextTag,'String',['Next Trial:   "' char(trial_titles(is_stim+1)) '" '...
-                char(association_titles(association_flag+1)) '     ' char(reward_titles(wh_reward+1)) '       ' char(light_titles(is_light_stim+1))],'ForegroundColor','gr');
+                char(association_titles(association_flag+1)) '     ' char(reward_titles(wh_reward+1)) '       ' char(light_titles(is_light_stim+1))],'ForegroundColor',wcolor);
 
         end
 

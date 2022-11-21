@@ -5,10 +5,10 @@
 
     global  Reward_S Stim_S association_flag lick_time  trial_number   ...
         trial_start_time  trial_end_time  timeout_time ...
-        stim_counter no_stim_counter Trigger_S  Stim_S_SR Main_S...
+        Trigger_S  Stim_S_SR Main_S...
         lh1 lh2  fid1  Reward_S_SR local_counter lick_channel_times lick_data camera_start_time ...
         folder_name handles2give early_lick_counter session_start_time...
-        Main_S_SR Reward_Ch last_trial_fa trial_duration light_counter
+        Main_S_SR Reward_Ch trial_duration light_counter
 
     %% Initialize variables
 
@@ -19,9 +19,6 @@
     lick_channel_times=[];
     lick_data=[];
     trial_number=0;
-    stim_counter=0;
-    no_stim_counter =0;
-    last_trial_fa=0;
 
     % Sampling rates
     Main_S_SR=1000;
@@ -31,7 +28,9 @@
     Trigger_S_SR=1000;
     
     trial_duration=handles2give.TrialDuration; % ms
-
+    
+    % Save session configuration
+    %save_config(handles2give);
 
     %% Create and open session results file
 
@@ -153,6 +152,5 @@
 
     % Start acquisition
     Main_S.startBackground(); 
-    %start(Main_S, 'Continuous');
 
 end

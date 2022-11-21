@@ -20,7 +20,7 @@ if length(lick_data)>trial_duration*Main_S_SR/1000 && local_counter>40
     local_counter=0;
     
     % Plot lick data
-    plot(handles2give.LickTraceAxes, lick_channel_times-lick_channel_times(1), abs(lick_data), 'Color','k'); 
+    plot(handles2give.LickTraceAxes, lick_channel_times-lick_channel_times(1), abs(lick_data), 'Color', 'k'); 
 
     % Plot lick treshold
     line([0 lick_channel_times(end)-lick_channel_times(1)],[lick_threshold lick_threshold], ...
