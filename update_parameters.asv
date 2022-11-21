@@ -172,6 +172,7 @@ function update_parameters
 
     if trial_number > 1
         results=importdata([folder_name '\Results.txt']);
+        disp(results);
         n_completed_trials=sum(results.data(:,2)~=6);
     else
         n_completed_trials=1;
@@ -552,9 +553,9 @@ function update_parameters
         results=importdata([folder_name '\Results.txt']);
 
         perf = results.data(results.data(:,2) ~= 6,10);
-        aud_trials = results.data(results.data(:,2) ~= 6,9);
-        wh_trials = results.data(results.data(:,2) ~= 6,8);
-        stim_trials = results.data(results.data(:,2) ~= 6,7);
+        aud_trials = results.data(results.data(:,2) ~= 6,8);
+        wh_trials = results.data(results.data(:,2) ~= 6,7);
+        stim_trials = results.data(results.data(:,2) ~= 6,6);
 
         % Compute performance and metrics
         wh_hit_rate = round(sum(perf==2)/sum(wh_trials==1)*100)/100;
