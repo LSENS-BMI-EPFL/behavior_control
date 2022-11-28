@@ -1,5 +1,5 @@
 function varargout = DetectionGUI(varargin)
-% DETECTIONGUI MATLAB code for DetectionGUI.fig
+% DETECTIONGUI MATLAB code for DETECTIONGUI.fig
 %      DETECTIONGUI, by itself, creates a new DETECTIONGUI or raises the existing
 %      singleton*.
 %
@@ -11,25 +11,25 @@ function varargout = DetectionGUI(varargin)
 %
 %      DETECTIONGUI('Property','Value',...) creates a new DETECTIONGUI or raises the
 %      existing singleton*.  Starting from the left, property value pairs are
-%      applied to the GUI before DetectionGUI_OpeningFcn gets called.  An
+%      applied to the GUI before DETECTIONGUI_OpeningFcn gets called.  An
 %      unrecognized property name or invalid value makes property application
-%      stop.  All inputs are passed to DetectionGUI_OpeningFcn via varargin.
+%      stop.  All inputs are passed to DETECTIONGUI_OpeningFcn via varargin.
 %
 %      *See GUI Options on GUIDE's Tools menu.  Choose "GUI allows only one
 %      instance to run (singleton)".
 %
 % See also: GUIDE, GUIDATA, GUIHANDLES
 
-% Edit the above text to modify the response to help DetectionGUI
+% Edit the above text to modify the response to help DETECTIONGUI
 
-% Last Modified by GUIDE v2.5 24-Oct-2019 09:52:32
+% Last Modified by GUIDE v2.5 28-Nov-2022 14:30:19
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
                    'gui_Singleton',  gui_Singleton, ...
-                   'gui_OpeningFcn', @DetectionGUI_OpeningFcn, ...
-                   'gui_OutputFcn',  @DetectionGUI_OutputFcn, ...
+                   'gui_OpeningFcn', @DETECTIONGUI_OpeningFcn, ...
+                   'gui_OutputFcn',  @DETECTIONGUI_OutputFcn, ...
                    'gui_LayoutFcn',  [] , ...
                    'gui_Callback',   []);
 if nargin && ischar(varargin{1})
@@ -44,16 +44,16 @@ end
 % End initialization code - DO NOT EDIT
 
 
-% --- Executes just before DetectionGUI is made visible.
-function DetectionGUI_OpeningFcn(hObject, eventdata, handles, varargin)
+% --- Executes just before DETECTIONGUI is made visible.
+function DETECTIONGUI_OpeningFcn(hObject, eventdata, handles, varargin)
 % This function has no output args, see OutputFcn.
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-% varargin   command line arguments to DetectionGUI (see VARARGIN)
+% varargin   command line arguments to DETECTIONGUI (see VARARGIN)
 global handles2give
 
-% Choose default command line output for DetectionGUI
+% Choose default command line output for DETECTIONGUI
 handles.output = hObject;
 
 %% Set experimental name for saving data [TO CUSTOM BY EACH USER]
@@ -71,7 +71,8 @@ set(handles.BehaviorDirectoryTag,'String',handles.BehaviorDirectory);
 set(handles.EarlyLickPunishmentCheckbox,'Value',0); handles.EarlyLickPunishmentFlag = get(handles.EarlyLickPunishmentCheckbox,'Value');
 set(handles.EarlyLickPunishmentCheckbox,'Enable','off');
 set(handles.AssociationCheckbox,'Value',0); handles.AssociationFlag = get(handles.AssociationCheckbox,'Value');
-set(handles.CameraTagCheck,'Value',1); handles.CameraFlag = get(handles.CameraTagCheck,'Value');%% Behaviour camera settings
+set(handles.CameraTagCheck,'Value',1); handles.CameraFlag = get(handles.CameraTagCheck,'Value');    %% Behaviour camera settings
+set(handles.DummySessionCheckbox,'Value',0); handles.DummySessionFlag = get(handles.DummySessionCheckbox,'Value');
 
 %% Set the timeline paramters
 set(handles.MinQuietWindowTag,'String','3000'); handles.MinQuietWindow = str2double(get(handles.MinQuietWindowTag,'String'));
@@ -178,12 +179,12 @@ handles.PauseRequested=0;
 handles2give=handles;
 guidata(hObject, handles);
 
-% UIWAIT makes DetectionGUI wait for user response (see UIRESUME)
+% UIWAIT makes DETECTIONGUI wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
 
 
 % --- Outputs from this function are returned to the command line.
-function varargout = DetectionGUI_OutputFcn(hObject, eventdata, handles) 
+function varargout = DETECTIONGUI_OutputFcn(hObject, eventdata, handles) 
 % varargout  cell array for returning output args (see VARARGOUT);
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -360,6 +361,21 @@ function AssociationCheckbox_Callback(hObject, eventdata, handles)
 % Hint: get(hObject,'Value') returns toggle state of AssociationCheckbox
 global handles2give
 handles.AssociationFlag = get(handles.AssociationCheckbox,'Value');
+
+% Update handles structure
+handles2give=handles;
+guidata(hObject, handles);
+
+
+% --- Executes on button press in DummySessionCheckbox.
+function DummySessionCheckbox_Callback(hObject, eventdata, handles)
+% hObject    handle to DummySessionCheckbox (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of DummySessionCheckbox
+global handles2give
+handles.DummySessionFlag = get(handles.DummySessionCheckbox,'Value');
 
 % Update handles structure
 handles2give=handles;
@@ -591,6 +607,8 @@ function StartBehaviourTag_Callback(hObject, eventdata, handles)
 % hObject    handle to StartBehaviourTag (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+    
 global handles2give
 
 
@@ -621,6 +639,7 @@ set(handles2give.OnlineTextTag,'String',' ');
 set(handles2give.TrialTimeLineTextTag,'String',' ');
 
 handles2give= handles;
+% save_session_config(handles2give);
 defining_sessions;
 
 % Update handles structure
@@ -763,37 +782,6 @@ function ToneFreqTag_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
-
-
-% function NolightProbTag_Callback(hObject, eventdata, handles)
-% % hObject    handle to NolightProbTag (see GCBO)
-% % eventdata  reserved - to be defined in a future version of MATLAB
-% % handles    structure with handles and user data (see GUIDATA)
-% 
-% % Hints: get(hObject,'String') returns contents of NolightProbTag as text
-% %        str2double(get(hObject,'String')) returns contents of NolightProbTag as a double
-% 
-% handles.NolightProb = 1-handles.LightProb;
-% set(handles.NolightProbTag,'String',num2str(handles.NolightProb));
-% 
-% % Update handles structure
-% guidata(hObject, handles);
-% 
-% 
-% % --- Executes during object creation, after setting all properties.
-% function NolightProbTag_CreateFcn(hObject, eventdata, handles)
-% % hObject    handle to NolightProbTag (see GCBO)
-% % eventdata  reserved - to be defined in a future version of MATLAB
-% % handles    empty - handles not created until after all CreateFcns called
-% 
-% % Hint: edit controls usually have a white background on Windows.
-% %       See ISPC and COMPUTER.
-% if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-%     set(hObject,'BackgroundColor','white');
-% end
-
-
 
 
 function ValveOpeningTag_Callback(hObject, eventdata, handles)
@@ -1752,3 +1740,5 @@ function LightProbNoStimTag_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
