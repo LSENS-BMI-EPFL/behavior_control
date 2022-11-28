@@ -49,8 +49,8 @@ function update_parameters
         VideoFileInfo.trial_number=trial_number;
 
         % TODO: remove hard coded basename - > ADD in GUI like for results
-        VideoFileInfo.directory=['D:\AR\' char(handles2give.MouseName)...
-            '\' [char(handles2give.MouseName) '_' char(handles2give.Date) '_' char(handles2give.FolderName) '\']];
+        VideoFileInfo.directory=['D:\AR\' char(handles2give.mouse_name)...
+            '\' [char(handles2give.mouse_name) '_' char(handles2give.date) '_' char(handles2give.session_time) '\']];
 
         % Define number of frames to save in block
         VideoFileInfo.nOfFramesToGrab = trial_duration*camera_freq/1000;
@@ -178,7 +178,7 @@ function update_parameters
     %% Define new pool of stimuli
 
     if trial_number > 1
-        results=importdata([folder_name '\Results.txt']);
+        results=importdata([folder_name '\results.txt']);
         n_completed_trials=sum(results.data(:,2)~=6);
     else
         n_completed_trials=1;
@@ -491,7 +491,7 @@ function update_parameters
     if trial_number>1
         
         % Load results data
-        results=importdata([folder_name '\Results.txt']);
+        results=importdata([folder_name '\results.txt']);
 
         perf = results.data(results.data(:,2) ~= 6,2);
         aud_trials = results.data(results.data(:,2) ~= 6,9);

@@ -291,8 +291,8 @@ function main_control(~,event)
     %
     %         VideoFileInfo.trial_number=trial_number;
     %
-    %         VideoFileInfo.directory=['F:\Axel\' char(handles2give.MouseName)...
-    %             '\' [char(handles2give.MouseName) '_' char(handles2give.Date) '_' char(handles2give.FolderName) '\']];
+    %         VideoFileInfo.directory=['F:\Axel\' char(handles2give.mouse_name)...
+    %             '\' [char(handles2give.mouse_name) '_' char(handles2give.date) '_' char(handles2give.session_time) '\']];
     %
     %         Block_Duration=300;
     %         VideoFileInfo.nOfFramesToGrab=(Block_Duration+120)*Camera_freq;

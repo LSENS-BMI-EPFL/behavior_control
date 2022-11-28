@@ -80,5 +80,5 @@ fclose('all');
 % cameraClk.stop();
 
 
-set(handles2give.OnlineTextTag,'String','Session Stopped', 'FontWeight', 'Bold');
+set(handles2give.OnlineTextTag,'String', 'Session Stopped', 'FontWeight', 'Bold');
 

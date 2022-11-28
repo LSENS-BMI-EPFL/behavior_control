@@ -32,10 +32,10 @@
 
     %% Create and open session results file
 
-    folder_name=[char(handles2give.BehaviorDirectory) '\' char(handles2give.MouseName) ...
-        '\' [char(handles2give.MouseName) '_' char(handles2give.Date) '_' char(handles2give.FolderName)]]; % Folder to behaviour data output
+    folder_name=[char(handles2give.behavior_directory) '\' char(handles2give.mouse_name) ...
+        '\' [char(handles2give.mouse_name) '_' char(handles2give.date) '_' char(handles2give.session_time)]]; % Folder to behaviour data output
 
-    fid1=fopen([folder_name '\Results.txt'], 'w'); 
+    fid1=fopen([folder_name '\results.txt'], 'w'); 
     
     % Define saved columns 
     fprintf(fid1,'%5s %5s %5s %5s %5s %5s %5s %5s %5s %5s %5s %5s %5s %5s %5s %5s %5s %5s %5s %5s %5s %5s %5s %5s %5s \n', ...
@@ -49,7 +49,7 @@
     
     
 %     % Make session results table
-%     fid_results = fopen([folder_name '\Results.csv'], 'w'); % Results file for session
+%     fid_results = fopen([folder_name '\results.csv'], 'w'); % results file for session
 %     results_table = table(trial_number, trial_start_time, association_flag, quiet_window, iti, perf, ...
 %                 is_stim, is_whisker, is_auditory, lick_flag, reaction_time, ...
 %                 wh_stim_duration, wh_stim_amp, wh_reward, ...

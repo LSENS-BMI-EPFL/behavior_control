@@ -58,14 +58,14 @@ handles.output = hObject;
 
 %% Set experimental name for saving data [TO CUSTOM BY EACH USER]
 formatOut = 'yyyymmdd';
-handles.Date = datestr(now,formatOut);
+handles.date = datestr(now,formatOut);
 formatOut = 'yyyy/mm/dd';
 Date2Display = datestr(now,formatOut);
 set(handles.SetDateTag,'String',Date2Display);
 set(handles.SetDateTag,'Enable','off');
-set(handles.MouseNameTag,'String','ABXXX'); handles.MouseName = get(handles.MouseNameTag,'String');
-handles.BehaviorDirectory = 'C:\Users\bisi\Desktop\BehaviourData';
-set(handles.BehaviorDirectoryTag,'String',handles.BehaviorDirectory);
+set(handles.MouseNameTag,'String','ABXXX'); handles.mouse_name = get(handles.MouseNameTag,'String');
+handles.behavior_directory = 'C:\Users\bisi\Desktop\BehaviourData';
+set(handles.BehaviorDirectoryTag,'String',handles.behavior_directory);
 
 %% Set general settings
 set(handles.EarlyLickPunishmentCheckbox,'Value',0); handles.EarlyLickPunishmentFlag = get(handles.EarlyLickPunishmentCheckbox,'Value');
@@ -614,12 +614,12 @@ global handles2give
 
 format shortg
 c = clock;   % https://ch.mathworks.com/help/matlab/ref/clock.html
-handles.FolderName=[num2str(c(4),'%02.f') num2str(c(5),'%02.f') num2str(round(c(6)),'%02.f')];
+handles.session_time=[num2str(c(4),'%02.f') num2str(c(5),'%02.f') num2str(round(c(6)),'%02.f')];
 if ~exist([char(handles.BehaviorDirectory) '\' char(handles.MouseName)],'dir')
     mkdir(handles.BehaviorDirectory,handles.MouseName);
 end
-if ~exist([char(handles.BehaviorDirectory) '\' char(handles.MouseName) '\'  char(handles.MouseName) '_' char(handles.Date) '_' handles.FolderName],'dir')
-    mkdir([char(handles.BehaviorDirectory) '\' char(handles.MouseName)],[char(handles.MouseName) '_' char(handles.Date) '_' handles.FolderName]);
+if ~exist([char(handles.BehaviorDirectory) '\' char(handles.MouseName) '\'  char(handles.MouseName) '_' char(handles.date) '_' handles.session_time],'dir')
+    mkdir([char(handles.BehaviorDirectory) '\' char(handles.MouseName)],[char(handles.MouseName) '_' char(handles.date) '_' handles.session_time]);
 end
 
 cla(handles.ProgressBarAxes);
@@ -639,7 +639,7 @@ set(handles2give.OnlineTextTag,'String',' ');
 set(handles2give.TrialTimeLineTextTag,'String',' ');
 
 handles2give= handles;
-save_session_config(handles2give);
+save_session_config(handles);
 defining_sessions;
 
 % Update handles structure

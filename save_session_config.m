@@ -1,19 +1,19 @@
-function save_session_config(handles2give)
+function save_session_config(gui_handles)
 %SAVE_CONFIG At session start, saves default initial configuration and parameters
 %            used to start Detection GUI. 
 %   HANDLES2GIVE Copy of handles, generated from default parameters
 %   during GUI instantiation.
 
-folder_name=[char(handles2give.BehaviorDirectory) '\' char(handles2give.MouseName) ...
-        '\' [char(handles2give.MouseName) '_' char(handles2give.Date) '_' char(handles2give.FolderName)]];
+folder_name=[char(gui_handles.BehaviorDirectory) '\' char(gui_handles.MouseName) ...
+        '\' [char(gui_handles.MouseName) '_' char(gui_handles.Date) '_' char(gui_handles.FolderName)]];
     
-handles2save = handles2give;
+handles2save = gui_handles;
 
-field = fieldnames(handles2give);
+field = fieldnames(gui_handles);
 for k=1:numel(field)
     
     field_name = field{k};
-    field_value = handles2give.(field{k});
+    field_value = gui_handles.(field{k});
    
     % Keep numeric or string variables (i.e. remove GUI objects)
     if not(isa(field_value,'numeric')) & not(isa(field_value,'string'))  & not(isa(field_value,'char'))
