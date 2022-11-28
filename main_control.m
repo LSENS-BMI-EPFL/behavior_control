@@ -284,7 +284,7 @@ function main_control(~,event)
 
         trial_number = trial_number + 1;
 
-        camera_flag = handles2give.CameraFlag;
+        camera_flag = handles2give.camera_flag;
 
     %     if camera_flag
     %         Camera_freq=handles2give.CameraFrameRate; % Hz

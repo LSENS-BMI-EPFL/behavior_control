@@ -39,10 +39,10 @@ function update_parameters
 
     %% Update Video Parameters and Arm the Camera
 
-    camera_flag = handles2give.CameraFlag;
+    camera_flag = handles2give.camera_flag;
 
     % SAVING CAMERA FRAMES
-    % if CameraFlag && (trial_number==1 || toc(cameraStartTime)>Block_Duration)
+    % if camera_flag && (trial_number==1 || toc(cameraStartTime)>Block_Duration)
     if camera_flag
         camera_freq=handles2give.CameraFrameRate; % Hz
 
@@ -83,21 +83,21 @@ function update_parameters
 
     %% GENERAL SETTINGS FROM BEHAVIOUR GUI
 
-    association_flag=handles2give.AssociationFlag; % 0 detection 1 assosiation
+    association_flag=handles2give.association_flag; % 0 detection 1 assosiation
     light_flag=handles2give.LightFlag;
 
     % Camera settings
     camera_freq=handles2give.CameraFrameRate; % Hz
     camera_duty_cycle=0.5;
     
-    trial_duration=handles2give.TrialDuration; % ms
+    trial_duration=handles2give.trial_duration; % ms
 
     % Lick sensor threshold
     lick_threshold=handles2give.LickThreshold; %in volts
 
     % Trial timeline settings
-    min_quiet_window = handles2give.MinQuietWindow; % in ms
-    max_quiet_window = handles2give.MaxQuietWindow; % in ms
+    min_quiet_window = handles2give.min_quiet_window; % in ms
+    max_quiet_window = handles2give.max_quiet_window; % in ms
     if min_quiet_window > max_quiet_window
         set(handles2give.OnlineTextTag,'String','Error: Minimum quiet window should be smaller than maximum quiet window!');
     
@@ -109,12 +109,12 @@ function update_parameters
     end
 
     response_window=handles2give.ResponseWindow; % in ms
-    artifact_window=handles2give.ArtifactWindow; % in ms
-    baseline_window=handles2give.BaselineWindow; % in ms
+    artifact_window=handles2give.artifact_window; % in ms
+    baseline_window=handles2give.baseline_window; % in ms
 
     % Inter-trial interval range
-    min_iti=handles2give.MinISI; % InterStimInterval in ms
-    max_iti=handles2give.MaxISI; % InterStimInterval in ms
+    min_iti=handles2give.min_iti; % InterStimInterval in ms
+    max_iti=handles2give.max_isi; % InterStimInterval in ms
     if min_iti > max_iti
         set(handles2give.OnlineTextTag,'String','Error: Minimum ITI should be smaller than maximum ITI!');
 
@@ -128,9 +128,9 @@ function update_parameters
     timeout_early_lick=handles2give.EarlyLickTimeOut; % in ms in case of early lick
 
     % Auditory and whisker stim parameters
-    aud_stim_amp =  handles2give.ToneAmp;
-    aud_stim_duration = handles2give.ToneDuration;
-    aud_stim_freq = handles2give.ToneFreq;
+    aud_stim_amp =  handles2give.aud_stim_amp;
+    aud_stim_duration = handles2give.aud_stim_duration;
+    aud_stim_freq = handles2give.aud_stim_freq;
     aud_stim_weight = handles2give.AStimWeight;
     
     wh_stim_weight = handles2give.StimWeight(1); %for whisker , hard-coded for now (see below)

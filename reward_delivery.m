@@ -11,7 +11,6 @@ function reward_delivery(is_stim, is_auditory, is_whisker, aud_reward, wh_reward
 
             %Trigger reward signal
             outputSingleScan(Trigger_S, [0 1 0]);
-            %write(Trigger_S, [0 1 0]);
 
             reward_time=tic;
             reward_delivered_flag=1;

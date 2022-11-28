@@ -27,7 +27,7 @@
     Reward_S_SR=2000;
     Trigger_S_SR=1000;
     
-    trial_duration=handles2give.TrialDuration; % ms
+    trial_duration=handles2give.trial_duration; % ms
     
 
     %% Create and open session results file

@@ -90,8 +90,8 @@ set(handles.ToneDurationTag,'Enable','on');
 set(handles.ToneAmpTag,'Enable','on');
 set(handles.ToneFreqTag,'Enable','on');
 
-set(handles.ToneDurationTag,'String','10'); handles.aud_stim_duration = str2double(get(handles.ToneDurationTag,'String'));
-set(handles.ToneAmpTag,'String','2'); handles.aud_stim_amp = str2double(get(handles.ToneAmpTag,'String'));
+set(handles.ToneDurationTag,'String','10'); handles.ToneDuration = str2double(get(handles.ToneDurationTag,'String'));
+set(handles.ToneAmpTag,'String','2'); handles.ToneAmp = str2double(get(handles.ToneAmpTag,'String'));
 set(handles.ToneFreqTag,'String','10000'); handles.ToneFreq= str2double(get(handles.ToneFreqTag,'String'));
 
 %% Set Light parameters
@@ -238,7 +238,6 @@ set(handles.ResponseWindowTag,'String',handles.response_window);
     time_limit = handles.baseline_window + handles.response_window;
 
 if handles.trial_duration < time_limit
-    disp('Trial duration cannot be shorter than baseline + response window. Setting sum of two as default.');
     handles.trial_duration = time_limit;
     set(handles.TrialDurationTag,'String',num2str(handles.trial_duration));
 end
@@ -487,8 +486,8 @@ function ToneDurationTag_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of ToneDurationTag as a double
 global handles2give
 
-handles.aud_stim_duration = round(str2double(get(handles.ToneDurationTag,'String')));
-set(handles.ToneDurationTag,'String',num2str(handles.aud_stim_duration));
+handles.ToneDuration = round(str2double(get(handles.ToneDurationTag,'String')));
+set(handles.ToneDurationTag,'String',num2str(handles.ToneDuration));
 
 % Update handles structure
 handles2give=handles;
@@ -732,8 +731,8 @@ function ToneAmpTag_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of ToneAmpTag as a double
 global handles2give
 
-handles.aud_stim_amp = round(str2double(get(handles.ToneAmpTag,'String'))*100)/100;
-set(handles.ToneAmpTag,'String',num2str(handles.aud_stim_amp));
+handles.ToneAmp = round(str2double(get(handles.ToneAmpTag,'String'))*100)/100;
+set(handles.ToneAmpTag,'String',num2str(handles.ToneAmp));
 
 % Update handles structure
 handles2give= handles;
@@ -1107,10 +1106,10 @@ set(handles.BaselineWindowTag,'String',handles.baseline_window);
 
 time_limit = handles.baseline_window + handles.response_window;
 
-if handles.trial_duration < time_limit
-    disp('Trial duration cannot be shorter than baseline + response window. Setting sum of two as default.');
-    handles.trial_duration = time_limit;
-    set(handles.TrialDurationTag,'String',num2str(handles.trial_duration));
+if handles.TrialDuration < time_limit
+    disp('Trial duration cannot be shorter than baseline + response window. Setting sum of two as default.')
+    handles.TrialDuration = time_limit;
+    set(handles.TrialDurationTag,'String',num2str(handles.TrialDuration));
 end
 
 % Update handles structure
@@ -1141,15 +1140,14 @@ function TrialDurationTag_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of TrialDurationTag as a double
 global handles2give
 
-handles.trial_duration = round(str2double(get(handles.TrialDurationTag,'String')));
+handles.TrialDuration = round(str2double(get(handles.TrialDurationTag,'String')));
 set(handles.TrialDurationTag,'String',num2str(handles.TrialDuration));
 
 time_limit = handles.baseline_window + handles.response_window;
 
-if handles.trial_duration < time_limit
-    disp('Trial duration cannot be shorter than baseline + response window. Setting sum of two as default.');
-    handles.trial_duration = time_limit;
-    set(handles.TrialDurationTag,'String',num2str(handles.trial_duration));
+if handles.TrialDuration < time_limit
+    handles.TrialDuration = time_limit;
+    set(handles.TrialDurationTag,'String',num2str(handles.TrialDuration));
 end
 
 % Update handles structure
