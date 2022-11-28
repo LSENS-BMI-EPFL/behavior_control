@@ -287,7 +287,7 @@ function main_control(~,event)
         camera_flag = handles2give.camera_flag;
 
     %     if camera_flag
-    %         Camera_freq=handles2give.CameraFrameRate; % Hz
+    %         Camera_freq=handles2give.camera_freq; % Hz
     %
     %         VideoFileInfo.trial_number=trial_number;
     %

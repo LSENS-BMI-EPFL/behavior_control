@@ -32,7 +32,7 @@
 
     %% Create and open session results file
 
-    folder_name=[char(handles2give.behavior_directory) '\' char(handles2give.mouse_name) ...
+    folder_name=[char(handles2give.behaviour_directory) '\' char(handles2give.mouse_name) ...
         '\' [char(handles2give.mouse_name) '_' char(handles2give.date) '_' char(handles2give.session_time)]]; % Folder to behaviour data output
 
     fid1=fopen([folder_name '\results.txt'], 'w'); 
@@ -127,7 +127,7 @@
     % %% Create a CameraClK session
     % Camera_S = daq.createSession('ni');
     % cam_ch = addAnalogOutputChannel(Camera_S, 'Dev1', 'ctr0', 'PulseGeneration'); % Camera frames
-    % cam_ch.Frequency = handles2give.CameraFrameRate; %Hz
+    % cam_ch.Frequency = handles2give.camera_freq; %Hz
     % cam_ch.DutyCycle = 0.5;
 
     %% Run the Main Control

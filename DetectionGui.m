@@ -64,14 +64,14 @@ Date2Display = datestr(now,formatOut);
 set(handles.SetDateTag,'String',Date2Display);
 set(handles.SetDateTag,'Enable','off');
 set(handles.MouseNameTag,'String','ABXXX'); handles.mouse_name = get(handles.MouseNameTag,'String');
-handles.behavior_directory = 'C:\Users\bisi\Desktop\BehaviourData';
-set(handles.BehaviorDirectoryTag,'String', handles.behavior_directory);
+handles.behaviour_directory = 'C:\Users\bisi\Desktop\BehaviourData';
+set(handles.BehaviorDirectoryTag,'String', handles.behaviour_directory);
 
 %% Set general settings
 set(handles.EarlyLickPunishmentCheckbox,'Value',0); handles.early_lick_punish_flag = get(handles.EarlyLickPunishmentCheckbox,'Value');
 set(handles.EarlyLickPunishmentCheckbox,'Enable','off');
 set(handles.AssociationCheckbox,'Value',0); handles.association_flag = get(handles.AssociationCheckbox,'Value');
-set(handles.CameraTagCheck,'Value',1); handles.camera_flag = get(handles.CameraTagCheck,'Value');    %% Behaviour camera settings
+set(handles.CameraTagCheck,'Value',1); handles.camera_flag = get(handles.CameraTagCheck,'Value');   
 set(handles.DummySessionCheckbox,'Value',0); handles.dummy_session_flag = get(handles.DummySessionCheckbox,'Value');
 
 %% Set the timeline paramters
@@ -92,10 +92,10 @@ set(handles.ToneFreqTag,'Enable','on');
 
 set(handles.ToneDurationTag,'String','10'); handles.aud_stim_duration = str2double(get(handles.ToneDurationTag,'String'));
 set(handles.ToneAmpTag,'String','2'); handles.aud_stim_amp = str2double(get(handles.ToneAmpTag,'String'));
-set(handles.ToneFreqTag,'String','10000'); handles.ToneFreq= str2double(get(handles.ToneFreqTag,'String'));
+set(handles.ToneFreqTag,'String','10000'); handles.aud_stim_freq= str2double(get(handles.ToneFreqTag,'String'));
 
 %% Set Light parameters
-set(handles.OptoLightCheckbox,'Value',0); handles.LightFlag = get(handles.OptoLightCheckbox,'Value');
+set(handles.OptoLightCheckbox,'Value',0); handles.light_flag = get(handles.OptoLightCheckbox,'Value');
 set(handles.OptoLightCheckbox,'Enable','off');
 
 set(handles.LightDurationTag,'Enable','off');
@@ -107,17 +107,17 @@ set(handles.LightProbAudTag,'Enable','off');
 set(handles.LightProbWhTag,'Enable','off');
 set(handles.LightProbNoStimTag,'Enable','off');
 
-set(handles.LightDurationTag,'String','200'); handles.LightDuration = str2double(get(handles.LightDurationTag,'String'));
-set(handles.LightPrestimDelayTag,'String','100'); handles.LightPrestimDelay = str2double(get(handles.LightPrestimDelayTag,'String'));
-set(handles.LightAmpTag,'String','5'); handles.LightAmp = str2double(get(handles.LightAmpTag,'String'));
-set(handles.LightFreqTag,'String','100'); handles.LightFreq = str2double(get(handles.LightFreqTag,'String'));
-set(handles.LightDutyTag,'String','0.65'); handles.LightDuty = str2double(get(handles.LightDutyTag,'String'));
-set(handles.LightProbAudTag,'String','0.4'); handles.LightProbAud = str2double(get(handles.LightProbAudTag,'String'));
-set(handles.LightProbWhTag,'String','0.4'); handles.LightProbWh = str2double(get(handles.LightProbWhTag,'String'));
-set(handles.LightProbNoStimTag,'String','0.4'); handles.LightProb = str2double(get(handles.LightProbNoStimTag,'String'));
+set(handles.LightDurationTag,'String','200'); handles.light_duration = str2double(get(handles.LightDurationTag,'String'));
+set(handles.LightPrestimDelayTag,'String','100'); handles.light_prestim_delay = str2double(get(handles.LightPrestimDelayTag,'String'));
+set(handles.LightAmpTag,'String','5'); handles.light_amp = str2double(get(handles.LightAmpTag,'String'));
+set(handles.LightFreqTag,'String','100'); handles.light_freq = str2double(get(handles.LightFreqTag,'String'));
+set(handles.LightDutyTag,'String','0.65'); handles.light_duty = str2double(get(handles.LightDutyTag,'String'));
+set(handles.LightProbAudTag,'String','0.4'); handles.light_aud_proba = str2double(get(handles.LightProbAudTag,'String'));
+set(handles.LightProbWhTag,'String','0.4'); handles.light_wh_proba = str2double(get(handles.LightProbWhTag,'String'));
+set(handles.LightProbNoStimTag,'String','0.4'); handles.light_proba = str2double(get(handles.LightProbNoStimTag,'String'));
 %% Set Early Lick Punishment parameters
 
-set(handles.EarlyLickTimeOutTag,'String','3000'); handles.early_lick_timeout = str2double(get(handles.EarlyLickTimeOutTag,'String'));
+set(handles.EarlyLickTimeOutTag,'String','3000'); handles.timeout_early_lick = str2double(get(handles.EarlyLickTimeOutTag,'String'));
 set(handles.EarlyLickTimeOutTag,'Enable','off');
 
 %% Set the stim paramters
@@ -125,32 +125,32 @@ set(handles.EarlyLickTimeOutTag,'Enable','off');
 
 %Auditory stim
 set(handles.AStimWeightTag,'Enable','on')
-set(handles.AStimWeightTag,'String','1'); handles.AStimWeight = str2double(get(handles.AStimWeightTag,'String'));
+set(handles.AStimWeightTag,'String','1'); handles.aud_stim_weight = str2double(get(handles.AStimWeightTag,'String'));
 
 %Whisker stimuli 
-set(handles.StimDuration1Tag,'String','1'); handles.StimDuration(1) = str2double(get(handles.StimDuration1Tag,'String'));
-set(handles.StimAmp1Tag,'String','5'); handles.StimAmp(1) = str2double(get(handles.StimAmp1Tag,'String'));
-set(handles.StimWeight1Tag,'String','0'); handles.StimWeight(1) = str2double(get(handles.StimWeight1Tag,'String'));
+set(handles.StimDuration1Tag,'String','1'); handles.wh_stim_duration(1) = str2double(get(handles.StimDuration1Tag,'String'));
+set(handles.StimAmp1Tag,'String','5'); handles.wh_stim_amp(1) = str2double(get(handles.StimAmp1Tag,'String'));
+set(handles.StimWeight1Tag,'String','0'); handles.wh_stim_weight(1) = str2double(get(handles.StimWeight1Tag,'String'));
 
 % Stim probability
-set(handles.NostimWeightTag,'String','1'); handles.NostimWeight = str2double(get(handles.NostimWeightTag,'String'));
+set(handles.NostimWeightTag,'String','1'); handles.no_stim_weight = str2double(get(handles.NostimWeightTag,'String'));
 set(handles.NostimWeightTag,'Enable','on');
 
 
 %% Set reward parameters
-set(handles.ValveOpeningTag,'String','54'); handles.ValveOpening = str2double(get(handles.ValveOpeningTag,'String'));
-set(handles.RewardDelayCheckbox,'Value',0); handles.RewardDelayFlag = get(handles.RewardDelayCheckbox,'Value');
+set(handles.ValveOpeningTag,'String','54'); handles.reward_valve_duration = str2double(get(handles.ValveOpeningTag,'String'));
+set(handles.RewardDelayCheckbox,'Value',0); handles.reward_delay_flag = get(handles.RewardDelayCheckbox,'Value');
 set(handles.RewardDelayCheckbox,'Enable','off');
-set(handles.RewardDelayTag,'String','50'); handles.RewardDelay = str2double(get(handles.RewardDelayTag,'String'));
+set(handles.RewardDelayTag,'String','50'); handles.reward_delay_time = str2double(get(handles.RewardDelayTag,'String'));
 set(handles.RewardDelayTag,'Enable','off');
-set(handles.PartialRewardCheckbox,'Value',0); handles.PartialRewardFlag = get(handles.PartialRewardCheckbox,'Value');
+set(handles.PartialRewardCheckbox,'Value',0); handles.partial_reward_flag = get(handles.PartialRewardCheckbox,'Value');
 set(handles.PartialRewardCheckbox,'Enable','off');
 set(handles.RewardProbTag,'Enable','off');
-set(handles.RewardProbTag,'String','1'); handles.RewardProb = str2double(get(handles.RewardProbTag,'String'));
-set(handles.AudRewTag,'Value',1); handles.AudRew = get(handles.AudRewTag,'Value');
+set(handles.RewardProbTag,'String','1'); handles.reward_proba = str2double(get(handles.RewardProbTag,'String'));
+set(handles.AudRewTag,'Value',1); handles.aud_reward = get(handles.AudRewTag,'Value');
 set(handles.AudRewTag,'Enable','off');
-set(handles.WhRewTag,'Value',1); handles.wh_rew = get(handles.WhRewTag,'Value');%% Behaviour camera settings
-set(handles.CameraFrameRateTag,'String','200'); handles.CameraFrameRate = str2double(get(handles.CameraFrameRateTag,'String'));
+set(handles.WhRewTag,'Value',1); handles.wh_reward = get(handles.WhRewTag,'Value');%% Behaviour camera settings
+set(handles.CameraFrameRateTag,'String','200'); handles.camera_freq = str2double(get(handles.CameraFrameRateTag,'String'));
 
 %% Initialize axes
 axes(handles.ProgressBarAxes); set(gca,'XTick',[]); set(gca,'XColor','w'); set(gca,'YTick',[]); set(gca,'YColor','w');set(gca,'Color',[0.4 0.4 0.4]);
@@ -161,10 +161,11 @@ axes(handles.WhAxes); set(gca,'XTick',[]); set(gca,'XColor','w'); set(gca,'YTick
 
 axes(handles.EarlyLickAxes); set(gca,'XTick',[]); set(gca,'XColor','w'); set(gca,'YTick',[]); set(gca,'YColor','w');
 axes(handles.PerformanceAxes); set(gca,'XTick',[]); set(gca,'XColor','w'); set(gca,'YTick',[]); set(gca,'YColor','w');
-set(handles.LastRecentTrialsTag,'String','5'); handles.LastRecentTrials = str2double(get(handles.LastRecentTrialsTag,'String'));
+set(handles.LastRecentTrialsTag,'String','5'); handles.last_recent_trials = str2double(get(handles.LastRecentTrialsTag,'String'));
 axes(handles.LickTraceAxes); set(gca,'XTick',[]); set(gca,'XColor','w'); set(gca,'YTick',[]); set(gca,'YColor','w');
 axes(handles.LickTraceAxes2); set(gca,'XTick',[]); set(gca,'XColor','w'); set(gca,'YTick',[]); set(gca,'YColor','w');
-set(handles.LickThresholdTag,'String','0.1'); handles.LickThreshold = str2double(get(handles.LickThresholdTag,'String'));
+
+set(handles.LickThresholdTag,'String','0.1'); handles.lick_threshold = str2double(get(handles.LickThresholdTag,'String'));
 
 %% Initialize text display
 % set(handles.PerformanceText1Tag,'String',''); set(handles.PerformanceText1Tag,'Enable','off');
@@ -429,7 +430,7 @@ function MouseNameTag_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of MouseNameTag as text
 %        str2double(get(hObject,'String')) returns contents of MouseNameTag as a double
 global handles2give
-handles.MouseName = get(handles.MouseNameTag,'String');
+handles.mouse_name = get(handles.MouseNameTag,'String');
 
 % Update handles structure
 handles2give=handles;
@@ -518,8 +519,8 @@ function StimDuration1Tag_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of StimDuration1Tag as a double
 global handles2give
 
-handles.StimDuration(1) = round(str2double(get(handles.StimDuration1Tag,'String'))*100)/100;
-set(handles.StimDuration1Tag,'String',num2str(handles.StimDuration(1)));
+handles.wh_stim_duration(1) = round(str2double(get(handles.StimDuration1Tag,'String'))*100)/100;
+set(handles.StimDuration1Tag,'String',num2str(handles.wh_stim_duration(1)));
 
 % Update handles structure
 handles2give=handles;
@@ -549,8 +550,8 @@ function StimAmp1Tag_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of StimAmp1Tag as a double
 global handles2give
 
-handles.StimAmp(1) = round(str2double(get(handles.StimAmp1Tag,'String'))*100)/100;
-set(handles.StimAmp1Tag,'String',num2str(handles.StimAmp(1)));
+handles.wh_stim_amp(1) = round(str2double(get(handles.StimAmp1Tag,'String'))*100)/100;
+set(handles.StimAmp1Tag,'String',num2str(handles.wh_stim_amp(1)));
 
 % Update handles structure
 handles2give=handles;
@@ -580,8 +581,8 @@ function StimWeight1Tag_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of StimWeight1Tag as a double
 global handles2give
 
-handles.StimWeight(1) = round(str2double(get(handles.StimWeight1Tag,'String')));
-set(handles.StimWeight1Tag,'String',num2str(handles.StimWeight(1)));
+handles.wh_stim_weight(1) = round(str2double(get(handles.StimWeight1Tag,'String')));
+set(handles.StimWeight1Tag,'String',num2str(handles.wh_stim_weight(1)));
 
 % Update handles structure
 handles2give=handles;
@@ -618,7 +619,7 @@ handles.session_time=[num2str(c(4),'%02.f') num2str(c(5),'%02.f') num2str(round(
 if ~exist([char(handles.behaviour_directory) '\' char(handles.mouse_name)],'dir')
     mkdir(handles.behaviour_directory,handles.mouse_name);
 end
-if ~exist([char(handles.behaviour_directiry) '\' char(handles.mouse_name) '\'  char(handles.mouse_name) '_' char(handles.date) '_' handles.session_time],'dir')
+if ~exist([char(handles.behaviour_directory) '\' char(handles.mouse_name) '\'  char(handles.mouse_name) '_' char(handles.date) '_' handles.session_time],'dir')
     mkdir([char(handles.behaviour_directory) '\' char(handles.mouse_name)],[char(handles.mouse_name) '_' char(handles.date) '_' handles.session_time]);
 end
 
@@ -670,8 +671,6 @@ elseif handles.StimProb < 0
     handles.StimProb = 0;
 end
 set(handles.StimProbTag,'String',handles.StimProb);
-% handles.NostimWeight = 1 - handles.StimProb;
-% set(handles.NostimWeightTag,'String',handles.NostimWeight);
 
 % Update handles structure
 handles2give= handles;
@@ -701,8 +700,8 @@ function NostimWeightTag_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of NostimWeightTag as a double
 global handles2give
 
-handles.NostimWeight = round(str2double(get(handles.NostimWeightTag,'String')));
-set(handles.NostimWeightTag,'String',num2str(handles.NostimWeight));
+handles.no_stim_weight = round(str2double(get(handles.NostimWeightTag,'String')));
+set(handles.NostimWeightTag,'String',num2str(handles.no_stim_weight));
 
 % Update handles structure
 handles2give=handles;
@@ -763,8 +762,8 @@ function ToneFreqTag_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of ToneFreqTag as a double
 global handles2give
 
-handles.ToneFreq = round(str2double(get(handles.ToneFreqTag,'String'))*100)/100;
-set(handles.ToneFreqTag,'String',num2str(handles.ToneFreq));
+handles.aud_stim_freq = round(str2double(get(handles.ToneFreqTag,'String'))*100)/100;
+set(handles.ToneFreqTag,'String',num2str(handles.aud_stim_freq));
 
 % Update handles structure
 handles2give= handles;
@@ -793,8 +792,8 @@ function ValveOpeningTag_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of ValveOpeningTag as a double
 global handles2give
 
-handles.ValveOpening = round(str2double(get(handles.ValveOpeningTag,'String')));
-set(handles.ValveOpeningTag,'String',num2str(handles.ValveOpening));
+handles.reward_valve_duration = round(str2double(get(handles.ValveOpeningTag,'String')));
+set(handles.ValveOpeningTag,'String',num2str(handles.reward_valve_duration));
 
 % Update handles structure
 handles2give= handles;
@@ -824,8 +823,8 @@ function RewardDelayTag_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of RewardDelayTag as a double
 global handles2give
 
-handles.RewardDelay = round(str2double(get(handles.RewardDelayTag,'String')));
-set(handles.RewardDelayTag,'String',num2str(handles.RewardDelay));
+handles.reward_delay_time = round(str2double(get(handles.RewardDelayTag,'String')));
+set(handles.RewardDelayTag,'String',num2str(handles.reward_delay_time));
 
 % Update handles structure
 handles2give= handles;
@@ -854,8 +853,8 @@ function RewardDelayCheckbox_Callback(hObject, eventdata, handles)
 % Hint: get(hObject,'Value') returns toggle state of RewardDelayCheckbox
 global handles2give
 
-handles.RewardDelayFlag = get(handles.RewardDelayCheckbox,'Value');
-if handles.RewardDelayFlag
+handles.reward_delay_flag = get(handles.RewardDelayCheckbox,'Value');
+if handles.reward_delay_flag
     set(handles.RewardDelayTag,'Enable','on');
 else
     set(handles.RewardTag,'Enable','off');
@@ -876,8 +875,8 @@ function LickThresholdTag_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of LickThresholdTag as a double
 global handles2give
 
-handles.LickThreshold = round(str2double(get(handles.LickThresholdTag,'String'))*1000)/1000;
-set(handles.LickThresholdTag,'String',num2str(handles.LickThreshold));
+handles.lick_threshold = round(str2double(get(handles.LickThresholdTag,'String'))*1000)/1000;
+set(handles.LickThresholdTag,'String',num2str(handles.lick_threshold));
 
 % Update handles structure
 handles2give=handles;
@@ -907,8 +906,8 @@ function EarlyLickTimeOutTag_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of EarlyLickTimeOutTag as a double
 global handles2give
 
-handles.early_lick_timeout = round(str2double(get(handles.EarlyLickTimeOutTag,'String')));
-set(handles.EarlyLickTimeOutTag,'String',num2str(handles.early_lick_timeout));
+handles.timeout_early_lick = round(str2double(get(handles.EarlyLickTimeOutTag,'String')));
+set(handles.EarlyLickTimeOutTag,'String',num2str(handles.timeout_early_lick));
 
 % Update handles structure
 handles2give=handles;
@@ -938,11 +937,11 @@ function LastRecentTrialsTag_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of LastRecentTrialsTag as a double
 global handles2give
 
-handles.LastRecentTrials = round(abs(str2double(get(handles.LastRecentTrialsTag,'String'))));
-if handles.LastRecentTrials < 1
-    handles.LastRecentTrials = 1;
+handles.last_recent_trials = round(abs(str2double(get(handles.LastRecentTrialsTag,'String'))));
+if handles.last_recent_trials < 1
+    handles.last_recent_trials = 1;
 end
-set(handles.LastRecentTrialsTag,'String',num2str(handles.LastRecentTrials));
+set(handles.LastRecentTrialsTag,'String',num2str(handles.last_recent_trials));
 
 % Update handles structure
 handles2give=handles;
@@ -1180,8 +1179,8 @@ function CameraFrameRateTag_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of CameraFrameRateTag as a double
 global handles2give
 
-handles.CameraFrameRate = round(str2double(get(handles.CameraFrameRateTag,'String')));
-set(handles.CameraFrameRateTag,'String',num2str(handles.CameraFrameRate));
+handles.camera_freq = round(str2double(get(handles.CameraFrameRateTag,'String')));
+set(handles.CameraFrameRateTag,'String',num2str(handles.camera_freq));
 
 % Update handles structure
 handles2give=handles;
@@ -1263,8 +1262,8 @@ function RewardProbTag_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of RewardProbTag as a double
 global handles2give
 
-handles.RewardProb = round(str2double(get(handles.RewardProbTag,'String'))*10)/10;
-set(handles.RewardProbTag,'String',num2str(handles.RewardProb));
+handles.reward_proba = round(str2double(get(handles.RewardProbTag,'String'))*10)/10;
+set(handles.RewardProbTag,'String',num2str(handles.reward_proba));
 
 % Update handles structure
 handles2give= handles;
@@ -1292,8 +1291,8 @@ function PartialRewardCheckbox_Callback(hObject, eventdata, handles)
 % Hint: get(hObject,'Value') returns toggle state of PartialRewardCheckbox
 global handles2give
 
-handles.PartialRewardFlag = get(handles.PartialRewardCheckbox,'Value');
-if handles.PartialRewardFlag
+handles.partial_reward_flag = get(handles.PartialRewardCheckbox,'Value');
+if handles.partial_reward_flag
     set(handles.RewardProbTag,'Enable','on');
 else
     set(handles.RewardProbTag,'Enable','off');
@@ -1356,11 +1355,11 @@ function AStimWeightTag_Callback(hObject, eventdata, handles)
 
 global handles2give
 
-handles.AStimWeight = round(str2double(get(handles.AStimWeightTag,'String')));
-set(handles.AStimWeightTag,'String',num2str(handles.AStimWeight));
+handles.aud_stim_weight = round(str2double(get(handles.AStimWeightTag,'String')));
+set(handles.AStimWeightTag,'String',num2str(handles.aud_stim_weight));
 
 
-if handles.AStimWeight > 0
+if handles.aud_stim_weight > 0
     
     set(handles.ToneDurationTag,'Enable','on');
     set(handles.ToneAmpTag,'Enable','on');
@@ -1403,7 +1402,7 @@ function AudRewTag_Callback(hObject, eventdata, handles)
 
 % Hint: get(hObject,'Value') returns toggle state of AudRewTag
 global handles2give
-handles.AudRew = get(handles.AudRewTag,'Value');
+handles.aud_reward = get(handles.AudRewTag,'Value');
 handles2give=handles;
 guidata(hObject, handles)
 
@@ -1416,7 +1415,7 @@ function WhRewTag_Callback(hObject, eventdata, handles)
 
 % Hint: get(hObject,'Value') returns toggle state of WhRewTag
 global handles2give
-handles.wh_rew = get(handles.WhRewTag,'Value');
+handles.wh_reward = get(handles.WhRewTag,'Value');
 handles2give=handles;
 guidata(hObject, handles)
 
@@ -1434,6 +1433,7 @@ handles2give=handles;
 guidata(hObject, handles)
 
 
+
 function LightDurationTag_Callback(hObject, eventdata, handles)
 % hObject    handle to LightDurationTag (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -1444,8 +1444,8 @@ function LightDurationTag_Callback(hObject, eventdata, handles)
 
 global handles2give
 
-handles.LightDuration = round(str2double(get(handles.LightDurationTag,'String')));
-set(handles.LightDurationTag,'String',num2str(handles.LightDuration));
+handles.light_duration = round(str2double(get(handles.LightDurationTag,'String')));
+set(handles.LightDurationTag,'String',num2str(handles.light_duration));
 
 % Update handles structure
 handles2give=handles;
@@ -1475,8 +1475,8 @@ function LightPrestimDelayTag_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of LightPrestimDelayTag as a double
 global handles2give
 
-handles.LightPrestimDelay = round(str2double(get(handles.LightPrestimDelayTag,'String')));
-set(handles.LightPrestimDelayTag,'String',num2str(handles.LightPrestimDelay));
+handles.light_prestim_delay = round(str2double(get(handles.LightPrestimDelayTag,'String')));
+set(handles.LightPrestimDelayTag,'String',num2str(handles.light_prestim_delay));
 
 % Update handles structure
 handles2give=handles;
@@ -1506,8 +1506,8 @@ function LightAmpTag_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of LightAmpTag as a double
 global handles2give
 
-handles.LightAmp = round(str2double(get(handles.LightAmpTag,'String'))*100)/100;
-set(handles.LightAmpTag,'String',num2str(handles.LightAmp));
+handles.light_amp = round(str2double(get(handles.LightAmpTag,'String'))*100)/100;
+set(handles.LightAmpTag,'String',num2str(handles.light_amp));
 
 % Update handles structure
 handles2give= handles;
@@ -1538,8 +1538,8 @@ function LightFreqTag_Callback(hObject, eventdata, handles)
 
 global handles2give
 
-handles.LightFreq = round(str2double(get(handles.LightFreqTag,'String'))*100)/100;
-set(handles.LightFreqTag,'String',num2str(handles.LightFreq));
+handles.light_freq = round(str2double(get(handles.LightFreqTag,'String'))*100)/100;
+set(handles.LightFreqTag,'String',num2str(handles.light_freq));
 
 % Update handles structure
 handles2give= handles;
@@ -1569,8 +1569,8 @@ function LightDutyTag_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of LightDutyTag as a double
 global handles2give
 
-handles.LightDuty = round(str2double(get(handles.LightDutyTag,'String'))*100)/100;
-set(handles.LightDutyTag,'String',num2str(handles.LightDuty));
+handles.light_duty = round(str2double(get(handles.LightDutyTag,'String'))*100)/100;
+set(handles.LightDutyTag,'String',num2str(handles.light_duty));
 
 % Update handles structure
 handles2give= handles;
@@ -1601,16 +1601,13 @@ function LightProbAudTag_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of LightProbAudTag as a double
 global handles2give
 
-handles.LightProbAud = round(str2double(get(handles.LightProbAudTag,'String'))*100)/100;
-handles.LightProbAud
-if handles.LightProbAud > 1
-    handles.LightProbAud = 1;
-elseif handles.LightProbAud < 0
-    handles.LightProbAud = 0;
+handles.light_aud_proba = round(str2double(get(handles.LightProbAudTag,'String'))*100)/100;
+if handles.light_aud_proba > 1
+    handles.light_aud_proba = 1;
+elseif handles.light_aud_proba < 0
+    handles.light_aud_proba = 0;
 end
-set(handles.LightProbAudTag,'String',handles.LightProbAud);
-% handles.NolightProb = 1 - handles.LightProb;
-% set(handles.NolightProbTag,'String',handles.NolightProb);
+set(handles.LightProbAudTag,'String',handles.light_aud_proba);
 
 % Update handles structure
 handles2give= handles;
@@ -1640,8 +1637,8 @@ function OptoLightCheckbox_Callback(hObject, eventdata, handles)
 
 global handles2give
 
-handles.LightFlag = get(handles.OptoLightCheckbox,'Value');
-if handles.LightFlag
+handles.light_flag = get(handles.OptoLightCheckbox,'Value');
+if handles.light_flag
     set(handles.LightDurationTag,'Enable','on');
     set(handles.LightPrestimDelayTag,'Enable','on');
     set(handles.LightAmpTag,'Enable','on');
@@ -1677,15 +1674,13 @@ function LightProbWhTag_Callback(hObject, eventdata, handles)
 
 global handles2give
 
-handles.LightProbWh = round(str2double(get(handles.LightProbWhTag,'String'))*100)/100;
-if handles.LightProbWh > 1
-    handles.LightProbWh = 1;
-elseif handles.LightProbWh < 0
-    handles.LightProbWh = 0;
+handles.light_wh_proba = round(str2double(get(handles.LightProbWhTag,'String'))*100)/100;
+if handles.light_wh_proba > 1
+    handles.light_wh_proba = 1;
+elseif handles.light_wh_proba < 0
+    handles.light_wh_proba = 0;
 end
-set(handles.LightProbWhTag,'String',handles.LightProbWh);
-% handles.NolightProb = 1 - handles.LightProb;
-% set(handles.NolightProbTag,'String',handles.NolightProb);
+set(handles.LightProbWhTag,'String',handles.light_wh_proba);
 
 % Update handles structure
 handles2give= handles;
@@ -1715,16 +1710,13 @@ function LightProbNoStimTag_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of LightProbNoStimTag as a double
 global handles2give
 
-handles.LightProb = round(str2double(get(handles.LightProbNoStimTag,'String'))*100)/100;
-if handles.LightProb > 1
-    handles.LightProb = 1;
-elseif handles.LightProb < 0
-    handles.LightProb = 0;
+handles.light_proba = round(str2double(get(handles.LightProbNoStimTag,'String'))*100)/100;
+if handles.light_proba > 1
+    handles.light_proba = 1;
+elseif handles.light_proba < 0
+    handles.light_proba = 0;
 end
-handles.LightProb
-set(handles.LightProbNoStimTag,'String',handles.LightProb);
-% handles.NolightProb = 1 - handles.LightProb;
-% set(handles.NolightProbTag,'String',handles.NolightProb);
+set(handles.LightProbNoStimTag,'String',handles.light_proba);
 
 % Update handles structure
 handles2give= handles;

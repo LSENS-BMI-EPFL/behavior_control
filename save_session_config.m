@@ -4,8 +4,8 @@ function save_session_config(gui_handles)
 %   HANDLES2GIVE Copy of handles, generated from default parameters
 %   during GUI instantiation.
 
-folder_name=[char(gui_handles.BehaviorDirectory) '\' char(gui_handles.MouseName) ...
-        '\' [char(gui_handles.MouseName) '_' char(gui_handles.Date) '_' char(gui_handles.FolderName)]];
+folder_name=[char(gui_handles.behaviour_directory) '\' char(gui_handles.mouse_name) ...
+        '\' [char(gui_handles.mouse_name) '_' char(gui_handles.date) '_' char(gui_handles.session_time)]];
     
 handles2save = gui_handles;
 
@@ -17,7 +17,7 @@ for k=1:numel(field)
    
     % Keep numeric or string variables (i.e. remove GUI objects)
     if not(isa(field_value,'numeric')) & not(isa(field_value,'string'))  & not(isa(field_value,'char'))
-        disp('yes');
+        
         handles2save = rmfield(handles2save, field_name);
         
     end

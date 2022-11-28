@@ -4,7 +4,7 @@ function update_parameters
     global    association_flag response_window trial_duration quiet_window lick_threshold...
         artifact_window iti camera_flag is_stim is_auditory is_whisker is_light_stim ...
         reward_valve_duration  aud_reward wh_reward wh_vec aud_vec light_vec ...
-        light_prestim stim_flag perf lick_flag ...
+        light_prestim_delay stim_flag perf lick_flag ...
         timeout_early_lick ...
         Stim_S wh_stim_duration  aud_stim_duration  aud_stim_amp  aud_stim_freq  Stim_S_SR ScansTobeAcquired ...
         Reward_S Reward_S_SR  Trigger_S fid3 mouse_licked_flag reaction_time ...
@@ -24,12 +24,12 @@ function update_parameters
     
     % Light parameters DELETE?
     ramp_down_duration=100; % in miliseconds
-    light_amp = handles2give.LightAmp;
-    light_prestim = handles2give.LightPrestimDelay;
+    light_amp = handles2give.light_amp;
+    light_prestim_delay = handles2give.light_prestim_delay;
 
     LightDurations=[light_amp]+ramp_down_duration;
-    LightPreStims=[light_prestim];
-    light_duration = handles2give.LightDuration;
+    LightPreStims=[light_prestim_delay];
+    light_duration = handles2give.light_duration;
 
     % Trial pool
     n_pool=10; % Making the Stim/NoStim and Durations pool
@@ -44,7 +44,7 @@ function update_parameters
     % SAVING CAMERA FRAMES
     % if camera_flag && (trial_number==1 || toc(cameraStartTime)>Block_Duration)
     if camera_flag
-        camera_freq=handles2give.CameraFrameRate; % Hz
+        camera_freq=handles2give.camera_freq; % Hz
 
         VideoFileInfo.trial_number=trial_number;
 
@@ -84,16 +84,16 @@ function update_parameters
     %% GENERAL SETTINGS FROM BEHAVIOUR GUI
 
     association_flag=handles2give.association_flag; % 0 detection 1 assosiation
-    light_flag=handles2give.LightFlag;
+    light_flag=handles2give.light_flag;
 
     % Camera settings
-    camera_freq=handles2give.CameraFrameRate; % Hz
+    camera_freq=handles2give.camera_freq; % Hz
     camera_duty_cycle=0.5;
     
     trial_duration=handles2give.trial_duration; % ms
 
     % Lick sensor threshold
-    lick_threshold=handles2give.LickThreshold; %in volts
+    lick_threshold=handles2give.lick_threshold; %in volts
 
     % Trial timeline settings
     min_quiet_window = handles2give.min_quiet_window; % in ms
@@ -108,7 +108,7 @@ function update_parameters
         quiet_window=randsample(min_quiet_window:.1:max_quiet_window,1);
     end
 
-    response_window=handles2give.ResponseWindow; % in ms
+    response_window=handles2give.response_window; % in ms
     artifact_window=handles2give.artifact_window; % in ms
     baseline_window=handles2give.baseline_window; % in ms
 
@@ -125,17 +125,17 @@ function update_parameters
         iti=randsample(min_iti:.1:max_iti,1);
     end
 
-    timeout_early_lick=handles2give.EarlyLickTimeOut; % in ms in case of early lick
+    timeout_early_lick=handles2give.timeout_early_lick; % in ms in case of early lick
 
     % Auditory and whisker stim parameters
     aud_stim_amp =  handles2give.aud_stim_amp;
     aud_stim_duration = handles2give.aud_stim_duration;
     aud_stim_freq = handles2give.aud_stim_freq;
-    aud_stim_weight = handles2give.AStimWeight;
+    aud_stim_weight = handles2give.aud_stim_weight;
     
-    wh_stim_weight = handles2give.StimWeight(1); %for whisker , hard-coded for now (see below)
+    wh_stim_weight = handles2give.wh_stim_weight(1); %for whisker , hard-coded for now (see below)
     
-    no_stim_weight=handles2give.NostimWeight;
+    no_stim_weight=handles2give.no_stim_weight;
     
 
     %% Compute stimulus probability
@@ -156,24 +156,24 @@ function update_parameters
 
 
     %% Compute light probability and light parameters
-    light_proba=handles2give.LightProb; % proportion of light trials
+    light_proba=handles2give.light_proba; % proportion of light trials
     if isempty(light_proba_old)
         light_proba_old = light_proba;
     end
 
-    light_aud_proba=handles2give.LightProbAud; % proportion of light trials
+    light_aud_proba=handles2give.light_aud_proba; % proportion of light trials
     if isempty(aud_light_proba_old)
         aud_light_proba_old = light_aud_proba;
     end
-    light_wh_proba=handles2give.LightProbWh; % proportion of light trials
+    light_wh_proba=handles2give.light_wh_proba; % proportion of light trials
     if isempty(wh_light_proba_old)
         wh_light_proba_old = light_wh_proba;
     end
 
     light_stim_shape='rect'; % "rect" or "sin" %%% for now only use 'rect'
-    light_amp=handles2give.LightAmp;
-    light_freq=handles2give.LightFreq; % frequency of the pulse train
-    light_duty=handles2give.LightDuty; % duty cycle (0-1)
+    light_amp=handles2give.light_amp;
+    light_freq=handles2give.light_freq; % frequency of the pulse train
+    light_duty=handles2give.light_duty; % duty cycle (0-1)
 
     %% Define new pool of stimuli
 
@@ -285,25 +285,25 @@ function update_parameters
     % Set light parameters to zero if not a light trial
     if ~is_light_stim || ~light_flag
         is_light_stim=0;
-        light_prestim=0;
+        light_prestim_delay=0;
         light_amp=0;
         light_duration=0;
         light_freq=0;
     end
 
     %% Reward Settings
-    reward_valve_duration=handles2give.ValveOpening;    % duration valve open in milliseconds
-    reward_delay_time=handles2give.RewardDelay;         % delay in milisecond for delivering reward after stim (if Association=1)
-    partial_reward_flag=handles2give.PartialRewardFlag; 
+    reward_valve_duration=handles2give.reward_valve_duration;    % duration valve open in milliseconds
+    reward_delay_time=handles2give.reward_delay_time;         % delay in milisecond for delivering reward after stim (if Association=1)
+    partial_reward_flag=handles2give.partial_reward_flag; 
 
 
-    aud_reward = handles2give.AudRew; % is auditory rewarded
-    wh_reward = handles2give.wh_rew;  % is whisker rewarded
+    aud_reward = handles2give.aud_reward; % is auditory rewarded
+    wh_reward = handles2give.wh_reward;  % is whisker rewarded
 
     % Probabilistic reward delivery
     if partial_reward_flag
 
-        reward_proba=handles2give.RewardProb; % proportion of rewarded hits
+        reward_proba=handles2give.reward_proba; % proportion of rewarded hits
         if isempty('RewardProbOld')
             reward_proba_old = reward_proba;
         end
@@ -333,7 +333,7 @@ function update_parameters
     end
 
     %% Get trial duration
-    trial_duration = max(trial_duration, (light_prestim + artifact_window + baseline_window + max(response_window, (light_duration-light_prestim))) /1000);
+    trial_duration = max(trial_duration, (light_prestim_delay + artifact_window + baseline_window + max(response_window, (light_duration-light_prestim_delay))) /1000);
 
 
     %% Define stimulus parameters and vectors
@@ -423,19 +423,19 @@ function update_parameters
 
         switch light_stim_shape
             case 'sin'
-                light_vec=light_amp/2+light_amp/2*[-ones(1,baseline_window*Stim_S_SR/1000) -ones(1,(light_prestim)*Stim_S_SR/1000) -cos(2*pi*light_freq*time_vec_light)];
+                light_vec=light_amp/2+light_amp/2*[-ones(1,baseline_window*Stim_S_SR/1000) -ones(1,(light_prestim_delay)*Stim_S_SR/1000) -cos(2*pi*light_freq*time_vec_light)];
                 light_vec=[light_vec zeros(1,(trial_duration)*(Stim_S_SR/1000)-numel(light_vec))];
 
-                light_vec_shadow= [zeros(1,baseline_window*Stim_S_SR/1000) zeros(1,(light_prestim)*Stim_S_SR/1000) [ones(1,1*length(light_pulse_train)-ramp_down_duration*Stim_S_SR/1000) fliplr(linspace(0,1,ramp_down_duration*Stim_S_SR/1000))]];
+                light_vec_shadow= [zeros(1,baseline_window*Stim_S_SR/1000) zeros(1,(light_prestim_delay)*Stim_S_SR/1000) [ones(1,1*length(light_pulse_train)-ramp_down_duration*Stim_S_SR/1000) fliplr(linspace(0,1,ramp_down_duration*Stim_S_SR/1000))]];
                 light_vec_shadow =[light_vec_shadow zeros(1,(trial_duration)*(Stim_S_SR/1000)-numel(light_vec_shadow))];
 
                 light_vec=light_vec.*light_vec_shadow;
 
             otherwise
-                light_vec=light_amp*[(zeros(1,(baseline_window - light_prestim)*Stim_S_SR/1000)) light_pulse_train];
+                light_vec=light_amp*[(zeros(1,(baseline_window - light_prestim_delay)*Stim_S_SR/1000)) light_pulse_train];
                 light_vec=[light_vec zeros(1,(trial_duration)*(Stim_S_SR/1000)-numel(light_vec))];
                 %
-                light_vec_shadow= [zeros(1,(baseline_window-light_prestim)*Stim_S_SR/1000) [ones(1,1*length(light_pulse_train)-ramp_down_duration*Stim_S_SR/1000) fliplr(linspace(0,1,ramp_down_duration*Stim_S_SR/1000))]];
+                light_vec_shadow= [zeros(1,(baseline_window-light_prestim_delay)*Stim_S_SR/1000) [ones(1,1*length(light_pulse_train)-ramp_down_duration*Stim_S_SR/1000) fliplr(linspace(0,1,ramp_down_duration*Stim_S_SR/1000))]];
                 light_vec_shadow =[light_vec_shadow zeros(1,(trial_duration)*(Stim_S_SR/1000)-numel(light_vec_shadow))];
 
                 light_vec=light_vec.*light_vec_shadow;
@@ -517,7 +517,7 @@ function update_parameters
             'FontWeight', 'Bold');
         
         % Make performance plot
-        perf_win_size=handles2give.LastRecentTrials;
+        perf_win_size=handles2give.last_recent_trials;
         plot_performance(results, perf_win_size);
 
     end
