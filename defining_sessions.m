@@ -29,8 +29,6 @@
     
     trial_duration=handles2give.TrialDuration; % ms
     
-    % Save session configuration
-    %save_config(handles2give);
 
     %% Create and open session results file
 

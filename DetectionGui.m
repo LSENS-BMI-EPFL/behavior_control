@@ -1,26 +1,26 @@
 function varargout = DetectionGUI(varargin)
-% DETECTIONGUI MATLAB code for DETECTIONGUI.fig
-%      DETECTIONGUI, by itself, creates a new DETECTIONGUI or raises the existing
+% DetectionGUI MATLAB code for DetectionGUI.fig
+%      DetectionGUI, by itself, creates a new DetectionGUI or raises the existing
 %      singleton*.
 %
-%      H = DETECTIONGUI returns the handle to a new DETECTIONGUI or the handle to
+%      H = DetectionGUI returns the handle to a new DetectionGUI or the handle to
 %      the existing singleton*.
 %
-%      DETECTIONGUI('CALLBACK',hObject,eventData,handles,...) calls the local
-%      function named CALLBACK in DETECTIONGUI.M with the given input arguments.
+%      DetectionGUI('CALLBACK',hObject,eventData,handles,...) calls the local
+%      function named CALLBACK in DetectionGUI.M with the given input arguments.
 %
-%      DETECTIONGUI('Property','Value',...) creates a new DETECTIONGUI or raises the
+%      DetectionGUI('Property','Value',...) creates a new DetectionGUI or raises the
 %      existing singleton*.  Starting from the left, property value pairs are
-%      applied to the GUI before DETECTIONGUI_OpeningFcn gets called.  An
+%      applied to the GUI before DetectionGUI_OpeningFcn gets called.  An
 %      unrecognized property name or invalid value makes property application
-%      stop.  All inputs are passed to DETECTIONGUI_OpeningFcn via varargin.
+%      stop.  All inputs are passed to DetectionGUI_OpeningFcn via varargin.
 %
 %      *See GUI Options on GUIDE's Tools menu.  Choose "GUI allows only one
 %      instance to run (singleton)".
 %
 % See also: GUIDE, GUIDATA, GUIHANDLES
 
-% Edit the above text to modify the response to help DETECTIONGUI
+% Edit the above text to modify the response to help DetectionGUI
 
 % Last Modified by GUIDE v2.5 28-Nov-2022 14:30:19
 
@@ -28,8 +28,8 @@ function varargout = DetectionGUI(varargin)
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
                    'gui_Singleton',  gui_Singleton, ...
-                   'gui_OpeningFcn', @DETECTIONGUI_OpeningFcn, ...
-                   'gui_OutputFcn',  @DETECTIONGUI_OutputFcn, ...
+                   'gui_OpeningFcn', @DetectionGUI_OpeningFcn, ...
+                   'gui_OutputFcn',  @DetectionGUI_OutputFcn, ...
                    'gui_LayoutFcn',  [] , ...
                    'gui_Callback',   []);
 if nargin && ischar(varargin{1})
@@ -44,16 +44,16 @@ end
 % End initialization code - DO NOT EDIT
 
 
-% --- Executes just before DETECTIONGUI is made visible.
-function DETECTIONGUI_OpeningFcn(hObject, eventdata, handles, varargin)
+% --- Executes just before DetectionGUI is made visible.
+function DetectionGUI_OpeningFcn(hObject, eventdata, handles, varargin)
 % This function has no output args, see OutputFcn.
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-% varargin   command line arguments to DETECTIONGUI (see VARARGIN)
+% varargin   command line arguments to DetectionGUI (see VARARGIN)
 global handles2give
 
-% Choose default command line output for DETECTIONGUI
+% Choose default command line output for DetectionGUI
 handles.output = hObject;
 
 %% Set experimental name for saving data [TO CUSTOM BY EACH USER]
@@ -179,12 +179,12 @@ handles.PauseRequested=0;
 handles2give=handles;
 guidata(hObject, handles);
 
-% UIWAIT makes DETECTIONGUI wait for user response (see UIRESUME)
+% UIWAIT makes DetectionGUI wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
 
 
 % --- Outputs from this function are returned to the command line.
-function varargout = DETECTIONGUI_OutputFcn(hObject, eventdata, handles) 
+function varargout = DetectionGUI_OutputFcn(hObject, eventdata, handles) 
 % varargout  cell array for returning output args (see VARARGOUT);
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -639,7 +639,7 @@ set(handles2give.OnlineTextTag,'String',' ');
 set(handles2give.TrialTimeLineTextTag,'String',' ');
 
 handles2give= handles;
-% save_session_config(handles2give);
+save_session_config(handles2give);
 defining_sessions;
 
 % Update handles structure
