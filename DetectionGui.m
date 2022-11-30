@@ -120,10 +120,10 @@ set(handles.LightProbNoStimTag,'String','0.4'); handles.light_proba = str2double
 %% Set Punishment parameters
 
 set(handles.FalseAlarmTimeOutTag,'String','0000'); handles.false_alarm_timeout = str2double(get(handles.FalseAlarmTimeOutTag,'String'));
-set(handles.FalseAlarmTimeOutTag,'Enable','on');
+set(handles.FalseAlarmTimeOutTag,'Enable','off');
 
 set(handles.EarlyLickTimeOutTag,'String','0000'); handles.early_lick_timeout = str2double(get(handles.EarlyLickTimeOutTag,'String'));
-set(handles.EarlyLickTimeOutTag,'Enable','on');
+set(handles.EarlyLickTimeOutTag,'Enable','off');
 
 %% Set the stim paramters
 
@@ -1172,7 +1172,7 @@ function TrialDurationTag_Callback(hObject, eventdata, handles)
 global handles2give
 
 handles.trial_duration = round(str2double(get(handles.TrialDurationTag,'String')));
-set(handles.TrialDurationTag,'String',num2str(handles.TrialDuration));
+set(handles.TrialDurationTag,'String',num2str(handles.trial_duration));
 
 time_limit = handles.baseline_window + handles.response_window;
 

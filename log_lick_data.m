@@ -4,13 +4,12 @@ function log_lick_data(~, event, trial_duration)
 % EVENT Data detected.
 % TRIAL_DURATION Duration of current trial.
 
-global Stim_S Stim_S_SR fid3 handles2give lick_threshold trial_lick_data
+global Stim_S Stim_S_SR fid_lick_trace handles2give lick_threshold trial_lick_data
 
 %% Get lick data and write downsample data in .bin files
-%[data_stim, timestamps, trigger_time] = read(Stim_S, Stim_S.ScansAvailableFcnCount,'OutputFormat','Matrix');
 
 data = [event.TimeStamps(:,1), event.Data(:,:)]' ;
-fwrite(fid3, downsample(data, 10),'double');
+fwrite(fid_lick_trace, downsample(data, 10),'double');
 
 %% Plotting lick data
 % Plot progress bar 

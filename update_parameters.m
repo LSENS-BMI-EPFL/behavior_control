@@ -22,18 +22,18 @@ function update_parameters
     pause(.5)
     outputSingleScan(Trigger_S,[0 0 0])
     
-    % Light parameters DELETE?
+    % Light parameters
     ramp_down_duration=100; % in miliseconds
     light_amp = handles2give.light_amp;
     light_prestim_delay = handles2give.light_prestim_delay;
 
-    LightDurations=[light_amp]+ramp_down_duration;
-    LightPreStims=[light_prestim_delay];
+    light_durations = [light_amp]+ramp_down_duration;
+    light_prestim_delays =[light_prestim_delay];
     light_duration = handles2give.light_duration;
 
     % Trial pool
-    n_pool=10; % Making the Stim/NoStim and Durations pool
-    camera_block_duration = 300; % in seconds (added for continuous filming)
+    n_pool=10; % Making the pool for stimulus and partial rewards
+    camera_block_duration = 300; % in seconds (added for block filming)
 
     trial_number = trial_number+1;
 
@@ -307,7 +307,7 @@ function update_parameters
     if partial_reward_flag
 
         reward_proba=handles2give.reward_proba; % proportion of rewarded hits
-        if isempty('RewardProbOld')
+        if isempty('reward_proba_old')
             reward_proba_old = reward_proba;
         end
 

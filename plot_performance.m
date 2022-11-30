@@ -7,7 +7,7 @@ function plot_performance(results, perf_win_size)
 
 global handles2give wh_reward
 
-% Count current trial number (omitting early licks).
+% Count current trial number (omitting early licks and association trials).
 n_current_trials = sum(results.data(:,2) ~= 6);
 
 % Set plotting params
@@ -25,32 +25,34 @@ end
 %% Plot hit rates and false alarm rates
 if n_current_trials > 0
     
-    perf = results.data(results.data(:,2) ~= 6,10);
-    aud_trials = results.data(results.data(:,2) ~= 6,8);
-    wh_trials = results.data(results.data(:,2) ~= 6,7);
-    stim_trials = results.data(results.data(:,2) ~= 6,6);
+    perf = results.data(results.data(:,2) ~= 6,2);
+    stim_trials = results.data(results.data(:,2) ~= 6,7);
+    wh_trials = results.data(results.data(:,2) ~= 6,8);
+    aud_trials = results.data(results.data(:,2) ~= 6,9);
 
-    x = 1:n_current_trials;
-    aud_HR = zeros(1,length(x));
-    wh_HR = zeros(1,length(x));
-    FA = zeros(1,length(x));
+    current_trials = 1:n_current_trials;
+    aud_HR = zeros(1,n_current_trials);
+    wh_HR = zeros(1,n_current_trials);
+    FAR = zeros(1,n_current_trials);
+ 
 
     hax = handles2give.PerformanceAxes;
     
     % Compute performance in window
-    for ix = x
-        indices = max(1,ix-perf_win_size+1):ix; % This gets indices of all trials in window before ix
-        aud_HR(ix)=sum(perf(indices) == 3)/sum(aud_trials(indices)== 1);
-        wh_HR(ix)=sum(perf(indices) == 2)/sum(wh_trials(indices) == 1);
-        FA(ix)=sum(perf(indices) == 5)/sum(stim_trials(indices) == 0);
+    for trial = current_trials
+        indices = max(1, trial-perf_win_size+1):trial; % This gets indices of all trials in window before trial
+        aud_HR(trial)=sum(perf(indices) == 3)/sum(aud_trials(indices)== 1);
+        wh_HR(trial)=sum(perf(indices) == 2)/sum(wh_trials(indices) == 1);
+        FAR(trial)=sum(perf(indices) == 5)/sum(stim_trials(indices) == 0);
     end
 
+    
     % Plot performance curves
-    stairs(hax,x,aud_HR,'LineWidth',lw,'Color',acolor);
+    stairs(hax,current_trials,aud_HR,'LineWidth',lw,'Color',acolor);
     hold (hax,'on')
-    stairs(hax,x,wh_HR,'LineWidth',lw,'Color',wcolor);
+    stairs(hax,current_trials,wh_HR,'LineWidth',lw,'Color',wcolor);
     hold (hax,'on')
-    stairs(hax,x,FA,'LineWidth',lw,'Color','black') 
+    stairs(hax,current_trials,FAR,'LineWidth',lw,'Color','black') 
     hold (hax,'off')
 
     % Labels and axes limits
