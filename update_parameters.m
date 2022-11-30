@@ -1,13 +1,13 @@
 function update_parameters
 % UPDATE_PARAMETERS Update parameters at each trial.
 
-    global    association_flag response_window trial_duration quiet_window lick_threshold...
+    global   association_flag response_window trial_duration quiet_window lick_threshold...
         artifact_window iti camera_flag is_stim is_auditory is_whisker is_light_stim ...
         reward_valve_duration  aud_reward wh_reward wh_vec aud_vec light_vec ...
         light_prestim_delay stim_flag perf lick_flag ...
-        timeout_early_lick ...
+        false_alarm_punish_flag false_alarm_timeout early_lick_punish_flag early_lick_timeout ...
         Stim_S wh_stim_duration  aud_stim_duration  aud_stim_amp  aud_stim_freq  Stim_S_SR ScansTobeAcquired ...
-        Reward_S Reward_S_SR  Trigger_S fid3 mouse_licked_flag reaction_time ...
+        Reward_S Reward_S_SR  Trigger_S fid_lick_trace mouse_licked_flag reaction_time ...
         trial_started_flag  trial_number light_proba_old folder_name handles2give...
         stim_proba_old aud_stim_proba_old wh_stim_proba_old aud_light_proba_old wh_light_proba_old light_flag baseline_window camera_vec...
         deliver_reward_flag ...
@@ -54,8 +54,7 @@ function update_parameters
 
         % Define number of frames to save in block
         VideoFileInfo.nOfFramesToGrab = trial_duration*camera_freq/1000;
-        %VideoFileInfo.nOfFramesToGrab =
-        %camera_block_duration*camera_freq/1000; %KEEP
+        %VideoFileInfo.nOfFramesToGrab = camera_block_duration*camera_freq/1000; %KEEP
 
         save('D:\Behavior\TemplateConfigFile\VideoFileInfo','VideoFileInfo');
         arm_camera()
@@ -124,8 +123,12 @@ function update_parameters
     else
         iti=randsample(min_iti:.1:max_iti,1);
     end
-
-    timeout_early_lick=handles2give.timeout_early_lick; % in ms in case of early lick
+       
+    % Timeout
+    false_alarm_punish_flag = handles2give.false_alarm_punish_flag;
+    false_alarm_timeout=handles2give.false_alarm_timeout; % in ms
+    early_lick_punish_flag = handles2give.early_lick_punish_flag;
+    early_lick_timeout=handles2give.early_lick_timeout; % in ms
 
     % Auditory and whisker stim parameters
     aud_stim_amp =  handles2give.aud_stim_amp;
@@ -394,6 +397,7 @@ function update_parameters
             wh_stim_amp = 2.3; %volt
             wh_stim_duration_up = 1.5; %ms
             wh_stim_duration_down = 1.5;
+            wh_stim_duration = wh_stim_duration_up + wh_stim_duration_down;
             scale_factor = .6; % -> relative amplitude of both cosines to control for artefact transient
 
             wh_stim_duration_up = wh_stim_duration_up*Stim_S_SR/1000;
@@ -554,12 +558,12 @@ function update_parameters
     
     % Close lick trace file for current trial
     if trial_number~=1
-        fclose(fid3);
+        fclose(fid_lick_trace);
         delete(lh3)
     end
     
     % Open new lick trace file 
-    fid3=fopen([folder_name '\LickTrace' num2str(trial_number) '.bin'],'w');
+    fid_lick_trace=fopen([folder_name '\LickTrace' num2str(trial_number) '.bin'],'w');
     % Listener for available data form piezo sensor
     lh3 = addlistener(Stim_S,'DataAvailable',@(src, event) log_lick_data(src, event, trial_duration));
     

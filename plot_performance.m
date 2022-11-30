@@ -24,6 +24,7 @@ end
 
 %% Plot hit rates and false alarm rates
 if n_current_trials > 0
+    
     perf = results.data(results.data(:,2) ~= 6,10);
     aud_trials = results.data(results.data(:,2) ~= 6,8);
     wh_trials = results.data(results.data(:,2) ~= 6,7);

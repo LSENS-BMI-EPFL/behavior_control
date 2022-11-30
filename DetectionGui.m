@@ -68,8 +68,10 @@ handles.behaviour_directory = 'C:\Users\bisi\Desktop\BehaviourData';
 set(handles.BehaviorDirectoryTag,'String', handles.behaviour_directory);
 
 %% Set general settings
+set(handles.FalseAlarmPunishmentCheckbox,'Value',0); handles.false_alarm_punish_flag = get(handles.FalseAlarmPunishmentCheckbox,'Value');
+set(handles.FalseAlarmPunishmentCheckbox,'Enable','on');
 set(handles.EarlyLickPunishmentCheckbox,'Value',0); handles.early_lick_punish_flag = get(handles.EarlyLickPunishmentCheckbox,'Value');
-set(handles.EarlyLickPunishmentCheckbox,'Enable','off');
+set(handles.EarlyLickPunishmentCheckbox,'Enable','on');
 set(handles.AssociationCheckbox,'Value',0); handles.association_flag = get(handles.AssociationCheckbox,'Value');
 set(handles.CameraTagCheck,'Value',1); handles.camera_flag = get(handles.CameraTagCheck,'Value');   
 set(handles.DummySessionCheckbox,'Value',0); handles.dummy_session_flag = get(handles.DummySessionCheckbox,'Value');
@@ -115,13 +117,15 @@ set(handles.LightDutyTag,'String','0.65'); handles.light_duty = str2double(get(h
 set(handles.LightProbAudTag,'String','0.4'); handles.light_aud_proba = str2double(get(handles.LightProbAudTag,'String'));
 set(handles.LightProbWhTag,'String','0.4'); handles.light_wh_proba = str2double(get(handles.LightProbWhTag,'String'));
 set(handles.LightProbNoStimTag,'String','0.4'); handles.light_proba = str2double(get(handles.LightProbNoStimTag,'String'));
-%% Set Early Lick Punishment parameters
+%% Set Punishment parameters
 
-set(handles.EarlyLickTimeOutTag,'String','3000'); handles.timeout_early_lick = str2double(get(handles.EarlyLickTimeOutTag,'String'));
-set(handles.EarlyLickTimeOutTag,'Enable','off');
+set(handles.FalseAlarmTimeOutTag,'String','0000'); handles.false_alarm_timeout = str2double(get(handles.FalseAlarmTimeOutTag,'String'));
+set(handles.FalseAlarmTimeOutTag,'Enable','on');
+
+set(handles.EarlyLickTimeOutTag,'String','0000'); handles.early_lick_timeout = str2double(get(handles.EarlyLickTimeOutTag,'String'));
+set(handles.EarlyLickTimeOutTag,'Enable','on');
 
 %% Set the stim paramters
-
 
 %Auditory stim
 set(handles.AStimWeightTag,'Enable','on')
@@ -138,7 +142,7 @@ set(handles.NostimWeightTag,'Enable','on');
 
 
 %% Set reward parameters
-set(handles.ValveOpeningTag,'String','54'); handles.reward_valve_duration = str2double(get(handles.ValveOpeningTag,'String'));
+set(handles.ValveOpeningTag,'String','50'); handles.reward_valve_duration = str2double(get(handles.ValveOpeningTag,'String'));
 set(handles.RewardDelayCheckbox,'Value',0); handles.reward_delay_flag = get(handles.RewardDelayCheckbox,'Value');
 set(handles.RewardDelayCheckbox,'Enable','off');
 set(handles.RewardDelayTag,'String','50'); handles.reward_delay_time = str2double(get(handles.RewardDelayTag,'String'));
@@ -895,7 +899,34 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
+function FalseAlarmTimeOutTag_Callback(hObject, eventdata, handles)
+% hObject    handle to FalseAlarmTimeOutTag (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
 
+% Hints: get(hObject,'String') returns contents of EarlyLickTimeOutTag as text
+%        str2double(get(hObject,'String')) returns contents of EarlyLickTimeOutTag as a double
+global handles2give
+
+handles.false_alarm_timeout = round(str2double(get(handles.FalseAlarmTimeOutTag,'String')));
+set(handles.FalseAlarmTimeOutTag,'String',num2str(handles.false_alarm_timeout));
+
+% Update handles structure
+handles2give=handles;
+guidata(hObject, handles);
+
+
+% --- Executes during object creation, after setting all properties.
+function FalseAlarmTimeOutTag_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to FalseAlarmTimeOutTag (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
 
 function EarlyLickTimeOutTag_Callback(hObject, eventdata, handles)
 % hObject    handle to EarlyLickTimeOutTag (see GCBO)
@@ -906,8 +937,8 @@ function EarlyLickTimeOutTag_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of EarlyLickTimeOutTag as a double
 global handles2give
 
-handles.timeout_early_lick = round(str2double(get(handles.EarlyLickTimeOutTag,'String')));
-set(handles.EarlyLickTimeOutTag,'String',num2str(handles.timeout_early_lick));
+handles.early_lick_timeout = round(str2double(get(handles.EarlyLickTimeOutTag,'String')));
+set(handles.EarlyLickTimeOutTag,'String',num2str(handles.early_lick_timeout));
 
 % Update handles structure
 handles2give=handles;
@@ -1209,7 +1240,7 @@ function FalseAlarmPunishmentCheckbox_Callback(hObject, eventdata, handles)
 % Hint: get(hObject,'Value') returns toggle state of FalseAlarmPunishmentCheckbox
 global handles2give
 
-handles.FalseAlarmPunishmentFlag = get(handles.FalseAlarmPunishmentCheckbox,'Value');
+handles.false_alarm_punish_flag = get(handles.FalseAlarmPunishmentCheckbox,'Value');
 
 % Update handles structure
 handles2give=handles;

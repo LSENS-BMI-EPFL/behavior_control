@@ -57,8 +57,9 @@ function main_control(~,event)
     if trial_started_flag && ~association_flag  && ... %check if currently within a trial
         toc(trial_start_time)>response_window_start && toc(trial_start_time)<response_window_end &&... %check if in response window
         sum(abs(event.Data(1:end-1,1))<lick_threshold & abs(event.Data(2:end,1))>lick_threshold) &&... %check if lick
-        ~sum(abs(event.Data(1:end-1,1))<10000*lick_threshold & abs(event.Data(2:end,1))>10000*lick_threshold) % <- WHY THIS?
-
+        ~sum(abs(event.Data(1:end-1,1))<10000*lick_threshold & abs(event.Data(2:end,1))>10000*lick_threshold) %???
+        disp('here')
+        disp(~sum(abs(event.Data(1:end-1,1))<10000*lick_threshold & abs(event.Data(2:end,1))>10000*lick_threshold))
 
         trial_started_flag=0;
         
@@ -180,7 +181,7 @@ function main_control(~,event)
                 early_lick ...
                 is_light_stim light_amp light_duration light_freq light_prestim_delay];
         fprintf(fid_results,...
-           '%6.0f %6.0f %10.4f %10.0f %10.4f %10.4f %6.0f %6.0f %6.0f %10.4f %10.4f %10.1f %6.0f %6.0f %10.4f %10.4f %10.1f %10.1f %6.0f %6.0f %6.0f %10.1f %10.1f %10.1f %10.1f \n',...
+           '%6.0f %6.0f %10.4f %10.0f %10.4f %10.4f %6.0f %6.0f %6.0f %10.1f %10.1f %10.1f %6.0f %6.0f %10.4f %10.4f %10.1f %10.1f %6.0f %6.0f %6.0f %10.1f %10.1f %10.1f %10.1f \n',...
            results);
         
 
@@ -207,7 +208,7 @@ function main_control(~,event)
     end
 
     %% Detecting early licks (licks between baseline start and stimulus or between light start and stim) <- CHECK THIS
-    % Early licks results in aborted trials, before starting a new trial
+    % Early licks results in abortd
 
     if trial_started_flag && toc(trial_start_time)<response_window_start-(artifact_window)/1000 ...
        && sum(abs(event.Data(1:end-1,1))<lick_threshold & abs(event.Data(2:end,1))>lick_threshold)
@@ -250,7 +251,7 @@ function main_control(~,event)
                 early_lick ...
                 is_light_stim light_amp light_duration light_freq light_prestim_delay];
         fprintf(fid_results,...
-           '%6.0f %6.0f %10.4f %10.0f %10.4f %10.4f %6.0f %6.0f %6.0f %10.4f %10.4f %10.1f %6.0f %6.0f %10.4f %10.4f %10.1f %10.1f %6.0f %6.0f %6.0f %10.1f %10.1f %10.1f %10.1f \n',...
+           '%6.0f %6.0f %10.4f %10.0f %10.4f %10.4f %6.0f %6.0f %6.0f %10.1f %10.1f %10.1f %6.0f %6.0f %10.4f %10.4f %10.1f %10.1f %6.0f %6.0f %6.0f %10.1f %10.1f %10.1f %10.1f \n',...
            results);
        
 
@@ -277,6 +278,24 @@ function main_control(~,event)
         delete(lh3);
 
         trial_number = trial_number + 1;
+
+        camera_flag = handles2give.camera_flag;
+
+    %     if camera_flag
+    %         Camera_freq=handles2give.camera_freq; % Hz
+    %
+    %         VideoFileInfo.trial_number=trial_number;
+    %
+    %         VideoFileInfo.directory=['F:\Axel\' char(handles2give.mouse_name)...
+    %             '\' [char(handles2give.mouse_name) '_' char(handles2give.date) '_' char(handles2give.session_time) '\']];
+    %
+    %         Block_Duration=300;
+    %         VideoFileInfo.nOfFramesToGrab=(Block_Duration+120)*Camera_freq;
+    %
+    %         save('Z:\TemplateConfigFile\VideoFileInfo','VideoFileInfo');
+    %
+    %         %ArmCameraNew()
+    %     end
 
         fid_lick_trace=fopen([folder_name '\LickTrace' num2str(trial_number) '.bin'], 'w');
         lh3 = addlistener(Stim_S,'DataAvailable',@(src, event)log_lick_data(src, event, trial_duration));
