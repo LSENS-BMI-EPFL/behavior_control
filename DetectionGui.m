@@ -22,7 +22,7 @@ function varargout = DetectionGUI(varargin)
 
 % Edit the above text to modify the response to help DetectionGUI
 
-% Last Modified by GUIDE v2.5 28-Nov-2022 14:30:19
+% Last Modified by GUIDE v2.5 30-Nov-2022 17:57:47
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -153,8 +153,12 @@ set(handles.RewardProbTag,'Enable','off');
 set(handles.RewardProbTag,'String','1'); handles.reward_proba = str2double(get(handles.RewardProbTag,'String'));
 set(handles.AudRewTag,'Value',1); handles.aud_reward = get(handles.AudRewTag,'Value');
 set(handles.AudRewTag,'Enable','off');
-set(handles.WhRewTag,'Value',1); handles.wh_reward = get(handles.WhRewTag,'Value');%% Behaviour camera settings
+set(handles.WhRewTag,'Value',1); handles.wh_reward = get(handles.WhRewTag,'Value');
+
+%% Behaviour camera settings
 set(handles.CameraFrameRateTag,'String','200'); handles.camera_freq = str2double(get(handles.CameraFrameRateTag,'String'));
+handles.video_directory = 'F:\Axel\';
+set(handles.VideoDirectoryTag,'String', handles.video_directory);
 
 %% Initialize axes
 axes(handles.ProgressBarAxes); set(gca,'XTick',[]); set(gca,'XColor','w'); set(gca,'YTick',[]); set(gca,'YColor','w');set(gca,'Color',[0.4 0.4 0.4]);
@@ -472,6 +476,32 @@ guidata(hObject, handles);
 % --- Executes during object creation, after setting all properties.
 function BehaviorDirectoryTag_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to BehaviorDirectoryTag (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+function VideoDirectoryTag_Callback(hObject, eventdata, handles)
+% hObject    handle to VideoDirectoryTag (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of BehaviorDirectoryTag as text
+%        str2double(get(hObject,'String')) returns contents of BehaviorDirectoryTag as a double
+global handles2give
+handles.video_directory = get(handles.VideoDirectoryTag,'String');
+
+% Update handles structure
+handles2give=handles;
+guidata(hObject, handles);
+
+% --- Executes during object creation, after setting all properties.
+function VideoDirectoryTag_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to VideoDirectoryTag (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -1765,5 +1795,4 @@ function LightProbNoStimTag_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
 
