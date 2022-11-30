@@ -212,7 +212,6 @@ function main_control(~,event)
     if trial_started_flag && toc(trial_start_time)<response_window_start-(artifact_window)/1000 ...
        && sum(abs(event.Data(1:end-1,1))<lick_threshold & abs(event.Data(2:end,1))>lick_threshold)
 
-        timeout=tic;
         trial_started_flag=0;
         early_lick = 1;
         early_lick_counter=early_lick_counter+1;
@@ -232,9 +231,7 @@ function main_control(~,event)
             pause(early_lick_timeout / 1000);
         end
 
-
         queueOutputData(Stim_S,[zeros(1,Stim_S_SR/2);zeros(1,Stim_S_SR/2); zeros(1,Stim_S_SR/2); zeros(1,Stim_S_SR/2)]')
-       %queueOutputData(Stim_S,[zeros(1,Stim_S_SR/2); zeros(1,Stim_S_SR/2); zeros(1,Stim_S_SR/2)]')
         Stim_S.prepare();
         Stim_S.startBackground();
 

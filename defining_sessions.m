@@ -61,9 +61,7 @@
     lh1 = addlistener(Main_S,'DataAvailable', @main_control);
     lh2 = addlistener(Main_S,'DataAvailable', @(src, event) plot_lick_trace(src, event, trial_duration));
 
-  
-    % lh3 = addlistener(Main_S,'DataAvailable',@(src, event) log_lick_data); 
-    
+      
     % Define count to initiate callback functions
     Main_S.NotifyWhenDataAvailableExceeds=Main_S_SR/Main_S_Ratio; % maximum is 20 hz, so sr should be divided by 20 to not get the reward!
 

@@ -126,7 +126,7 @@ function update_parameters
        
     % Timeout
     false_alarm_punish_flag = handles2give.false_alarm_punish_flag;
-    false_alarm_timeout=handles2give.false_alarm_timeout; % in ms
+    false_alarm_timeout=handles2give.false_alarm_; % in ms
     early_lick_punish_flag = handles2give.early_lick_punish_flag;
     early_lick_timeout=handles2give.early_lick_timeout; % in ms
 
