@@ -2,7 +2,7 @@ function stop_sessions
 %STOP_SESSIONS Terminate DAQ sessions and close files.
 
 global  Reward_S Stim_S Main_S Trigger_S ...
-    lh1 lh2 lh3 handles2give Stim_S_SR Reward_S_SR
+    lh1 lh2 lh3 handles2give Stim_S_SR Reward_S_SR folder_name
 
 
 outputSingleScan(Trigger_S,[0 0 1]);
@@ -80,8 +80,10 @@ fclose('all');
 % cameraClk.stop();
 
 
-% Save results as .csv
-
+% Convert results.txt as .csv
+results=importdata([folder_name '\results.txt']);
+results_table = array2table(results.data, 'VariableNames', results.colheaders);
+writetable(results_table, [folder_name '\results.csv']);
 
 set(handles2give.OnlineTextTag,'String', 'Session Stopped', 'FontWeight', 'Bold');
 
