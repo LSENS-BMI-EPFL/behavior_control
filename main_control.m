@@ -117,7 +117,8 @@ function main_control(~,event)
     % Check if results update needed
     if perf_and_save_results_flag
         perf_and_save_results_flag=0;
-
+        early_lick=0;
+        
         %Association trials
         if association_flag
             set(handles2give.OnlineTextTag,'String','Trial Finished','FontWeight','bold');
@@ -131,38 +132,32 @@ function main_control(~,event)
                 set(handles2give.OnlineTextTag,'String','Whisker Miss','FontWeight','bold');
                 lick_flag=0;
                 perf=0;
-                early_lick = 0;
 
             elseif is_stim && ~mouse_licked_flag && is_auditory
                 set(handles2give.OnlineTextTag,'String','Auditory Miss','FontWeight','bold');
                 lick_flag=0;
                 perf=1;
-                early_lick = 0;
 
             elseif is_stim && mouse_licked_flag && is_whisker
                 set(handles2give.OnlineTextTag,'String','Whisker Hit','FontWeight','bold');
                 lick_flag=1;
                 perf=2;
-                early_lick = 0;
 
             elseif is_stim && mouse_licked_flag && is_auditory
                 set(handles2give.OnlineTextTag,'String','Auditory Hit','FontWeight','bold');
                 lick_flag=1;
                 perf=3;
-                early_lick = 0;
 
             % Non-stimulus trials
             elseif ~is_stim && ~mouse_licked_flag
                 set(handles2give.OnlineTextTag,'String','Correct Rejection','FontWeight','bold');
                 lick_flag=0;
                 perf=4;
-                early_lick = 0;
 
             elseif ~is_stim && mouse_licked_flag
                 set(handles2give.OnlineTextTag,'String','False Alarm','FontWeight','bold');
                 lick_flag=1;
                 perf=5; 
-                early_lick = 0;
                 
                 if false_alarm_punish_flag
                     pause(false_alarm_timeout / 1000);
@@ -171,17 +166,36 @@ function main_control(~,event)
             end
         end
 
-        % Save as results .txt file (no comma between variables!)
-        results = [trial_number perf trial_time association_flag quiet_window iti ...
-                is_stim is_whisker is_auditory lick_flag reaction_time ...
-                wh_stim_duration wh_stim_amp wh_reward ...
-                is_reward ...
-                aud_stim_duration aud_stim_amp aud_stim_freq aud_reward ...
-                early_lick ...
-                is_light_stim light_amp light_duration light_freq light_prestim_delay];
-        fprintf(fid_results,...
-           '%6.0f %6.0f %10.4f %10.0f %10.4f %10.4f %6.0f %6.0f %6.0f %10.0f %10.4f %10.1f %6.0f %6.0f %10.4f %10.4f %10.1f %10.1f %6.0f %6.0f %6.0f %10.1f %10.1f %10.1f %10.1f \n',...
-           results);
+        % Save as results .txt file 
+        results_config = {
+            trial_number '%6.0f'; %variable / format spec
+            perf '%8.0f';
+            trial_time '%10.4f';
+            association_flag '%10.0f';
+            quiet_window '%10.4f';
+            iti '%10.4f';
+            is_stim '%8.0f';
+            is_whisker '%8.0f';
+            is_auditory '%8.0f';
+            lick_flag '%8.0f';
+            reaction_time '%10.4f';
+            wh_stim_duration '%10.1f';
+            wh_stim_amp '%8.0f';
+            wh_reward '%8.0f';
+            is_reward '%8.0f';
+            aud_stim_duration '%10.4f';
+            aud_stim_amp '%8.0f';
+            aud_stim_freq  '%10.4f';
+            aud_reward '%8.0f';
+            early_lick '%8.0f';
+            is_light_stim '%8.0f';
+            light_amp '%8.0f';
+            light_duration  '%10.4f';
+            light_freq  '%10.4f';
+            light_prestim_delay '%10.4f';
+            };
+
+        fprintf(fid_results, string(strjoin(results_config(:,2))) + ' \n', cell2mat(results_config(:,1))); 
         
 
         % Reset time and flag
@@ -236,19 +250,38 @@ function main_control(~,event)
         Stim_S.startBackground();
 
         lick_flag = 1;
-        perf = 6;
+        perf = 7;
 
-        % Save as results .txt file
-        results = [trial_number perf trial_time association_flag quiet_window iti ...
-                is_stim is_whisker is_auditory lick_flag reaction_time ...
-                wh_stim_duration wh_stim_amp wh_reward ...
-                is_reward ...
-                aud_stim_duration aud_stim_amp aud_stim_freq aud_reward ...
-                early_lick ...
-                is_light_stim light_amp light_duration light_freq light_prestim_delay];
-        fprintf(fid_results,...
-           '%6.0f %6.0f %10.4f %10.0f %10.4f %10.4f %6.0f %6.0f %6.0f %10.0f %10.4f %10.1f %6.0f %6.0f %10.4f %10.4f %10.1f %10.1f %6.0f %6.0f %6.0f %10.1f %10.1f %10.1f %10.1f \n',...
-           results);
+        % Save as results .txt file 
+        results_config = {
+            trial_number '%6.0f'; %variable / format spec
+            perf '%8.0f';
+            trial_time '%10.4f';
+            association_flag '%10.0f';
+            quiet_window '%10.4f';
+            iti '%10.4f';
+            is_stim '%8.0f';
+            is_whisker '%8.0f';
+            is_auditory '%8.0f';
+            lick_flag '%8.0f';
+            reaction_time '%10.4f';
+            wh_stim_duration '%10.1f';
+            wh_stim_amp '%8.0f';
+            wh_reward '%8.0f';
+            is_reward '%8.0f';
+            aud_stim_duration '%10.4f';
+            aud_stim_amp '%8.0f';
+            aud_stim_freq  '%10.4f';
+            aud_reward '%8.0f';
+            early_lick '%8.0f';
+            is_light_stim '%8.0f';
+            light_amp '%8.0f';
+            light_duration  '%10.4f';
+            light_freq  '%10.4f';
+            light_prestim_delay '%10.4f';
+            };
+        
+        fprintf(fid_results, string(strjoin(results_config(:,2))) + ' \n', cell2mat(results_config(:,1))); 
        
 
         while ~Stim_S.IsRunning

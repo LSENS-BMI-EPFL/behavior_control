@@ -18,7 +18,7 @@ end
 
 %Execute fastCamRecord specifying parameters
 dos(['"C:\Program Files\LSENS_EPFL\fastCamRecord.exe" ' ... 
-     num2str(VideoFileInfo.nOfFramesToGrab) ... # Number of frames to grab in total
+     num2str(VideoFileInfo.n_frames_to_grab) ... # Number of frames to grab in total
      ' 512 512 60 1 ' ...                       # Frame dimension settings + timeout + number of sweeps
      char(VideoFileInfo.directory) ...
      'trial_' num2str(VideoFileInfo.trial_number) ... # Path to frame block aligned at onset of trial "trial_number"

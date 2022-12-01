@@ -48,15 +48,15 @@ function update_parameters
 
         VideoFileInfo.trial_number=trial_number;
 
-        % TODO: remove hard coded basename - > ADD in GUI like for results
-        VideoFileInfo.directory=['D:\AR\' char(handles2give.mouse_name)...
+        % TODO: remove hard coded basename 
+        VideoFileInfo.directory=[handles.video_directory char(handles2give.mouse_name)...
             '\' [char(handles2give.mouse_name) '_' char(handles2give.date) '_' char(handles2give.session_time) '\']];
 
         % Define number of frames to save in block
-        VideoFileInfo.nOfFramesToGrab = trial_duration*camera_freq/1000;
-        %VideoFileInfo.nOfFramesToGrab = camera_block_duration*camera_freq/1000; %KEEP
+        VideoFileInfo.n_frames_to_grab = trial_duration*camera_freq/1000;
+        %VideoFileInfo.n_frames_to_grab = camera_block_duration*camera_freq/1000; %KEEP
 
-        save('D:\Behavior\TemplateConfigFile\VideoFileInfo','VideoFileInfo');
+        save('D:\Behavior\TemplateConfigFile\VideoFileInfo', 'VideoFileInfo');
         arm_camera()
 
     % TO KEEP - Block design of camera acquisition
@@ -126,7 +126,7 @@ function update_parameters
        
     % Timeout
     false_alarm_punish_flag = handles2give.false_alarm_punish_flag;
-    false_alarm_timeout=handles2give.false_alarm_; % in ms
+    false_alarm_timeout=handles2give.false_alarm_timeout; % in ms
     early_lick_punish_flag = handles2give.early_lick_punish_flag;
     early_lick_timeout=handles2give.early_lick_timeout; % in ms
 
@@ -496,7 +496,8 @@ function update_parameters
         
         % Load results data
         results=importdata([folder_name '\results.txt']);
-
+        n_asso_trials = sum(results.data(:,2)==6);
+        
         perf = results.data(results.data(:,2) ~= 6,2);
         aud_trials = results.data(results.data(:,2) ~= 6,9);
         wh_trials = results.data(results.data(:,2) ~= 6,8);
@@ -528,12 +529,16 @@ function update_parameters
     volume_per_reward = handles2give.reward_valve_duration /10; % in microliter (calibrated valve; 10ms opening -> 1 microliter)
     aud_tot_volume = volume_per_reward * sum(perf==3);
     wh_tot_volume = volume_per_reward * sum(perf==2);
+    asso_tot_volume = volume_per_reward * n_asso_trials;
     
     set(handles2give.PerformanceText2Tag, 'String', ...
-        ['Collected reward: Auditory =' num2str(aud_tot_volume) 'uL,'  ...
+        ['Reward: Auditory =' num2str(aud_tot_volume) 'uL, '  ...
         ' Whisker =' num2str(wh_tot_volume) 'uL, ' ...
-        ' Total =' num2str(aud_tot_volume+wh_tot_volume) 'uL'], ...
+        ' Total =' num2str(aud_tot_volume+wh_tot_volume) 'uL, ' ...
+        ' (Asso.=' num2str(asso_tot_volume) 'uL)'], ...
          'FontWeight', 'Bold');
+     
+     
       
     end
 
@@ -544,25 +549,25 @@ function update_parameters
 
     reward_titles={'Not rewarded', 'Rewarded'};
     light_titles={'Light OFF', 'Light ON'};
-    association_titles={'', 'Association'};
+    association_titles={'', ' Association'};
 
     if is_stim
 
         if is_auditory
 
-            set(handles2give.TrialTimeLineTextTag,'String', ['Next Trial: Auditory.  "' char(trial_titles(is_stim+2)) '" '...
-                char(association_titles(association_flag+1)) '     ' char(reward_titles(aud_reward+1)) '       ' char(light_titles(is_light_stim+1))],'ForegroundColor',acolor);
+            set(handles2give.TrialTimeLineTextTag,'String', ['Next trial: Auditory.  ' char(trial_titles(is_stim+2)) ' '...
+                char(association_titles(association_flag+1)) '   ' char(reward_titles(aud_reward+1)) '       ' char(light_titles(is_light_stim+1))],'ForegroundColor',acolor);
 
         else
 
-            set(handles2give.TrialTimeLineTextTag,'String',['Next Trial: Whisker. "' char(trial_titles(is_stim+1)) '" '...
-                char(association_titles(association_flag+1)) '     ' char(reward_titles(wh_reward+1)) '       ' char(light_titles(is_light_stim+1))],'ForegroundColor',wcolor);
+            set(handles2give.TrialTimeLineTextTag,'String',['Next trial: Whisker. ' char(trial_titles(is_stim+1)) '" '...
+                char(association_titles(association_flag+1)) '   ' char(reward_titles(wh_reward+1)) '       ' char(light_titles(is_light_stim+1))],'ForegroundColor',wcolor);
 
         end
 
     else
-        set(handles2give.TrialTimeLineTextTag,'String',['Next Trial:   "' char(trial_titles(is_stim+1)) '" '...
-            char(association_titles(association_flag+1))  '       ' char(light_titles(is_light_stim+1))], 'ForegroundColor','k');
+        set(handles2give.TrialTimeLineTextTag,'String',['Next trial:   ' char(trial_titles(is_stim+1)) ' '...
+            char(association_titles(association_flag+1))  '     ' char(light_titles(is_light_stim+1))], 'ForegroundColor','k');
     end
 
     %% Parameters are updated: now send signal vectors and triggers
@@ -603,7 +608,7 @@ function update_parameters
     %% Define response window boundaries
     
     response_window_start = (artifact_window + baseline_window)/1000;
-    response_window_end = (artifact_window + baseline_window+response_window)/1000;
+    response_window_end = (artifact_window + baseline_window + response_window)/1000;
 
     
     %% Update current trial flags
