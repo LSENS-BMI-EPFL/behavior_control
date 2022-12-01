@@ -560,7 +560,7 @@ function update_parameters
 
         else
 
-            set(handles2give.TrialTimeLineTextTag,'String',['Next trial: Whisker. ' char(trial_titles(is_stim+1)) '" '...
+            set(handles2give.TrialTimeLineTextTag,'String',['Next trial: Whisker. ' char(trial_titles(is_stim+1)) ' '...
                 char(association_titles(association_flag+1)) '   ' char(reward_titles(wh_reward+1)) '       ' char(light_titles(is_light_stim+1))],'ForegroundColor',wcolor);
 
         end
