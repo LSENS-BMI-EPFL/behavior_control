@@ -2,6 +2,9 @@
 
 MATLAB code to control data acquisition and behavioural sessions of sensory detection task(s).
 
+**Whisker stimulus calibration**:
+- Before any whisker stimulus experiments, calibrate whisker stimulation to make sure it is strong enough and reliable.
+- Use `calibration_coil.m` file using the teslameter connected to a NI board to measure the volt-tesla relationship.
 
 **How to use**
 - Change `Detection_GUI.m`s default parameters tags (mouse name, task parameters, directory paths, etc.) to have them ready at GUI start.
