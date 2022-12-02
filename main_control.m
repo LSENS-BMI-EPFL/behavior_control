@@ -95,7 +95,6 @@ function main_control(~,event)
             reward_delivery(is_stim, is_auditory, is_whisker, aud_reward, wh_reward);
             first_threshold_cross=find(abs(event.Data(1:end-1,1))<lick_threshold & abs(event.Data(2:end,1))>lick_threshold',1,'first');
             hit_time_adjusted=hit_time-first_threshold_cross/Main_S_SR;
-
             reaction_time=hit_time_adjusted-(baseline_window)/1000;
 
             mouse_licked_flag=1;
