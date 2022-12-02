@@ -2,7 +2,7 @@ function update_parameters
 % UPDATE_PARAMETERS Update parameters at each trial.
 
     global   association_flag response_window trial_duration quiet_window lick_threshold...
-        artifact_window iti camera_flag is_stim is_auditory is_whisker is_light_stim ...
+        artifact_window iti camera_flag is_stim is_auditory is_whisker is_light ...
         reward_valve_duration  aud_reward wh_reward wh_vec aud_vec light_vec ...
         light_prestim_delay stim_flag perf lick_flag ...
         false_alarm_punish_flag false_alarm_timeout early_lick_punish_flag early_lick_timeout ...
@@ -255,39 +255,39 @@ function update_parameters
     switch trial_type
         case stim_light_list(1) % NO STIM TRIAL
             is_stim=0;
-            is_light_stim=0;
+            is_light=0;
             is_auditory = 0;
             is_whisker =0;
         case stim_light_list(2) % AUDITORY TRIAL
             is_stim=1;
-            is_light_stim=0;
+            is_light=0;
             is_auditory = 1;
             is_whisker =0;
         case stim_light_list(3) % WHISKER TRIAL
             is_stim=1;
-            is_light_stim=0;
+            is_light=0;
             is_auditory = 0;
             is_whisker =1;
         case stim_light_list(4) % LIGHT NO STIM TRIAL
             is_stim=0;
-            is_light_stim=1;
+            is_light=1;
             is_auditory = 0;
             is_whisker =0;
         case stim_light_list(5) % LIGHT AUDITORY TRIAL
             is_stim=1;
-            is_light_stim=1;
+            is_light=1;
             is_auditory = 1;
             is_whisker =0;
         case stim_light_list(6)  % LIGHT WHISKER TRIAL
             is_stim=1;
-            is_light_stim=1;
+            is_light=1;
             is_auditory = 0;
             is_whisker =1;
     end
 
     % Set light parameters to zero if not a light trial
-    if ~is_light_stim || ~light_flag
-        is_light_stim=0;
+    if ~is_light || ~light_flag
+        is_light=0;
         light_prestim_delay=0;
         light_amp=0;
         light_duration=0;
@@ -417,9 +417,9 @@ function update_parameters
 
 
     %% Light / optogenetics, define vector
-    if is_light_stim
+    if is_light
 
-        disp(['Light' num2str(is_light_stim)])
+        disp(['Light' num2str(is_light)])
         time_vec_light = 1/Stim_S_SR : 1/Stim_S_SR : (light_duration/1000);
 
         light_pulse_train=[ones(1,round(Stim_S_SR*(light_duty/light_freq))) zeros(1,round(Stim_S_SR*((1-light_duty)/light_freq)))];
@@ -556,18 +556,18 @@ function update_parameters
         if is_auditory
 
             set(handles2give.TrialTimeLineTextTag,'String', ['Next trial: Auditory.  ' char(trial_titles(is_stim+2)) ' '...
-                char(association_titles(association_flag+1)) '   ' char(reward_titles(aud_reward+1)) '       ' char(light_titles(is_light_stim+1))],'ForegroundColor',acolor);
+                char(association_titles(association_flag+1)) '   ' char(reward_titles(aud_reward+1)) '       ' char(light_titles(is_light+1))],'ForegroundColor',acolor);
 
         else
 
             set(handles2give.TrialTimeLineTextTag,'String',['Next trial: Whisker. ' char(trial_titles(is_stim+1)) ' '...
-                char(association_titles(association_flag+1)) '   ' char(reward_titles(wh_reward+1)) '       ' char(light_titles(is_light_stim+1))],'ForegroundColor',wcolor);
+                char(association_titles(association_flag+1)) '   ' char(reward_titles(wh_reward+1)) '       ' char(light_titles(is_light+1))],'ForegroundColor',wcolor);
 
         end
 
     else
         set(handles2give.TrialTimeLineTextTag,'String',['Next trial:   ' char(trial_titles(is_stim+1)) ' '...
-            char(association_titles(association_flag+1))  '     ' char(light_titles(is_light_stim+1))], 'ForegroundColor','k');
+            char(association_titles(association_flag+1))  '     ' char(light_titles(is_light+1))], 'ForegroundColor','k');
     end
 
     %% Parameters are updated: now send signal vectors and triggers

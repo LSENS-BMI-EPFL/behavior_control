@@ -3,7 +3,7 @@ function main_control(~,event)
 
 
     global Main_S_SR association_flag trial_duration quiet_window lick_threshold...
-        artifact_window iti camera_flag is_stim is_auditory is_whisker is_light_stim ...
+        artifact_window iti camera_flag is_stim is_auditory is_whisker is_light ...
         aud_reward wh_reward wh_vec aud_vec ...
         stim_flag perf session_start_time lick_flag lick_time trial_start_time trial_end_time trial_time...
         false_alarm_punish_flag false_alarm_timeout early_lick_counter early_lick_punish_flag early_lick_timeout ...
@@ -187,7 +187,7 @@ function main_control(~,event)
             aud_stim_freq  '%10.4f';
             aud_reward '%8.0f';
             early_lick '%8.0f';
-            is_light_stim '%8.0f';
+            is_light '%8.0f';
             light_amp '%8.0f';
             light_duration  '%10.4f';
             light_freq  '%10.4f';
@@ -273,7 +273,7 @@ function main_control(~,event)
             aud_stim_freq  '%10.4f';
             aud_reward '%8.0f';
             early_lick '%8.0f';
-            is_light_stim '%8.0f';
+            is_light '%8.0f';
             light_amp '%8.0f';
             light_duration  '%10.4f';
             light_freq  '%10.4f';
