@@ -13,4 +13,4 @@ MATLAB code to control data acquisition and behavioural sessions of sensory dete
 - `session_config.json`: text file containing default parameters used at GUI initialization, saving session-wide parameters.
 - `results.txt`: trial-based file, appended after each trial, with trial information.
 - `results.csv`: same as `results.txt`, converted after stopping the session.
-- 'LickTraceX.bin`: binary file containing lick piezo sensor data and timestamps of trial X, of duration specified by the `trial_duration` parameter.
+- `LickTraceX.bin`: binary file containing lick piezo sensor data and timestamps of trial X, of duration specified by the `trial_duration` parameter.
