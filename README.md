@@ -8,9 +8,6 @@ This code currently supports  (uncued, undelayed) simple sensory (auditory, whis
 ### Installation
 - Clone or download the repository `git clone ...` in the computer from which you wish to run the behaviour on.
 
-### Whisker stimulus calibration:
-- Before any whisker stimulus experiments, calibrate whisker stimulation to make sure it is strong enough and reliable.
-- Use `calibration_coil.m` file using the teslameter connected to a NI board to measure the volt-tesla (V-mT) relationship.
 
 ### How to use
 #### Setting up 
