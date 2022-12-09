@@ -76,7 +76,7 @@ set(handles.AssociationCheckbox,'Value',0); handles.association_flag = get(handl
 set(handles.CameraTagCheck,'Value',1); handles.camera_flag = get(handles.CameraTagCheck,'Value');   
 set(handles.DummySessionCheckbox,'Value',0); handles.dummy_session_flag = get(handles.DummySessionCheckbox,'Value');
 
-%% Set the timeline paramters
+%% Set the timeline parameters
 set(handles.MinQuietWindowTag,'String','3000'); handles.min_quiet_window = str2double(get(handles.MinQuietWindowTag,'String'));
 set(handles.MaxQuietWindowTag,'String','5000'); handles.max_quiet_window = str2double(get(handles.MaxQuietWindowTag,'String'));
 set(handles.ResponseWindowTag,'String','1000'); handles.response_window = str2double(get(handles.ResponseWindowTag,'String'));
@@ -125,7 +125,7 @@ set(handles.FalseAlarmTimeOutTag,'Enable','off');
 set(handles.EarlyLickTimeOutTag,'String','0000'); handles.early_lick_timeout = str2double(get(handles.EarlyLickTimeOutTag,'String'));
 set(handles.EarlyLickTimeOutTag,'Enable','off');
 
-%% Set the stim paramters
+%% Set the stimulus parameters
 
 %Auditory stim
 set(handles.AStimWeightTag,'Enable','on')

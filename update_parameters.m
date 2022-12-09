@@ -49,7 +49,7 @@ function update_parameters
         VideoFileInfo.trial_number=trial_number;
 
         % TODO: remove hard coded basename 
-        VideoFileInfo.directory=[handles.video_directory char(handles2give.mouse_name)...
+        VideoFileInfo.directory=[handles2give.video_directory char(handles2give.mouse_name)...
             '\' [char(handles2give.mouse_name) '_' char(handles2give.date) '_' char(handles2give.session_time) '\']];
 
         % Define number of frames to save in block
