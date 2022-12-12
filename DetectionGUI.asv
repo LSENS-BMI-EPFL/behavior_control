@@ -76,8 +76,6 @@ set(handles.EarlyLickPunishmentCheckbox,'Enable','on');
 set(handles.AssociationCheckbox,'Value',0); handles.association_flag = get(handles.AssociationCheckbox,'Value');
 set(handles.CameraTagCheck,'Value',1); handles.camera_flag = get(handles.CameraTagCheck,'Value');   
 set(handles.DummySessionCheckbox,'Value',0); handles.dummy_session_flag = get(handles.DummySessionCheckbox,'Value');
-handles.session_type = 'auditory';
-set(handles.SessionTypeTag, 'String', handles.session_type);
 
 %% Set the timeline parameters
 set(handles.MinQuietWindowTag,'String','3000'); handles.min_quiet_window = str2double(get(handles.MinQuietWindowTag,'String'));
@@ -679,15 +677,11 @@ function StartBehaviourTag_Callback(hObject, eventdata, handles)
     
 global handles2give
 
-% Get session time info
-formatOut = 'yyyymmdd';
-handles.date = datestr(now,formatOut); %get date of today upon session start
 
 format shortg
+handles.date = datestr(now,formatOut);
 c = clock;   % https://ch.mathworks.com/help/matlab/ref/clock.html
 handles.session_time=[num2str(c(4),'%02.f') num2str(c(5),'%02.f') num2str(round(c(6)),'%02.f')];
-
-% Create session directory
 if ~exist([char(handles.behaviour_directory) '\' char(handles.mouse_name)],'dir')
     mkdir(handles.behaviour_directory,handles.mouse_name);
 end
@@ -695,7 +689,6 @@ if ~exist([char(handles.behaviour_directory) '\' char(handles.mouse_name) '\'  c
     mkdir([char(handles.behaviour_directory) '\' char(handles.mouse_name)],[char(handles.mouse_name) '_' char(handles.date) '_' handles.session_time]);
 end
 
-% Clear current GUI axes
 cla(handles.ProgressBarAxes);
 cla(handles.CameraAxes);
 cla(handles.AudAxes);
@@ -712,11 +705,8 @@ set(handles2give.PerformanceText3Tag,'String',' ');
 set(handles2give.OnlineTextTag,'String',' ');
 set(handles2give.TrialTimeLineTextTag,'String',' ');
 
-% Get handles for control and save handles as session configuration
 handles2give= handles; 
 save_session_config(handles);
-
-% Define sessions
 defining_sessions;
 
 % Update handles structure

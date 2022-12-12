@@ -325,9 +325,9 @@ function update_parameters
         is_reward=1;
     end
     
-    
+
+
     % Define reward vector
-    
     rew_vec_amp = 5; %volt
     reward_vec=[zeros(1, reward_delay_time) rew_vec_amp*ones(1,reward_valve_duration*Reward_S_SR/1000) zeros(1,Reward_S_SR/2)];
     
@@ -495,19 +495,17 @@ function update_parameters
     %% Online performance for plotting
     if trial_number>1
         
-        % Load results data and get asso/non-asso trial indices
+        % Load results data
         results=importdata([folder_name '\results.txt']);
         asso_trials = results.data(:,4)==1;
         non_asso_trials = results.data(:,4)~=1;
-       
-        % Get perf column and trial types
+        
         perf = results.data(non_asso_trials, 2);
         aud_trials = results.data(non_asso_trials, 9);
         wh_trials = results.data(non_asso_trials, 8);
         stim_trials = results.data(non_asso_trials, 7);
-        asso_stim_trials = results.data(asso_trials, 7);
 
-        % Compute performance and metrics 
+        % Compute performance and metrics -> modularize
         wh_hit_rate = round(sum(perf==2)/sum(wh_trials==1)*100)/100;
         aud_hit_rate = round(sum(perf==3)/sum(aud_trials==1)*100)/100;
         fa_rate = round(sum(perf==5)/sum(stim_trials==0)*100)/100;
@@ -531,7 +529,7 @@ function update_parameters
         
     % Calculate approx. reward volume obtained
     volume_per_reward = 5; % in microliter (THIS MUST BE CALIBRATED)
-    reward_trials_non_asso = results.data(non_asso_trials,15)==1; %ones only if reward_proba=1
+    reward_trials_non_asso = results.data(non_asso_trials,15)==1;
     
     aud_hits = perf==3;
     wh_hits = perf==2;
@@ -541,13 +539,13 @@ function update_parameters
     % Get volumes and print
     aud_tot_volume = volume_per_reward * sum(aud_trials_rewarded);
     wh_tot_volume = volume_per_reward * sum(wh_trials_rewarded);
-    asso_tot_volume = volume_per_reward * sum(asso_stim_trials);
+    asso_tot_volume = volume_per_reward * );
     
     
     set(handles2give.PerformanceText2Tag, 'String', ...
-        ['Reward: Auditory=' num2str(aud_tot_volume) 'uL, '  ...
-        ' Whisker=' num2str(wh_tot_volume) 'uL, ' ...
-        ' Total=' num2str(aud_tot_volume+wh_tot_volume) 'uL, ' ...
+        ['Reward: Auditory =' num2str(aud_tot_volume) 'uL, '  ...
+        ' Whisker =' num2str(wh_tot_volume) 'uL, ' ...
+        ' Total =' num2str(aud_tot_volume+wh_tot_volume) 'uL, ' ...
         ' (Asso.=' num2str(asso_tot_volume) 'uL)'], ...
          'FontWeight', 'Bold');
      
