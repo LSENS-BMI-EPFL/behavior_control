@@ -485,6 +485,36 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
+
+function SessionTypeTag_Callback(hObject, eventdata, handles)
+% hObject    handle to SessionTypeTag (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of SessionTypeTag as text
+%        str2double(get(hObject,'String')) returns contents of SessionTyp
+%        as a string
+global handles2give
+handles.session_type = get(handles.SessionTypeTag,'String');
+
+% Update handles structure
+handles2give=handles;
+guidata(hObject, handles);
+
+
+% --- Executes during object creation, after setting all properties.
+function SessionTypeTag_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to SessionTypeTag (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
 function VideoDirectoryTag_Callback(hObject, eventdata, handles)
 % hObject    handle to VideoDirectoryTag (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
