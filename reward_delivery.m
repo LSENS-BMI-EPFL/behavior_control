@@ -9,7 +9,7 @@ function reward_delivery(is_stim, is_auditory, is_whisker, aud_reward, wh_reward
         % Check if stimulus trials are rewarded
         if (is_auditory && aud_reward) || (is_whisker && wh_reward) 
 
-            %Trigger reward signal
+            %Trigger reward signal (pulse defind in update_parameters.m)
             outputSingleScan(Trigger_S, [0 1 0]);
 
             reward_time=tic;

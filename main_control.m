@@ -16,7 +16,7 @@ function main_control(~,event)
         fid_results perf_and_save_results_flag lh3 reward_delivered_flag update_parameters_flag...
         is_reward...
         light_prestim_delay light_duration light_freq light_amp SITrigger_vec trial_lick_data...
-
+        whisker_trial_counter 
 
     %% Timing last lick detection for quiet window.
     % --------------------------------------------
@@ -306,6 +306,10 @@ function main_control(~,event)
         delete(lh3);
 
         trial_number = trial_number + 1;
+        if is_whisker
+            whisker_trial_counter = + 1;
+        end
+        
 
         fid_lick_trace=fopen([folder_name '\LickTrace' num2str(trial_number) '.bin'], 'w');
         lh3 = addlistener(Stim_S,'DataAvailable',@(src, event)log_lick_data(src, event, trial_duration));

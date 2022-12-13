@@ -15,7 +15,7 @@ function update_parameters
         perf_and_save_results_flag lh3 reward_delivered_flag update_parameters_flag...
         is_reward reward_pool reward_pool_nostim partial_reward_flag reward_proba_old...
         light_duration light_freq light_amp camera_freq SITrigger_vec main_trial_pool trial_lick_data...
-       
+        whisker_trial_counter
        
 
     outputSingleScan(Trigger_S,[0 0 0])
@@ -32,7 +32,6 @@ function update_parameters
     light_duration = handles2give.light_duration;
 
     % Trial pool
-    n_pool=10; % Making the pool for stimulus and partial rewards
     camera_block_duration = 300; % in seconds (added for block filming)
 
     trial_number = trial_number+1;
@@ -303,6 +302,7 @@ function update_parameters
     aud_reward = handles2give.aud_reward; % is auditory rewarded
     wh_reward = handles2give.wh_reward;  % is whisker rewarded
 
+    n_pool_partial = wh_stim_weight;
     % Probabilistic reward delivery (in non-association trials)
     if partial_reward_flag && not(association_flag)
 
@@ -310,30 +310,29 @@ function update_parameters
         if isempty('reward_proba_old') 
             reward_proba_old = reward_proba;
         end
-
-        % Create a pool of rewarded and unrewarded trials (vector of 1s and 0s)
-        if mod(trial_number, n_pool)==1 || reward_proba_old ~= reward_proba  %check if reward_proba has changed
+        % Whisker only: create a pool of rewarded and unrewarded trials (vector of 1s and 0s)
+        if mod(whisker_trial_counter, n_pool_partial)==1 || reward_proba_old ~= reward_proba  %check if reward_proba has changed
             reward_proba_old = reward_proba;
-            reward_pool=[zeros(1,round((1-reward_proba)*n_pool)) ones(1,round(reward_proba*n_pool))]; % zero for no stim, one for Reward
+            reward_pool=[zeros(1,round((1-reward_proba)*n_pool_partial)) ones(1,round(reward_proba*n_pool_partial))]; % zero for no stim, one for Reward
             reward_pool=reward_pool(randperm(numel(reward_pool)));
             %reward_pool_nostim = 1-reward_pool; % 1 - probability for rewarded no. stim. trials
         end
    
+        % For each trial, set is_reward 
         % Sample from proba. reward pool in whisker trials only
         if is_whisker
-            is_reward=reward_pool(mod(trial_number,n_pool)+1); % select the next trial from the pool,  0 noReward 1 Reward
+            is_reward=reward_pool(mod(whisker_trial_counter,n_pool_partial)+1); % select the next trial from the pool,  0 noReward 1 Reward
         elseif is_auditory
             is_reward=aud_reward;
-            disp('here')
         else
             is_reward=0;
         end
-        is_reward
         
     % Constant reward delivery (also for association trials)
     elseif not(partial_reward_flag) || association_flag
         is_reward=1;
     end
+    is_reward
     
     
     % Define reward vector
@@ -345,7 +344,7 @@ function update_parameters
     if ~is_reward
         reward_vec=zeros(1,numel(reward_vec));
     end
-
+    
     %% Get trial duration
     trial_duration = max(trial_duration, (light_prestim_delay + artifact_window + baseline_window + max(response_window, (light_duration-light_prestim_delay))) /1000);
 
@@ -517,7 +516,7 @@ function update_parameters
         stim_trials = results.data(non_asso_trials, 7);
         asso_stim_trials = results.data(asso_trials, 7);
 
-        % Compute performance and metrics 
+        % Compute performance and metrics -> could be a function
         wh_hit_rate = round(sum(perf==2)/sum(wh_trials==1)*100)/100;
         aud_hit_rate = round(sum(perf==3)/sum(aud_trials==1)*100)/100;
         fa_rate = round(sum(perf==5)/sum(stim_trials==0)*100)/100;
@@ -539,7 +538,7 @@ function update_parameters
         perf_win_size=handles2give.last_recent_trials;
         plot_performance(results, perf_win_size);
         
-    % Calculate approx. reward volume obtained
+    % Calculate approx. reward volume obtained -> could be a function
     volume_per_reward = 5; % in microliter (THIS MUST BE CALIBRATED)
     reward_trials_non_asso = results.data(non_asso_trials,15)==1; %ones only if reward_proba=1
     
@@ -550,18 +549,22 @@ function update_parameters
     
     % Get volumes and print
     aud_tot_volume = volume_per_reward * sum(aud_trials_rewarded);
-    wh_tot_volume = volume_per_reward * sum(wh_trials_rewarded);
+    if wh_reward
+        wh_tot_volume = volume_per_reward * sum(wh_trials_rewarded);
+    else
+        wh_tot_volume = 0;
+    end
+    
     asso_tot_volume = volume_per_reward * sum(asso_stim_trials);
     
-    
+ 
     set(handles2give.PerformanceText2Tag, 'String', ...
         ['Reward: Auditory=' num2str(aud_tot_volume) 'uL, '  ...
         ' Whisker=' num2str(wh_tot_volume) 'uL, ' ...
         ' Total=' num2str(aud_tot_volume+wh_tot_volume) 'uL, ' ...
         ' (Asso.=' num2str(asso_tot_volume) 'uL)'], ...
          'FontWeight', 'Bold');
-     
-     
+    
       
     end
 
@@ -579,12 +582,17 @@ function update_parameters
         if is_auditory
 
             set(handles2give.TrialTimeLineTextTag,'String', ['Next trial: Auditory.  ' char(trial_titles(is_stim+2)) ' '...
-                char(association_titles(association_flag+1)) '   ' char(reward_titles(is_reward+1)) '       ' char(light_titles(is_light+1))],'ForegroundColor',acolor);
+                char(association_titles(association_flag+1)) '   ' char(reward_titles(is_reward+1)) '     ' char(light_titles(is_light+1))],'ForegroundColor',acolor);
 
         else
-
+            if is_reward && wh_reward
+                reward_title = 'Rewarded';
+            elseif ~wh_reward || ~is_reward
+                reward_title = 'Not rewarded';
+            end
+            
             set(handles2give.TrialTimeLineTextTag,'String',['Next trial: Whisker. ' char(trial_titles(is_stim+1)) ' '...
-                char(association_titles(association_flag+1)) '   ' char(reward_titles(is_reward+1)) '       ' char(light_titles(is_light+1))],'ForegroundColor',wcolor);
+                char(association_titles(association_flag+1)) '   ' char(reward_title) '     ' char(light_titles(is_light+1))],'ForegroundColor',wcolor);
 
         end
 
