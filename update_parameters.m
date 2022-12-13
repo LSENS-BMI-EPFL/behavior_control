@@ -13,7 +13,7 @@ function update_parameters
         deliver_reward_flag ...
         wh_stim_amp response_window_start response_window_end...
         perf_and_save_results_flag lh3 reward_delivered_flag update_parameters_flag...
-        is_reward reward_pool partial_reward_flag reward_proba_old...
+        is_reward reward_pool reward_pool_nostim partial_reward_flag reward_proba_old...
         light_duration light_freq light_amp camera_freq SITrigger_vec main_trial_pool trial_lick_data...
        
        
@@ -316,10 +316,20 @@ function update_parameters
             reward_proba_old = reward_proba;
             reward_pool=[zeros(1,round((1-reward_proba)*n_pool)) ones(1,round(reward_proba*n_pool))]; % zero for no stim, one for Reward
             reward_pool=reward_pool(randperm(numel(reward_pool)));
+            %reward_pool_nostim = 1-reward_pool; % 1 - probability for rewarded no. stim. trials
         end
-
-        is_reward=reward_pool(mod(trial_number,n_pool)+1); % select the next trial from the pool,  0 noReward 1 Reward
-    
+   
+        % Sample from proba. reward pool in whisker trials only
+        if is_whisker
+            is_reward=reward_pool(mod(trial_number,n_pool)+1); % select the next trial from the pool,  0 noReward 1 Reward
+        elseif is_auditory
+            is_reward=aud_reward;
+            disp('here')
+        else
+            is_reward=0;
+        end
+        is_reward
+        
     % Constant reward delivery (also for association trials)
     elseif not(partial_reward_flag) || association_flag
         is_reward=1;
@@ -327,9 +337,9 @@ function update_parameters
     
     
     % Define reward vector
-    
     rew_vec_amp = 5; %volt
     reward_vec=[zeros(1, reward_delay_time) rew_vec_amp*ones(1,reward_valve_duration*Reward_S_SR/1000) zeros(1,Reward_S_SR/2)];
+   
     
     % Non-rewarded trials
     if ~is_reward
@@ -609,7 +619,7 @@ function update_parameters
 
     outputSingleScan(Trigger_S,[0 0 0])
 
-    % WHAT IS THIS FOR?
+    % Queue reward vector
     if ~Reward_S.ScansQueued 
         queueOutputData(Reward_S, reward_vec')
         while Reward_S.IsRunning
