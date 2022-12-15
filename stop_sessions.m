@@ -85,5 +85,8 @@ results=importdata([folder_name '\results.txt']);
 results_table = array2table(results.data, 'VariableNames', results.colheaders);
 writetable(results_table, [folder_name '\results.csv']);
 
+
+% Save session config post session
+
 set(handles2give.OnlineTextTag,'String', 'Session Stopped', 'FontWeight', 'Bold');
 

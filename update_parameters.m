@@ -187,7 +187,7 @@ function update_parameters
     end
 
     % Size of pool (i.e. trial block) to get trials from
-    main_pool_size = 20;
+    main_pool_size = aud_stim_weight + wh_stim_weight + no_stim_weight; %in an non-light task
     stim_light_list=[900,901,902,903,904,905]; % code for each stimuli
     
     % Save old probabilities
@@ -233,20 +233,6 @@ function update_parameters
         main_trial_pool=main_trial_pool(randperm(numel(main_trial_pool)));
 
     end
-
-    % Create auditory detection block before any whisker stim - NOT IN USE
-    %aud_block_size = 30;
-    %aud_stim_proba_block=0.5;
-    %aud_block_pool = [stim_light_list(1)*ones(1,round(round(((1-aud_stim_proba_block)*aud_block_size)*100)/100)) ,...
-    %        stim_light_list(2)*ones(1,round(round(aud_stim_proba_block*aud_block_size*100)/100))];
-    %aud_block_pool = aud_block_pool(randperm(numel(aud_block_pool)));
-
-    % % Select next trial from pool
-    % if trial_number < aud_block_size
-    %     Trial_Type = aud_block_pool(mod(n_completed_trials,main_pool_size)+1); % select from auditory detection block first
-    % else
-    %     Trial_Type = main_trial_pool(mod(n_completed_trials,main_pool_size)+1); %0 noLight 1 Light
-    % end
 
     % Select next trial
     trial_type = main_trial_pool(mod(n_completed_trials,main_pool_size)+1); %0 noLight 1 Light
@@ -332,7 +318,8 @@ function update_parameters
     elseif not(partial_reward_flag) || association_flag
         is_reward=1;
     end
-    is_reward
+    
+
     
     
     % Define reward vector

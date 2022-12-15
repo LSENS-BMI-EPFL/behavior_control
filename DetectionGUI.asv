@@ -1839,25 +1839,27 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
+
+
 function MouseWeightBefore_Callback(hObject, eventdata, handles)
-% hObject    handle to MouseWeightBefore (see GCBO)
+% hObject    handle to edit86 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of MouseWeightBefore as text
-%        str2double(get(hObject,'String')) returns contents of MouseWeightBefore as a double
+% Hints: get(hObject,'String') returns contents of edit86 as text
+%        str2double(get(hObject,'String')) returns contents of edit86 as a double
 
 global handles2give
-handles.mouse_weight_before = get(handles.MouseWeightBefore,'String');
+handles.behaviour_directory = get(handles.BehaviorDirectoryTag,'String');
 
 % Update handles structure
 handles2give=handles;
-guidata(hObject, handles);
+end
 
 
 % --- Executes during object creation, after setting all properties.
 function MouseWeightBefore_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to MouseWeightBefore (see GCBO)
+% hObject    handle to edit86 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -1869,25 +1871,18 @@ end
 
 
 
-function MouseWeightAfter_Callback(hObject, eventdata, handles)
-% hObject    handle to MouseWeightAfter (see GCBO)
+function edit88_Callback(hObject, eventdata, handles)
+% hObject    handle to edit88 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of MouseWeightAfter as text
-%        str2double(get(hObject,'String')) returns contents of MouseWeightAfter as a double
-
-global handles2give
-handles.mouse_weight_after = get(handles.MouseWeightAfter,'String');
-
-% Update handles structure
-handles2give=handles;
-guidata(hObject, handles);
+% Hints: get(hObject,'String') returns contents of edit88 as text
+%        str2double(get(hObject,'String')) returns contents of edit88 as a double
 
 
 % --- Executes during object creation, after setting all properties.
-function MouseWeightAfter_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to MouseWeightAfter (see GCBO)
+function edit88_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit88 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
