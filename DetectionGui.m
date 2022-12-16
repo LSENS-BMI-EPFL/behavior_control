@@ -22,7 +22,7 @@ function varargout = DetectionGUI(varargin)
 
 % Edit the above text to modify the response to help DetectionGUI
 
-% Last Modified by GUIDE v2.5 15-Dec-2022 15:59:01
+% Last Modified by GUIDE v2.5 15-Dec-2022 11:24:00
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -74,7 +74,7 @@ set(handles.FalseAlarmPunishmentCheckbox,'Enable','on');
 set(handles.EarlyLickPunishmentCheckbox,'Value',0); handles.early_lick_punish_flag = get(handles.EarlyLickPunishmentCheckbox,'Value');
 set(handles.EarlyLickPunishmentCheckbox,'Enable','on');
 set(handles.AssociationCheckbox,'Value',0); handles.association_flag = get(handles.AssociationCheckbox,'Value');
-set(handles.CameraTagCheck,'Value',0); handles.camera_flag = get(handles.CameraTagCheck,'Value');   
+set(handles.CameraTagCheck,'Value',1); handles.camera_flag = get(handles.CameraTagCheck,'Value');   
 set(handles.DummySessionCheckbox,'Value',0); handles.dummy_session_flag = get(handles.DummySessionCheckbox,'Value');
 handles.session_type = 'auditory';
 set(handles.SessionTypeTag, 'String', handles.session_type);
@@ -1839,16 +1839,16 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-function MouseWeightBeforeTag_Callback(hObject, eventdata, handles)
-% hObject    handle to MouseWeightBeforeTag (see GCBO)
+function MouseWeightBefore_Callback(hObject, eventdata, handles)
+% hObject    handle to MouseWeightBefore (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of MouseWeightBeforeTag as text
-%        str2double(get(hObject,'String')) returns contents of MouseWeightBeforeTag as a double
+% Hints: get(hObject,'String') returns contents of MouseWeightBefore as text
+%        str2double(get(hObject,'String')) returns contents of MouseWeightBefore as a double
 
 global handles2give
-handles.mouse_weight_before = str2double(get(handles.MouseWeightBefore,'String'));
+handles.mouse_weight_before = get(handles.MouseWeightBefore,'String');
 
 % Update handles structure
 handles2give=handles;
@@ -1856,8 +1856,8 @@ guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
-function MouseWeightBeforeTag_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to MouseWeightBeforeTag (see GCBO)
+function MouseWeightBefore_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to MouseWeightBefore (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -1869,16 +1869,16 @@ end
 
 
 
-function MouseWeightAfterTag_Callback(hObject, eventdata, handles)
-% hObject    handle to MouseWeightAfterTag (see GCBO)
+function MouseWeightAfter_Callback(hObject, eventdata, handles)
+% hObject    handle to MouseWeightAfter (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hints: get(hObject,'String') returns contents of MouseWeightAfter as text
-%        str2double(get(hObject,'String')) returns contents of MouseWeightAfterTag as a double
+%        str2double(get(hObject,'String')) returns contents of MouseWeightAfter as a double
 
 global handles2give
-handles.mouse_weight_after = str2double(get(handles.MouseWeightAfter,'String'));
+handles.mouse_weight_after = get(handles.MouseWeightAfter,'String');
 
 % Update handles structure
 handles2give=handles;
@@ -1886,7 +1886,7 @@ guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
-function MouseWeightAfterTag_CreateFcn(hObject, eventdata, handles)
+function MouseWeightAfter_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to MouseWeightAfter (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
@@ -1896,21 +1896,3 @@ function MouseWeightAfterTag_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
-
-
-function UpdateWeightTag_Callback(hObject, eventdata, handles)
-% hObject    handle to UpdateWeightTag (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of UpdateWeightTag as text
-%        str2double(get(hObject,'String')) returns contents of UpdateWeightTag as a double
-
-handles.mouse_weight_before = str2double(get(handles.MouseWeightBefore,'String'));
-handles.mouse_weight_after = str2double(get(handles.MouseWeightAfter,'String'));
-
-save_session_config(handles);
-
-
-guidata(hObject, handles);
