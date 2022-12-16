@@ -136,7 +136,9 @@ set(handles.AStimWeightTag,'String','1'); handles.aud_stim_weight = str2double(g
 
 %Whisker stimuli 
 set(handles.StimDuration1Tag,'String','1'); handles.wh_stim_duration(1) = str2double(get(handles.StimDuration1Tag,'String'));
+set(handles.StimDuration1Tag,'Enable','off');
 set(handles.StimAmp1Tag,'String','5'); handles.wh_stim_amp(1) = str2double(get(handles.StimAmp1Tag,'String'));
+set(handles.StimAmp1Tag,'Enable','off');
 set(handles.StimWeight1Tag,'String','0'); handles.wh_stim_weight(1) = str2double(get(handles.StimWeight1Tag,'String'));
 
 % Stim probability
@@ -151,9 +153,9 @@ set(handles.RewardDelayCheckbox,'Enable','off');
 set(handles.RewardDelayTag,'String','50'); handles.reward_delay_time = str2double(get(handles.RewardDelayTag,'String'));
 set(handles.RewardDelayTag,'Enable','off');
 set(handles.PartialRewardCheckbox,'Value',0); handles.partial_reward_flag = get(handles.PartialRewardCheckbox,'Value');
-set(handles.PartialRewardCheckbox,'Enable','on');
+set(handles.PartialRewardCheckbox,'Enable','off');
 set(handles.RewardProbTag,'String','1'); handles.reward_proba = str2double(get(handles.RewardProbTag,'String'));
-set(handles.RewardProbTag,'Enable','on');
+set(handles.RewardProbTag,'Enable','off');
 set(handles.AudRewTag,'Value',1); handles.aud_reward = get(handles.AudRewTag,'Value');
 set(handles.AudRewTag,'Enable','off');
 set(handles.WhRewTag,'Value',1); handles.wh_reward = get(handles.WhRewTag,'Value');
