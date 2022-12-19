@@ -22,7 +22,7 @@ function varargout = DetectionGUI(varargin)
 
 % Edit the above text to modify the response to help DetectionGUI
 
-% Last Modified by GUIDE v2.5 19-Dec-2022 17:01:38
+% Last Modified by GUIDE v2.5 19-Dec-2022 17:37:48
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -467,7 +467,7 @@ function PharmaCheckbox_Callback(hObject, eventdata, handles)
 
 % Hint: get(hObject,'Value') returns toggle state of PharmaCheckbox
 global handles2give
-handles.pharma_session = get(handles.PharmaoCheckbox,'Value');
+handles.pharma_session = get(handles.PharmaCheckbox,'Value');
 
 % Update handles structure
 handles2give=handles;
@@ -1957,7 +1957,7 @@ function MouseWeightBeforeTag_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of MouseWeightBeforeTag as a double
 
 global handles2give
-handles.mouse_weight_before = get(handles.MouseWeightBeforeTag,'String');
+handles.mouse_weight_before = str2double(get(handles.MouseWeightBeforeTag,'String'));
 
 % Update handles structure
 handles2give=handles;
@@ -1987,7 +1987,7 @@ function MouseWeightAfterTag_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of MouseWeightAfterTag as a double
 
 global handles2give
-handles.mouse_weight_after = get(handles.MouseWeightAfterTag,'String');
+handles.mouse_weight_after = str2double(get(handles.MouseWeightAfterTag,'String'));
 
 % Update handles structure
 handles2give=handles;
@@ -2005,3 +2005,20 @@ function MouseWeightAfterTag_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes on button press in UpdateWeightTag.
+function UpdateWeightTag_Callback(hObject, eventdata, handles)
+% hObject    handle to UpdateWeightTag (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+handles.mouse_weight_before = str2double(get(handles.MouseWeightBeforeTag,'String'));
+handles.mouse_weight_after = str2double(get(handles.MouseWeightAfterTag,'String'));
+
+% Update config file
+save_session_config(handles);
+disp('Updated config file.');
+
+guidata(hObject, handles);
+

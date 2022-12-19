@@ -32,5 +32,7 @@ fid = fopen([folder_name '\session_config.json'],'w');
 fprintf(fid, '%s', session_config_json);
 fclose(fid);
 
+disp('Saved session config file');
+
 end
 
