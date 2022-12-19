@@ -22,7 +22,7 @@ function varargout = DetectionGUI(varargin)
 
 % Edit the above text to modify the response to help DetectionGUI
 
-% Last Modified by GUIDE v2.5 15-Dec-2022 11:24:00
+% Last Modified by GUIDE v2.5 19-Dec-2022 17:01:38
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -56,6 +56,17 @@ global handles2give
 % Choose default command line output for DetectionGUI
 handles.output = hObject;
 
+
+%% Set default session type
+set(handles.TwoPhotonCheckbox,'Value',0); handles.twophoton_session = get(handles.TwoPhotonCheckbox,'Value');
+set(handles.ThreePhotonCheckbox,'Value',0); handles.threephoton_session = get(handles.ThreePhotonCheckbox,'Value');
+set(handles.WFCheckbox,'Value',0); handles.wf_session = get(handles.WFCheckbox,'Value');
+set(handles.EphysCheckbox,'Value',0); handles.ephys_session = get(handles.EphysCheckbox,'Value');
+set(handles.OptoCheckbox,'Value',0); handles.opto_session = get(handles.OptoCheckbox,'Value');
+set(handles.ChemoCheckbox,'Value',0); handles.chemo_session = get(handles.ChemoCheckbox,'Value');
+set(handles.PharmaCheckbox,'Value',0); handles.pharma_session = get(handles.PharmaCheckbox,'Value');
+
+
 %% Set general attributes
 formatOut = 'yyyymmdd';
 handles.date = datestr(now,formatOut);
@@ -76,8 +87,8 @@ set(handles.EarlyLickPunishmentCheckbox,'Enable','on');
 set(handles.AssociationCheckbox,'Value',0); handles.association_flag = get(handles.AssociationCheckbox,'Value');
 set(handles.CameraTagCheck,'Value',1); handles.camera_flag = get(handles.CameraTagCheck,'Value');   
 set(handles.DummySessionCheckbox,'Value',0); handles.dummy_session_flag = get(handles.DummySessionCheckbox,'Value');
-handles.session_type = 'auditory';
-set(handles.SessionTypeTag, 'String', handles.session_type);
+handles.behaviour_type = 'auditory';
+set(handles.BehaviourTypeTag, 'String', handles.behaviour_type);
 
 %% Set the timeline parameters
 set(handles.MinQuietWindowTag,'String','3000'); handles.min_quiet_window = str2double(get(handles.MinQuietWindowTag,'String'));
@@ -364,7 +375,103 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
+% --- Executes on button press in DummySessionCheckbox.
+function TwoPhotonCheckbox_Callback(hObject, eventdata, handles)
+% hObject    handle to TwoPhotonCheckbox (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
 
+% Hint: get(hObject,'Value') returns toggle state of TwoPhotonCheckbox
+global handles2give
+handles.twophoton_session = get(handles.TwoPhotonCheckbox,'Value');
+
+% Update handles structure
+handles2give=handles;
+guidata(hObject, handles);
+
+% --- Executes on button press in DummySessionCheckbox.
+function ThreePhotonCheckbox_Callback(hObject, eventdata, handles)
+% hObject    handle to ThreePhotonCheckbox (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of ThreePhotonCheckbox
+global handles2give
+handles.threephoton_session = get(handles.ThreePhotonCheckbox,'Value');
+
+% Update handles structure
+handles2give=handles;
+guidata(hObject, handles);
+
+% --- Executes on button press in DummySessionCheckbox.
+function WFCheckbox_Callback(hObject, eventdata, handles)
+% hObject    handle to WFCheckbox (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of WFCheckbox
+global handles2give
+handles.wf_session = get(handles.WFCheckbox,'Value');
+
+% Update handles structure
+handles2give=handles;
+guidata(hObject, handles);
+
+% --- Executes on button press in DummySessionCheckbox.
+function EphysCheckbox_Callback(hObject, eventdata, handles)
+% hObject    handle to EphysCheckbox (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of EphysCheckbox
+global handles2give
+handles.ephys_session = get(handles.EphysCheckbox,'Value');
+
+% Update handles structure
+handles2give=handles;
+guidata(hObject, handles);
+
+% --- Executes on button press in DummySessionCheckbox.
+function OptoCheckbox_Callback(hObject, eventdata, handles)
+% hObject    handle to OptoCheckbox (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of OptoCheckbox
+global handles2give
+handles.opto_session = get(handles.OptoCheckbox,'Value');
+
+% Update handles structure
+handles2give=handles;
+guidata(hObject, handles);
+
+% --- Executes on button press in DummySessionCheckbox.
+function ChemoCheckbox_Callback(hObject, eventdata, handles)
+% hObject    handle to ChemoCheckbox (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of ChemoCheckbox
+global handles2give
+handles.chemo_session = get(handles.ChemoCheckbox,'Value');
+
+% Update handles structure
+handles2give=handles;
+guidata(hObject, handles);
+
+% --- Executes on button press in DummySessionCheckbox.
+function PharmaCheckbox_Callback(hObject, eventdata, handles)
+% hObject    handle to PharmaCheckbox (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of PharmaCheckbox
+global handles2give
+handles.pharma_session = get(handles.PharmaoCheckbox,'Value');
+
+% Update handles structure
+handles2give=handles;
+guidata(hObject, handles);
 
 % --- Executes on button press in AssociationCheckbox.
 function AssociationCheckbox_Callback(hObject, eventdata, handles)
@@ -491,16 +598,16 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-function SessionTypeTag_Callback(hObject, eventdata, handles)
-% hObject    handle to SessionTypeTag (see GCBO)
+function BehaviourTypeTag_Callback(hObject, eventdata, handles)
+% hObject    handle to BehaviourTypeTag (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of SessionTypeTag as text
+% Hints: get(hObject,'String') returns contents of BehaviourTypeTag as text
 %        str2double(get(hObject,'String')) returns contents of SessionTyp
 %        as a string
 global handles2give
-handles.session_type = get(handles.SessionTypeTag,'String');
+handles.behaviour_type = get(handles.BehaviourTypeTag,'String');
 
 % Update handles structure
 handles2give=handles;
@@ -508,8 +615,8 @@ guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
-function SessionTypeTag_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to SessionTypeTag (see GCBO)
+function BehaviourTypeTag_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to BehaviourTypeTag (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -1841,16 +1948,16 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-function MouseWeightBefore_Callback(hObject, eventdata, handles)
-% hObject    handle to MouseWeightBefore (see GCBO)
+function MouseWeightBeforeTag_Callback(hObject, eventdata, handles)
+% hObject    handle to MouseWeightBeforeTag (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of MouseWeightBefore as text
-%        str2double(get(hObject,'String')) returns contents of MouseWeightBefore as a double
+% Hints: get(hObject,'String') returns contents of MouseWeightBeforeTag as text
+%        str2double(get(hObject,'String')) returns contents of MouseWeightBeforeTag as a double
 
 global handles2give
-handles.mouse_weight_before = get(handles.MouseWeightBefore,'String');
+handles.mouse_weight_before = get(handles.MouseWeightBeforeTag,'String');
 
 % Update handles structure
 handles2give=handles;
@@ -1858,8 +1965,8 @@ guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
-function MouseWeightBefore_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to MouseWeightBefore (see GCBO)
+function MouseWeightBeforeTag_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to MouseWeightBeforeTag (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -1871,16 +1978,16 @@ end
 
 
 
-function MouseWeightAfter_Callback(hObject, eventdata, handles)
-% hObject    handle to MouseWeightAfter (see GCBO)
+function MouseWeightAfterTag_Callback(hObject, eventdata, handles)
+% hObject    handle to MouseWeightAfterTag (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of MouseWeightAfter as text
-%        str2double(get(hObject,'String')) returns contents of MouseWeightAfter as a double
+% Hints: get(hObject,'String') returns contents of MouseWeightAfterTag as text
+%        str2double(get(hObject,'String')) returns contents of MouseWeightAfterTag as a double
 
 global handles2give
-handles.mouse_weight_after = get(handles.MouseWeightAfter,'String');
+handles.mouse_weight_after = get(handles.MouseWeightAfterTag,'String');
 
 % Update handles structure
 handles2give=handles;
@@ -1888,8 +1995,8 @@ guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
-function MouseWeightAfter_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to MouseWeightAfter (see GCBO)
+function MouseWeightAfterTag_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to MouseWeightAfterTag (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
