@@ -5,6 +5,15 @@ This code currently supports  (uncued, undelayed) simple sensory (auditory, whis
 
 **Note**: parameters and features related to video filming are currently not supported and setup-dependent. Therefore no documentation related to video filming is provided yet.
 
+### Requirements
+ - Git
+ - MATLAB, with the add-ons:
+  - Data Acquisition Toolbox Support Package for National Instrument NI-DAQmx Devices
+  - Data Acquisition Toolbox
+  - Signal Processing Toolbox (`downsample`)
+  - Statistics and Machine Learning Toolbox (`randsample`)
+ - An audio player (e.g. VLC) for white noise
+
 ### Installation
 - Clone or download the repository `git clone ...` in the computer from which you wish to run the behaviour on.
 
