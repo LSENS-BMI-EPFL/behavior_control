@@ -85,13 +85,13 @@ set(handles.FalseAlarmPunishmentCheckbox,'Enable','on');
 set(handles.EarlyLickPunishmentCheckbox,'Value',0); handles.early_lick_punish_flag = get(handles.EarlyLickPunishmentCheckbox,'Value');
 set(handles.EarlyLickPunishmentCheckbox,'Enable','on');
 set(handles.AssociationCheckbox,'Value',0); handles.association_flag = get(handles.AssociationCheckbox,'Value');
-set(handles.CameraTagCheck,'Value',1); handles.camera_flag = get(handles.CameraTagCheck,'Value');   
+set(handles.CameraTagCheck,'Value',0); handles.camera_flag = get(handles.CameraTagCheck,'Value');   
 set(handles.DummySessionCheckbox,'Value',0); handles.dummy_session_flag = get(handles.DummySessionCheckbox,'Value');
 handles.behaviour_type = 'auditory';
 set(handles.BehaviourTypeTag, 'String', handles.behaviour_type);
 
 %% Set the timeline parameters
-set(handles.MinQuietWindowTag,'String','3000'); handles.min_quiet_window = str2double(get(handles.MinQuietWindowTag,'String'));
+set(handles.MinQuietWindowTag,'String','1000'); handles.min_quiet_window = str2double(get(handles.MinQuietWindowTag,'String'));
 set(handles.MaxQuietWindowTag,'String','5000'); handles.max_quiet_window = str2double(get(handles.MaxQuietWindowTag,'String'));
 set(handles.ResponseWindowTag,'String','1000'); handles.response_window = str2double(get(handles.ResponseWindowTag,'String'));
 set(handles.ArtifactWindowTag,'String','50'); handles.artifact_window = str2double(get(handles.ArtifactWindowTag,'String'));
