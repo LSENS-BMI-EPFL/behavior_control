@@ -16,6 +16,7 @@ This code currently supports  (uncued, undelayed) simple sensory (auditory, whis
 
 ### Installation
 - Clone or download the repository `git clone ...` in the computer from which you wish to run the behaviour on.
+- **Note**: rename `DetectionGui.m` into `DetectionGUI.m` locally, without changing in Git. (to be fixed).
 
 
 ### How to use
