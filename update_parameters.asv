@@ -306,15 +306,9 @@ function update_parameters
 
     % Set reward flag per trial type
     if is_whisker 
-%         if partial_reward_flag
-        is_reward=reward_pool(mod(whisker_trial_counter,n_pool_partial)+1); % select the next trial from the pool:  0 no reward, 1 Reward
-%         else
-%             is_reward=wh_reward;
-%         end
+        is_reward = double(rand(1)<reward_proba);
     elseif is_auditory
         is_reward=aud_reward;
-%     else
-%         is_reward=0;
     end 
 
     % CONSTANT reward delivery (also for association trials)
@@ -322,19 +316,14 @@ function update_parameters
         is_reward=1;
     end
 
-        
     
     % Define reward vector
     rew_vec_amp = 5; %volt
     reward_vec = [zeros(1,reward_delay_time) rew_vec_amp*ones(1,reward_valve_duration*Reward_S_SR/1000) zeros(1,Reward_S_SR/2)];
 
-    if ~is_reward
-%         reward_vec=[zeros(1, reward_delay_time) rew_vec_amp*ones(1,reward_valve_duration*Reward_S_SR/1000) zeros(1,Reward_S_SR/2)];
-%     else 
+    if ~is_reward || ~is_stim
         reward_vec=zeros(1,numel(reward_vec));
     end
-    reward_vec(1:100)
-    is_reward
 
     %% Get trial duration
     trial_duration = max(trial_duration, (light_prestim_delay + artifact_window + baseline_window + max(response_window, (light_duration-light_prestim_delay))) /1000);
@@ -621,14 +610,13 @@ function update_parameters
     outputSingleScan(Trigger_S,[0 0 0])
 
     % Queue reward vector
-    if ~Reward_S.ScansQueued 
+     if ~Reward_S.ScansQueued 
         queueOutputData(Reward_S, reward_vec')
         while Reward_S.IsRunning
             disp('Here 2') 
         end
         Reward_S.startBackground();
-    end
-
+     end
     %% Define response window boundaries
     
     response_window_start = (artifact_window + baseline_window)/1000;

@@ -106,6 +106,9 @@ function main_control(~,event)
     %% Reset flags if no lick detected within the response window (correct rejection, miss trials)
     % --------------------------------------------------------------------------------------------
     if  trial_started_flag && toc(trial_start_time)>response_window_end && ~association_flag
+        % Release reward_vec (useful for proba. whisker reward)
+        Reward_S.stop()
+        Reward_S.release()
         trial_started_flag=0;
         perf_and_save_results_flag=1;
     end
