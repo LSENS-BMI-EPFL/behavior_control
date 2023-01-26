@@ -5,8 +5,18 @@ This code currently supports  (uncued, undelayed) simple sensory (auditory, whis
 
 **Note**: parameters and features related to video filming are currently not supported and setup-dependent. Therefore no documentation related to video filming is provided yet.
 
+### Requirements
+ - Git
+ - MATLAB, with the add-ons:
+    - Data Acquisition Toolbox
+    - Data Acquisition Toolbox Support Package for National Instrument NI-DAQmx Devices
+    - Signal Processing Toolbox (`downsample`)
+    - Statistics and Machine Learning Toolbox (`randsample`)
+ - An audio player (e.g. VLC) for white noise
+
 ### Installation
-- Clone or download the repository `git clone ...` in the computer from which you wish to run the behaviour on.
+- Clone the repository `git clone ...` or download in the computer from which you wish to run the behaviour.
+- **Note**: rename `DetectionGui.m` into `DetectionGUI.m` locally, without changing in Git (to be fixed).
 
 
 ### How to use
@@ -27,7 +37,7 @@ This code currently supports  (uncued, undelayed) simple sensory (auditory, whis
 - Control desired choice GUI text input, general settings and task parameters.
 - Press START/PAUSE/RESUME/STOP to control the session. Careful: if you press STOP, all output files will be generated and upon pressing START again will create a new session folder. 
 
-TODO - Describe GUI FEATURES
+**TODO - Describe GUI FEATURES**
 
 ### Outputs
 During and at the end of the behavioural session, the software outputs several files:
