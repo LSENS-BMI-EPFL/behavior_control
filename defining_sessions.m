@@ -60,7 +60,6 @@
     lh1 = addlistener(Main_S,'DataAvailable', @main_control);
     lh2 = addlistener(Main_S,'DataAvailable', @(src, event) plot_lick_trace(src, event, trial_duration));
 
-      
     % Define count to initiate callback functions
     Main_S.NotifyWhenDataAvailableExceeds=Main_S_SR/Main_S_Ratio; % maximum is 20 hz, so sr should be divided by 20 to not get the reward!
 
@@ -79,12 +78,12 @@
     Reward_Ch = addAnalogOutputChannel(Reward_S,'Dev1','ao0','Voltage'); % Valve channel
     Reward_Ch.TerminalConfig='SingleEnded';
     
-    addTriggerConnection(Reward_S,'External','Dev1/PFI1','StartTrigger'); %Trial start (to check)
+    addTriggerConnection(Reward_S,'External','Dev1/PFI1','StartTrigger'); %Trigger from reward_delivery
 
     Reward_S.Rate = Reward_S_SR;
     Reward_S.IsContinuous=true;
     Reward_S.TriggersPerRun = 1;
-    Reward_S.ExternalTriggerTimeout = 2000;
+    Reward_S.ExternalTriggerTimeout = 2000; %sec
 
     %% Create a session for Stimulus/Stimuli
 

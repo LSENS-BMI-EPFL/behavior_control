@@ -92,7 +92,7 @@ function main_control(~,event)
             end
 
         elseif aud_reward && wh_reward
-            hit_time=toc(trial_start_time);
+            hit_time=toc(trial_start_time)
             reward_delivery(is_stim, is_auditory, is_whisker, aud_reward, wh_reward);
             first_threshold_cross=find(abs(event.Data(1:end-1,1))<lick_threshold & abs(event.Data(2:end,1))>lick_threshold',1,'first');
             hit_time_adjusted=hit_time-first_threshold_cross/Main_S_SR;

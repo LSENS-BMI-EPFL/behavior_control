@@ -164,12 +164,13 @@ set(handles.RewardDelayCheckbox,'Enable','off');
 set(handles.RewardDelayTag,'String','50'); handles.reward_delay_time = str2double(get(handles.RewardDelayTag,'String'));
 set(handles.RewardDelayTag,'Enable','off');
 set(handles.PartialRewardCheckbox,'Value',0); handles.partial_reward_flag = get(handles.PartialRewardCheckbox,'Value');
-set(handles.PartialRewardCheckbox,'Enable','off');
+set(handles.PartialRewardCheckbox,'Enable','on');
 set(handles.RewardProbTag,'String','1'); handles.reward_proba = str2double(get(handles.RewardProbTag,'String'));
-set(handles.RewardProbTag,'Enable','off');
+set(handles.RewardProbTag,'Enable','on');
 set(handles.AudRewTag,'Value',1); handles.aud_reward = get(handles.AudRewTag,'Value');
 set(handles.AudRewTag,'Enable','off');
 set(handles.WhRewTag,'Value',1); handles.wh_reward = get(handles.WhRewTag,'Value');
+set(handles.AudRewTag,'Enable','on');
 
 %% Behaviour camera settings
 set(handles.CameraFrameRateTag,'String','200'); handles.camera_freq = str2double(get(handles.CameraFrameRateTag,'String'));

@@ -307,8 +307,7 @@ function update_parameters
     % Set reward flag per trial type
     if is_whisker 
 %         if partial_reward_flag
-        is_reward = int8(rand(1)<reward_proba);
-%         is_reward=reward_pool(mod(whisker_trial_counter,n_pool_partial)+1); % select the next trial from the pool:  0 no reward, 1 Reward
+        is_reward=reward_pool(mod(whisker_trial_counter,n_pool_partial)+1); % select the next trial from the pool:  0 no reward, 1 Reward
 %         else
 %             is_reward=wh_reward;
 %         end
@@ -323,7 +322,7 @@ function update_parameters
         is_reward=1;
     end
 
-    
+        
     
     % Define reward vector
     rew_vec_amp = 5; %volt
