@@ -16,7 +16,6 @@ This code currently supports  (uncued, undelayed) simple sensory (auditory, whis
 
 ### Installation
 - Clone the repository `git clone ...` or download in the computer from which you wish to run the behaviour.
-- **Note**: rename `DetectionGui.m` into `DetectionGUI.m` locally, without changing in Git (to be fixed).
 
 
 ### How to use
@@ -37,7 +36,8 @@ This code currently supports  (uncued, undelayed) simple sensory (auditory, whis
 - Control desired choice GUI text input, general settings and task parameters.
 - Press START/PAUSE/RESUME/STOP to control the session. Careful: if you press STOP, all output files will be generated and upon pressing START again will create a new session folder. 
 
-**TODO - Describe GUI FEATURES**
+#### GUI features
+- The fields are quite self-explanatory.
 
 ### Outputs
 During and at the end of the behavioural session, the software outputs several files:
