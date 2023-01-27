@@ -1,18 +1,17 @@
 # Behaviour Control
 
 MATLAB code to control data acquisition and behavioural sessions of sensory detection task(s) at Laboratory of Sensory Processing, EPFL. :mouse:	:desktop_computer:
-This code currently supports  (uncued, undelayed) simple sensory (auditory, whisker) detection tasks. This page briefly explains how to use the software and GUI for behavioural sessions.
+This code currently supports  (uncued, undelayed) simple sensory (auditory, whisker) detection tasks.
 
 **Note**: parameters and features related to video filming are currently not supported and setup-dependent. Therefore no documentation related to video filming is provided yet.
 
 ### Requirements
  - Git
  - MATLAB, with the add-ons:
-    - Data Acquisition Toolbox
-    - Data Acquisition Toolbox Support Package for National Instrument NI-DAQmx Devices
-    - Signal Processing Toolbox (`downsample`)
-    - Statistics and Machine Learning Toolbox (`randsample`)
- - An audio player (e.g. VLC) for white noise
+    - Data Acquisition Toolbox.
+    - Data Acquisition Toolbox Support Package for National Instrument NI-DAQmx Devices.
+    - Signal Processing Toolbox.
+ - An audio player (e.g. VLC) for playing white noise.
 
 ### Installation
 - Clone the repository `git clone ...` or download in the computer from which you wish to run the behaviour.
@@ -20,24 +19,17 @@ This code currently supports  (uncued, undelayed) simple sensory (auditory, whis
 
 ### How to use
 #### Setting up 
-- In `defining_sessions.m`: for each `daq.Session` instance, modify input and output channels so that it matches your NIDQ devices, hardware wiring setup connections on NI boards.
+- In `defining_sessions.m`: for each `daq.Session` instance, modify input and output channels so that it matches your NI DAQ device setup connections.
 
-- In `Detection_GUI.m`: set default parameters tags to have them ready at GUI initiliazation: general settings, timeline parameters, auditory parmeters, etc. You may still change these parameters before the start of the session, or even during the session, if the `Enable` parameter if set to `on` for each "Tag" variable: `on` makes the GUI feature active and responsive to user changes. 
+- In `Detection_GUI.m`, set default parameter to have them ready at GUI initialization. You can change these parameters in the GUI before and even during the session.
 
 - Whisker stimulus calibration using electromagnetic coil-based whisker deflection:
-  - Before any whisker stimulus experiments, one must calibrate whisker stimulation to make sure it is strong enough and reliable.
   - Use `calibration_coil.m` file using the teslameter connected to a NI board to measure the volt-tesla (V-mT) relationship.
-  - Based on in-lab measurements, whisker deflection is sufficiently strong when the peak of the magnetic flux intensity reaches at least 30mT.
-
 
 #### Default usage
 - Run `DetectionGUI.m` to open GUI.
-- Untick the Video filming checkbox (unsupported feature). 
 - Control desired choice GUI text input, general settings and task parameters.
-- Press START/PAUSE/RESUME/STOP to control the session. Careful: if you press STOP, all output files will be generated and upon pressing START again will create a new session folder. 
-
-#### GUI features
-- The fields are quite self-explanatory.
+- Press START/PAUSE/RESUME/STOP to control the session. A new session is created upon pressing START.
 
 ### Outputs
 During and at the end of the behavioural session, the software outputs several files:
