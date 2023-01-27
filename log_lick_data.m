@@ -8,8 +8,8 @@ global Stim_S Stim_S_SR fid_lick_trace handles2give lick_threshold trial_lick_da
 
 %% Get lick data and write downsample data in .bin files
 
-data = [event.TimeStamps(:,1), event.Data(:,:)]' ;
-fwrite(fid_lick_trace, downsample(data, 10),'double');
+data = [event.TimeStamps(1:10:end,1), event.Data(1:10:end,1)]' ;
+fwrite(fid_lick_trace, data, 'double');
 
 %% Plotting lick data
 % Plot progress bar 
@@ -21,7 +21,7 @@ set(handles2give.ProgressBarAxes, 'XTick',[], 'XColor','w', ...
                                    'Box','off')
 
 % Piezo sensor data as absolute signals
-trial_lick_data = [trial_lick_data, abs(data(2,:))];
+trial_lick_data = [trial_lick_data, abs(event.Data(:,1)')];
 
 % Plot trial lick data
 timevec=linspace(0, numel(trial_lick_data)/Stim_S_SR, numel(trial_lick_data)); %x-axis time vector
