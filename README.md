@@ -10,24 +10,25 @@ This code currently supports  (uncued, undelayed) simple sensory (auditory, whis
  - MATLAB, with the add-ons:
     - Data Acquisition Toolbox.
     - Data Acquisition Toolbox Support Package for National Instrument NI-DAQmx Devices.
-    - Signal Processing Toolbox.
+    - Statistics and Machine Learning Toolbox (`randsample`).
  - An audio player (e.g. VLC) for playing white noise.
 
 ### Installation
-- Clone the repository `git clone ...` or download in the computer from which you wish to run the behaviour.
+- Clone the repository `git clone ...`, or download as zip in the computer from which you wish to run the behaviour.
 
 
 ### How to use
 #### Setting up 
 - In `defining_sessions.m`: for each `daq.Session` instance, modify input and output channels so that it matches your NI DAQ device setup connections.
 
-- In `Detection_GUI.m`, set default parameter to have them ready at GUI initialization. You can change these parameters in the GUI before and even during the session.
+- In `Detection_GUI.m`, set default session and task parameters to have them ready at GUI initialization. You can change these parameters in the GUI before and even during the session.
 
 - Whisker stimulus calibration using electromagnetic coil-based whisker deflection:
   - Use `calibration_coil.m` file using the teslameter connected to a NI board to measure the volt-tesla (V-mT) relationship.
 
 #### Default usage
 - Run `DetectionGUI.m` to open GUI.
+- Make sure Camera tickbox is unticked (unsupported), otherwise it won't execute.
 - Control desired choice GUI text input, general settings and task parameters.
 - Press START/PAUSE/RESUME/STOP to control the session. A new session is created upon pressing START.
 
