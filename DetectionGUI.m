@@ -96,7 +96,7 @@ set(handles.MaxQuietWindowTag,'String','5000'); handles.max_quiet_window = str2d
 set(handles.ResponseWindowTag,'String','1000'); handles.response_window = str2double(get(handles.ResponseWindowTag,'String'));
 set(handles.ArtifactWindowTag,'String','50'); handles.artifact_window = str2double(get(handles.ArtifactWindowTag,'String'));
 set(handles.MinISITag,'String','6000'); handles.min_iti = str2double(get(handles.MinISITag,'String'));
-set(handles.MaxISITag,'String','10000'); handles.max_isi = str2double(get(handles.MaxISITag,'String'));
+set(handles.MaxISITag,'String','10000'); handles.max_iti = str2double(get(handles.MaxISITag,'String'));
 set(handles.BaselineWindowTag,'String','0'); handles.baseline_window = str2double(get(handles.BaselineWindowTag,'String'));
 set(handles.TrialDurationTag,'String','7000'); handles.trial_duration = str2double(get(handles.TrialDurationTag,'String'));
 
@@ -356,8 +356,8 @@ function MaxISITag_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of MaxISITag as text
 %        str2double(get(hObject,'String')) returns contents of MaxISITag as a double
 global handles2give
-handles.max_isi = round(str2double(get(handles.MaxISITag,'String')));
-set(handles.MaxISITag,'String',handles.max_isi);
+handles.max_iti = round(str2double(get(handles.MaxISITag,'String')));
+set(handles.MaxISITag,'String',handles.max_iti);
 
 % Update handles structure
 handles2give=handles;

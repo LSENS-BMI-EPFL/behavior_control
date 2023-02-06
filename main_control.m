@@ -12,7 +12,7 @@ function main_control(~,event)
         trial_started_flag  trial_number folder_name handles2give...
         baseline_window camera_vec...
         deliver_reward_flag ...
-        wh_stim_amp response_window_start response_window_end...
+        wh_stim_amp response_window response_window_start response_window_end...
         fid_results perf_and_save_results_flag lh3 reward_delivered_flag update_parameters_flag...
         is_reward...
         light_prestim_delay light_duration light_freq light_amp SITrigger_vec trial_lick_data...
@@ -177,6 +177,10 @@ function main_control(~,event)
             association_flag '%10.0f';
             quiet_window '%10.4f';
             iti '%10.4f';
+            response_window '%10.4f';
+            artifact_window '%10.4f';
+            baseline_window '%10.4f';
+            trial_duration '%10.4f';
             is_stim '%8.0f';
             is_whisker '%8.0f';
             is_auditory '%8.0f';
@@ -263,6 +267,10 @@ function main_control(~,event)
             association_flag '%10.0f';
             quiet_window '%10.4f';
             iti '%10.4f';
+            response_window '%10.4f';
+            artifact_window '%10.4f';
+            baseline_window '%10.4f';
+            trial_duration '%10.4f';
             is_stim '%8.0f';
             is_whisker '%8.0f';
             is_auditory '%8.0f';
