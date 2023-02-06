@@ -9,7 +9,7 @@ This code currently supports  (uncued, undelayed) simple sensory (auditory, whis
  - Git
  - MATLAB, with the add-ons:
     - Data Acquisition Toolbox.
-    - Data Acquisition Toolbox Support Package for National Instrument NI-DAQmx Devices.
+    - Data Acquisition Toolbox Support Package for National Instrument NI-DAQmx Devices (this takes a bit of time).
     - Statistics and Machine Learning Toolbox (`randsample`).
  - An audio player (e.g. VLC) for playing white noise.
 
