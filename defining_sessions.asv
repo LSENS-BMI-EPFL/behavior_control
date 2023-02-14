@@ -36,17 +36,50 @@
 
     fid_results=fopen([folder_name '\results.txt'], 'w'); 
 
-    
+
+    % Define variable names and format spec
+    results_config = {
+            trial_number '%6.0f'; %variable / format spec
+            perf '%8.0f';
+            trial_time '%10.4f';
+            association_flag '%10.0f';
+            quiet_window '%10.4f';
+            iti '%10.4f';
+            response_window '%10.4f';
+            artifact_window '%10.4f';
+            baseline_window '%10.4f';
+            trial_duration '%10.4f';
+            is_stim '%8.0f';
+            is_whisker '%8.0f';
+            is_auditory '%8.0f';
+            lick_flag '%8.0f';
+            reaction_time '%10.4f';
+            wh_stim_duration '%10.1f';
+            wh_stim_amp '%8.0f';
+            wh_reward '%8.0f';
+            is_reward '%8.0f';
+            aud_stim_duration '%10.4f';
+            aud_stim_amp '%8.0f';
+            aud_stim_freq  '%10.4f';
+            aud_reward '%8.0f';
+            early_lick '%8.0f';
+            is_light '%8.0f';
+            light_amp '%8.0f';
+            light_duration  '%10.4f';
+            light_freq  '%10.4f';
+            light_prestim_delay '%10.4f';
+            };
     % Define saved columns in results.txt!
-    fprintf(fid_results, '%6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s \n', ...
-        'trial_number', 'perf', 'trial_time', 'association_flag', 'quiet_window','iti', ...
-        'response_window', 'artifact_window','baseline_window','trial_duration', ...
+    fprintf(fid_results, '%6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s \n', ...
+    'trial_number', 'perf', 'trial_time', 'association_flag', 'quiet_window','iti', ...
          'is_stim', 'is_whisker', 'is_auditory', 'lick_flag', 'reaction_time', ...
         'wh_stim_duration', 'wh_stim_amp', 'wh_reward', ...
         'is_reward', ...
         'aud_stim_duration','aud_stim_amp','aud_stim_freq','aud_reward', ...
         'early_lick', ...
         'is_light', 'light_amp','light_duration','light_freq','light_prestim');
+
+   fprintf(fid_results, string(strjoin(results_config(:,2))) + ' \n', cell2mat(results_config(:,1))); 
 
 
     % --- CREATE SESSIONS --- 
