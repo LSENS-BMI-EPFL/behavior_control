@@ -110,7 +110,7 @@ function update_parameters
 
     % Inter-trial interval range
     min_iti=handles2give.min_iti; % InterStimInterval in ms
-    max_iti=handles2give.max_isi; % InterStimInterval in ms
+    max_iti=handles2give.max_iti; % InterStimInterval in ms
     if min_iti > max_iti
         set(handles2give.OnlineTextTag,'String','Error: Minimum ITI should be smaller than maximum ITI!');
 
