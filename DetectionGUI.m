@@ -297,7 +297,7 @@ function ArtifactWindowTag_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of ArtifactWindowTag as a double
 global handles2give
 handles.artifact_window = round(str2double(get(handles.ArtifactWindowTag,'String')));
-set(handles.ArtifactWindowTag,'String',handles.ArtifactWindow);
+set(handles.ArtifactWindowTag,'String',handles.artifact_window);
 
 % Update handles structure
 handles2give=handles;

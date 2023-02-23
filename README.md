@@ -5,6 +5,10 @@ This code currently supports (uncued, undelayed) simple sensory (auditory, whisk
 
 **Note**: parameters and features related to video filming are currently not supported and setup-dependent. Therefore no documentation related to video filming is provided yet.
 
+**Note about development**:
+- Adding columns to results data files mean change in column indexing. Subsequent changes must be made when indexing the `results` variables e.g. calcultion of performance, reward consumed and more!
+
+
 ### Requirements
  - Git
  - MATLAB > 2022, with the add-ons:
