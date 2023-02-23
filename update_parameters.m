@@ -492,10 +492,10 @@ function update_parameters
        
         % Get perf column and trial types
         perf = results.data(non_asso_trials, 2);
-        aud_trials = results.data(non_asso_trials, 9);
-        wh_trials = results.data(non_asso_trials, 8);
-        stim_trials = results.data(non_asso_trials, 7);
-        asso_stim_trials = results.data(asso_trials, 7);
+        aud_trials = results.data(non_asso_trials, 13);
+        wh_trials = results.data(non_asso_trials, 12);
+        stim_trials = results.data(non_asso_trials, 11);
+        asso_stim_trials = results.data(asso_trials, 11);
 
         % Compute performance and metrics -> could be a function
         wh_hit_rate = round(sum(perf==2)/sum(wh_trials==1)*100)/100;
@@ -521,12 +521,12 @@ function update_parameters
         
     % Calculate approx. reward volume obtained -> could be a function
     volume_per_reward = 5; % in microliter (THIS MUST BE CALIBRATED)
-    reward_trials_non_asso = results.data(non_asso_trials,15)==1; %ones only if reward_proba=1
+    reward_trials_non_asso = results.data(non_asso_trials,14)==1; %ones only if reward_proba=1
     
     aud_hits = perf==3;
     wh_hits = perf==2;
-    aud_trials_rewarded = results.data(aud_hits & reward_trials_non_asso, 9); %here vector comparison element-wise
-    wh_trials_rewarded = results.data(wh_hits & reward_trials_non_asso, 8);
+    aud_trials_rewarded = results.data(aud_hits & reward_trials_non_asso, 13); %here vector comparison element-wise
+    wh_trials_rewarded = results.data(wh_hits & reward_trials_non_asso, 12);
     
     % Get volumes and print
     aud_tot_volume = volume_per_reward * sum(aud_trials_rewarded);
@@ -571,7 +571,7 @@ function update_parameters
             %else%if ~wh_reward || ~is_reward
             %    reward_title = 'Not rewarded';
             %end
-            reward_title=reward_titles(is_reward+1);
+            reward_title=reward_titles(wh_reward+1);
             
             set(handles2give.TrialTimeLineTextTag,'String',['Next trial: Whisker. ' char(trial_titles(is_stim+1)) ' '...
                 char(association_titles(association_flag+1)) '   ' char(reward_title) '     ' char(light_titles(is_light+1))],'ForegroundColor',wcolor);
