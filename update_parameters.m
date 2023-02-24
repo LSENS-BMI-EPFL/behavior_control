@@ -15,7 +15,8 @@ function update_parameters
         perf_and_save_results_flag lh3 reward_delivered_flag update_parameters_flag...
         is_reward reward_pool partial_reward_flag reward_proba_old...
         light_duration light_freq light_amp camera_freq SITrigger_vec main_trial_pool trial_lick_data...
-        whisker_trial_counter
+        whisker_trial_counter mouse_rewarded_context context_block context_flag pink_noise brown_noise block_id wh_rewarded_context...
+        pink_noise_player brown_noise_player identical_block_count
        
 
     outputSingleScan(Trigger_S,[0 0 0])
@@ -81,6 +82,10 @@ function update_parameters
 
     association_flag=handles2give.association_flag; % 0 detection 1 assosiation
     light_flag=handles2give.light_flag;
+    
+    % Context info flag
+    context_flag = handles2give.context_flag;
+    context_block_size = handles2give.context_block_size;
 
     % Camera settings
     camera_freq=handles2give.camera_freq; % Hz
@@ -174,18 +179,29 @@ function update_parameters
     light_amp=handles2give.light_amp;
     light_freq=handles2give.light_freq; % frequency of the pulse train
     light_duty=handles2give.light_duty; % duty cycle (0-1)
-
+    
+    
     %% Define new pool of stimuli
 
     if trial_number > 1
         results=importdata([folder_name '\results.txt']);
         n_completed_trials=sum(results.data(:,2)~=6);
     else
-        n_completed_trials=1;
+        n_completed_trials=0;
     end
 
     % Size of pool (i.e. trial block) to get trials from
+    % If context is not used:
     main_pool_size = aud_stim_weight + wh_stim_weight + no_stim_weight; %in an non-light task
+    % If use context blocks (check sum is valid) 
+    if context_flag
+        if context_block_size ~= main_pool_size
+            disp('Sum of weight differ from required block size, adjust weights')
+        else
+            
+        end
+    end
+  
     stim_light_list=[900,901,902,903,904,905]; % code for each stimuli
     
     % Save old probabilities
@@ -198,8 +214,8 @@ function update_parameters
 
     % CREATE NEW TRIAL POOL WHEN CURRENT POOL FINISHED
 
-    if mod(n_completed_trials, main_pool_size)==1 || light_proba_old ~= light_proba || aud_light_proba_old ~= light_aud_proba ||  wh_light_proba_old ~= light_wh_proba ||stim_proba_old ~= stim_proba || aud_stim_proba_old ~= aud_stim_proba|| wh_stim_proba_old ~= wh_stim_proba
-        
+    if mod(n_completed_trials, main_pool_size)==0 || light_proba_old ~= light_proba || aud_light_proba_old ~= light_aud_proba ||  wh_light_proba_old ~= light_wh_proba ||stim_proba_old ~= stim_proba || aud_stim_proba_old ~= aud_stim_proba|| wh_stim_proba_old ~= wh_stim_proba
+
         % Stim. probability and trial pool when light stimulus
         if light_flag
 
@@ -230,6 +246,49 @@ function update_parameters
         %Randomize occurrence of trials in pool
         main_trial_pool=main_trial_pool(randperm(numel(main_trial_pool)));
 
+        % if context 
+        if context_flag
+            contexts = {'pink', 'brown'};
+            if trial_number==1
+                [pink_noise, pink_SR] = audioread(strcat(handles2give.bckg_noise_folder_path, '\pink_noise.wav'));
+                pink_noise_player = audioplayer(pink_noise, pink_SR);
+                [brown_noise, brown_SR] = audioread(strcat(handles2give.bckg_noise_folder_path, '\brown_noise.wav'));
+                brown_noise_player = audioplayer(brown_noise, brown_SR);
+                identical_block_count = 1;
+                rewarded_context_table = readtable(strcat(handles2give.context_table_folder_path, '\rewarded_context.csv'));
+                mice_names = rewarded_context_table.MouseName;
+                    if any(strcmp(mice_names, handles2give.mouse_name))
+                        rows = strcmp(rewarded_context_table.MouseName, handles2give.mouse_name);
+                        mouse_rewarded_context = rewarded_context_table(rows, :).RewardedContext{1};
+                    else
+                        r = randi([1, size(contexts, 2)], 1); 
+                        mouse_rewarded_context = contexts{r};
+                        T1 = table({handles2give.mouse_name}, {mouse_rewarded_context}, 'VariableNames', {'MouseName','RewardedContext'});
+                        rewarded_context_table = [rewarded_context_table; T1];
+                        writetable(rewarded_context_table, strcat(handles2give.context_table_folder_path, '\rewarded_context.csv'))
+                    end
+                block_id = randi([1, size(contexts, 2)], 1); 
+                context_block = contexts{block_id};
+            else
+                old_block_id = block_id;
+                block_id = randi([1, size(contexts, 2)], 1);
+                if block_id == old_block_id
+                    identical_block_count = identical_block_count + 1;
+                else
+                    identical_block_count = 1;
+                end
+                if identical_block_count ==3  % We don't want more than 2 consecutive context A or B block
+                     new_block_id = block_id;
+                     while new_block_id == block_id
+                         new_block_id = randi([1, size(contexts, 2)], 1);
+                     end
+                block_id = new_block_id;
+                identical_block_count = 1;
+                end
+                context_block = contexts{block_id};
+            end
+            wh_rewarded_context = strcmp(context_block, mouse_rewarded_context);    
+        end
     end
 
     % Select next trial
@@ -284,7 +343,15 @@ function update_parameters
     reward_delay_time=handles2give.reward_delay_time;         % delay in milisecond for delivering reward after stim (if Association=1)
 
     aud_reward = handles2give.aud_reward; % is auditory rewarded
-    wh_reward = handles2give.wh_reward;  % is whisker rewarded
+    if context_flag
+        if wh_rewarded_context
+            wh_reward=1;
+        else
+            wh_reward=0;
+        end
+    else
+        wh_reward = handles2give.wh_reward;  % is whisker rewarded
+    end
 
     partial_reward_flag=handles2give.partial_reward_flag; 
     n_pool_partial = 10; 

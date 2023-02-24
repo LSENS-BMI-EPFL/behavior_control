@@ -22,7 +22,7 @@ function varargout = DetectionGUI(varargin)
 
 % Edit the above text to modify the response to help DetectionGUI
 
-% Last Modified by GUIDE v2.5 19-Dec-2022 17:37:48
+% Last Modified by GUIDE v2.5 24-Feb-2023 10:22:41
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -75,8 +75,8 @@ Date2Display = datestr(now,formatOut);
 set(handles.SetDateTag,'String',Date2Display);
 set(handles.SetDateTag,'Enable','off');
 % [TO CUSTOMIZE BY EACH USER]
-set(handles.MouseNameTag,'String','ABXXX'); handles.mouse_name = get(handles.MouseNameTag,'String');
-handles.behaviour_directory = 'C:\Users\bisi\Desktop\BehaviourData';
+set(handles.MouseNameTag,'String','PBXXX'); handles.mouse_name = get(handles.MouseNameTag,'String');
+handles.behaviour_directory = 'C:\BehaviourData';
 set(handles.BehaviorDirectoryTag,'String', handles.behaviour_directory);
 
 %% Set general settings
@@ -87,6 +87,7 @@ set(handles.EarlyLickPunishmentCheckbox,'Enable','on');
 set(handles.AssociationCheckbox,'Value',0); handles.association_flag = get(handles.AssociationCheckbox,'Value');
 set(handles.CameraTagCheck,'Value',0); handles.camera_flag = get(handles.CameraTagCheck,'Value');   
 set(handles.DummySessionCheckbox,'Value',0); handles.dummy_session_flag = get(handles.DummySessionCheckbox,'Value');
+set(handles.ContextCheckBox,'Value',0); handles.context_flag = get(handles.ContextCheckBox,'Value');
 handles.behaviour_type = 'auditory';
 set(handles.BehaviourTypeTag, 'String', handles.behaviour_type);
 
@@ -109,6 +110,8 @@ set(handles.ToneFreqTag,'Enable','on');
 set(handles.ToneDurationTag,'String','10'); handles.aud_stim_duration = str2double(get(handles.ToneDurationTag,'String'));
 set(handles.ToneAmpTag,'String','2'); handles.aud_stim_amp = str2double(get(handles.ToneAmpTag,'String'));
 set(handles.ToneFreqTag,'String','10000'); handles.aud_stim_freq= str2double(get(handles.ToneFreqTag,'String'));
+
+set(handles.BckgNoiseFolderPath,'String','folder_path'); handles.bckg_noise_folder_path = get(handles.BckgNoiseFolderPath,'String');
 
 %% Set Light parameters
 set(handles.OptoLightCheckbox,'Value',0); handles.light_flag = get(handles.OptoLightCheckbox,'Value');
@@ -156,6 +159,9 @@ set(handles.StimWeight1Tag,'String','0'); handles.wh_stim_weight(1) = str2double
 set(handles.NostimWeightTag,'String','1'); handles.no_stim_weight = str2double(get(handles.NostimWeightTag,'String'));
 set(handles.NostimWeightTag,'Enable','on');
 
+% Context Bloc Size
+set(handles.BlockSizeTag,'String','1'); handles.context_block_size = str2double(get(handles.BlockSizeTag,'String'));
+set(handles.ContextTablePath,'String','folder_path'); handles.context_table_folder_path = get(handles.ContextTablePath,'String');
 
 %% Set reward parameters
 set(handles.ValveOpeningTag,'String','50'); handles.reward_valve_duration = str2double(get(handles.ValveOpeningTag,'String'));
@@ -170,7 +176,7 @@ set(handles.RewardProbTag,'Enable','on');
 set(handles.AudRewTag,'Value',1); handles.aud_reward = get(handles.AudRewTag,'Value');
 set(handles.AudRewTag,'Enable','off');
 set(handles.WhRewTag,'Value',1); handles.wh_reward = get(handles.WhRewTag,'Value');
-set(handles.AudRewTag,'Enable','on');
+set(handles.WhRewTag,'Enable','on');
 
 %% Behaviour camera settings
 set(handles.CameraFrameRateTag,'String','200'); handles.camera_freq = str2double(get(handles.CameraFrameRateTag,'String'));
@@ -2023,3 +2029,128 @@ disp('Updated config file.');
 
 guidata(hObject, handles);
 
+
+% --- Executes on button press in ContextCheckBox.
+function ContextCheckBox_Callback(hObject, eventdata, handles)
+% hObject    handle to ContextCheckBox (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of ContextCheckBox
+global handles2give
+
+handles.context_flag = get(handles.ContextCheckBox,'Value');
+if handles.context_flag == 1
+    set(handles.WhRewTag,'Value',0); handles.wh_reward = get(handles.WhRewTag,'Value');
+    set(handles.WhRewTag,'Enable','off');
+else 
+    set(handles.WhRewTag,'Value',1); handles.wh_reward = get(handles.WhRewTag,'Value');
+    set(handles.WhRewTag,'Enable','on');
+end
+% Update handles structure
+handles2give=handles;
+guidata(hObject, handles);
+
+
+
+function BlockSizeTag_Callback(hObject, eventdata, handles)
+% hObject    handle to BlockSizeTag (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of BlockSizeTag as text
+%        str2double(get(hObject,'String')) returns contents of BlockSizeTag as a double
+global handles2give
+
+handles.context_block_size = round(str2double(get(handles.BlockSizeTag,'String')));
+set(handles.BlockSizeTag,'String',num2str(handles.context_block_size));
+
+% Update handles structure
+handles2give=handles;
+guidata(hObject, handles);
+
+
+% --- Executes during object creation, after setting all properties.
+function BlockSizeTag_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to BlockSizeTag (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- If Enable == 'on', executes on mouse press in 5 pixel border.
+% --- Otherwise, executes on mouse press in 5 pixel border or over BckgNoiseFolder.
+function BckgNoiseFolder_ButtonDownFcn(hObject, eventdata, handles)
+% hObject    handle to BckgNoiseFolder (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- If Enable == 'on', executes on mouse press in 5 pixel border.
+% --- Otherwise, executes on mouse press in 5 pixel border or over ContexteTableTxt.
+function ContexteTableTxt_ButtonDownFcn(hObject, eventdata, handles)
+% hObject    handle to ContexteTableTxt (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+function BckgNoiseFolderPath_Callback(hObject, eventdata, handles)
+% hObject    handle to BckgNoiseFolderPath (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of BckgNoiseFolderPath as text
+%        str2double(get(hObject,'String')) returns contents of BckgNoiseFolderPath as a double
+global handles2give
+handles.bckg_noise_folder_path = get(handles.BckgNoiseFolderPath,'String');
+
+% Update handles structure
+handles2give=handles;
+guidata(hObject, handles);
+
+
+% --- Executes during object creation, after setting all properties.
+function BckgNoiseFolderPath_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to BckgNoiseFolderPath (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function ContextTablePath_Callback(hObject, eventdata, handles)
+% hObject    handle to ContextTablePath (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of ContextTablePath as text
+%        str2double(get(hObject,'String')) returns contents of ContextTablePath as a double
+global handles2give
+handles.context_table_folder_path = get(handles.ContextTablePath,'String');
+
+% Update handles structure
+handles2give=handles;
+guidata(hObject, handles);
+
+
+% --- Executes during object creation, after setting all properties.
+function ContextTablePath_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to ContextTablePath (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end

@@ -16,6 +16,8 @@ function main_control(~,event)
         fid_results perf_and_save_results_flag lh3 reward_delivered_flag update_parameters_flag...
         is_reward...
         light_prestim_delay light_duration light_freq light_amp SITrigger_vec trial_lick_data...
+        context_block context_flag...
+        pink_noise_player brown_noise_player
         
 
     %% Timing last lick detection for quiet window.
@@ -26,7 +28,25 @@ function main_control(~,event)
         lick_time=tic;
     end
 
-    
+    %% Play context noise backgrounds
+    if context_flag
+        if strcmp(context_block, 'pink')
+            if ~ pink_noise_player.isplaying
+                pink_noise_player.play
+            end
+            if brown_noise_player.isplaying
+                brown_noise_player.pause
+            end
+        elseif strcmp(context_block, 'brown')
+            if ~ brown_noise_player.isplaying
+                brown_noise_player.play
+            end
+            if pink_noise_player.isplaying
+                pink_noise_player.pause
+            end
+        end
+    end
+
     %% Stimulus delivery at trial start.
     % ------------------
 

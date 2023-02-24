@@ -89,5 +89,7 @@ writetable(results_table, [folder_name '\results.csv']);
 % Save session config post session
 set(handles2give.OnlineTextTag,'String', 'Session Stopped', 'FontWeight', 'Bold');
 
+clear all
+clc
 disp('Session Stopped.')
 
