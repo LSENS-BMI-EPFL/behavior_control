@@ -111,7 +111,7 @@ set(handles.ToneDurationTag,'String','10'); handles.aud_stim_duration = str2doub
 set(handles.ToneAmpTag,'String','2'); handles.aud_stim_amp = str2double(get(handles.ToneAmpTag,'String'));
 set(handles.ToneFreqTag,'String','10000'); handles.aud_stim_freq= str2double(get(handles.ToneFreqTag,'String'));
 
-set(handles.BckgNoiseFolderPath,'String','folder_path'); handles.bckg_noise_folder_path = get(handles.BckgNoiseFolderPath,'String');
+set(handles.BckgNoiseFolderPath,'String','folder_path'); handles.bckg_noise_directory = get(handles.BckgNoiseFolderPath,'String');
 
 %% Set Light parameters
 set(handles.OptoLightCheckbox,'Value',0); handles.light_flag = get(handles.OptoLightCheckbox,'Value');
@@ -161,7 +161,7 @@ set(handles.NostimWeightTag,'Enable','on');
 
 % Context Bloc Size
 set(handles.BlockSizeTag,'String','1'); handles.context_block_size = str2double(get(handles.BlockSizeTag,'String'));
-set(handles.ContextTablePath,'String','folder_path'); handles.context_table_folder_path = get(handles.ContextTablePath,'String');
+set(handles.ContextTablePath,'String','folder_path'); handles.context_table_directory = get(handles.ContextTablePath,'String');
 
 %% Set reward parameters
 set(handles.ValveOpeningTag,'String','50'); handles.reward_valve_duration = str2double(get(handles.ValveOpeningTag,'String'));
@@ -2107,7 +2107,7 @@ function BckgNoiseFolderPath_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of BckgNoiseFolderPath as text
 %        str2double(get(hObject,'String')) returns contents of BckgNoiseFolderPath as a double
 global handles2give
-handles.bckg_noise_folder_path = get(handles.BckgNoiseFolderPath,'String');
+handles.bckg_noise_directory = get(handles.BckgNoiseFolderPath,'String');
 
 % Update handles structure
 handles2give=handles;
@@ -2136,7 +2136,7 @@ function ContextTablePath_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of ContextTablePath as text
 %        str2double(get(hObject,'String')) returns contents of ContextTablePath as a double
 global handles2give
-handles.context_table_folder_path = get(handles.ContextTablePath,'String');
+handles.context_table_directory = get(handles.ContextTablePath,'String');
 
 % Update handles structure
 handles2give=handles;

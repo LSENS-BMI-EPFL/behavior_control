@@ -250,12 +250,12 @@ function update_parameters
         if context_flag
             contexts = {'pink', 'brown'};
             if trial_number==1
-                [pink_noise, pink_SR] = audioread(strcat(handles2give.bckg_noise_folder_path, '\pink_noise.wav'));
+                [pink_noise, pink_SR] = audioread(strcat(handles2give.bckg_noise_directory, '\pink_noise.wav'));
                 pink_noise_player = audioplayer(pink_noise, pink_SR);
-                [brown_noise, brown_SR] = audioread(strcat(handles2give.bckg_noise_folder_path, '\brown_noise.wav'));
+                [brown_noise, brown_SR] = audioread(strcat(handles2give.bckg_noise_directory, '\brown_noise.wav'));
                 brown_noise_player = audioplayer(brown_noise, brown_SR);
                 identical_block_count = 1;
-                rewarded_context_table = readtable(strcat(handles2give.context_table_folder_path, '\rewarded_context.csv'));
+                rewarded_context_table = readtable(strcat(handles2give.context_table_directory, '\rewarded_context.csv'));
                 mice_names = rewarded_context_table.MouseName;
                     if any(strcmp(mice_names, handles2give.mouse_name))
                         rows = strcmp(rewarded_context_table.MouseName, handles2give.mouse_name);
@@ -265,7 +265,7 @@ function update_parameters
                         mouse_rewarded_context = contexts{r};
                         T1 = table({handles2give.mouse_name}, {mouse_rewarded_context}, 'VariableNames', {'MouseName','RewardedContext'});
                         rewarded_context_table = [rewarded_context_table; T1];
-                        writetable(rewarded_context_table, strcat(handles2give.context_table_folder_path, '\rewarded_context.csv'))
+                        writetable(rewarded_context_table, strcat(handles2give.context_table_directory, '\rewarded_context.csv'))
                     end
                 block_id = randi([1, size(contexts, 2)], 1); 
                 context_block = contexts{block_id};
