@@ -67,28 +67,35 @@ set(handles.ChemoCheckbox,'Value',0); handles.chemo_session = get(handles.ChemoC
 set(handles.PharmaCheckbox,'Value',0); handles.pharma_session = get(handles.PharmaCheckbox,'Value');
 
 
-%% Set general attributes
+%% Set general session information
 formatOut = 'yyyymmdd';
 handles.date = datestr(now,formatOut);
 formatOut = 'yyyy/mm/dd';
 Date2Display = datestr(now,formatOut);
 set(handles.SetDateTag,'String',Date2Display);
 set(handles.SetDateTag,'Enable','off');
+
 % [TO CUSTOMIZE BY EACH USER]
-set(handles.MouseNameTag,'String','PBXXX'); handles.mouse_name = get(handles.MouseNameTag,'String');
-handles.behaviour_directory = 'C:\BehaviourData';
+set(handles.MouseNameTag,'String','ABXXX'); handles.mouse_name = get(handles.MouseNameTag,'String');
+handles.behaviour_directory = 'C:\Users\bisi\Desktop\BehaviourData';
 set(handles.BehaviorDirectoryTag,'String', handles.behaviour_directory);
 
-%% Set general settings
+%% Set general session settings
 set(handles.FalseAlarmPunishmentCheckbox,'Value',0); handles.false_alarm_punish_flag = get(handles.FalseAlarmPunishmentCheckbox,'Value');
 set(handles.FalseAlarmPunishmentCheckbox,'Enable','on');
 set(handles.EarlyLickPunishmentCheckbox,'Value',0); handles.early_lick_punish_flag = get(handles.EarlyLickPunishmentCheckbox,'Value');
 set(handles.EarlyLickPunishmentCheckbox,'Enable','on');
 set(handles.AssociationCheckbox,'Value',0); handles.association_flag = get(handles.AssociationCheckbox,'Value');
+set(handles.AssociationCheckbox,'Enable','on');
 set(handles.CameraTagCheck,'Value',0); handles.camera_flag = get(handles.CameraTagCheck,'Value');   
+set(handles.CameraTagCheck,'Enable','on');
 set(handles.DummySessionCheckbox,'Value',0); handles.dummy_session_flag = get(handles.DummySessionCheckbox,'Value');
+set(handles.DummySessionCheckbox,'Enable','on');
 set(handles.ContextCheckBox,'Value',0); handles.context_flag = get(handles.ContextCheckBox,'Value');
-handles.behaviour_type = 'auditory';
+set(handles.ContextCheckBox,'Enable','on');
+
+
+handles.behaviour_type = 'auditory'; %default, as most often the most common behaviour session type
 set(handles.BehaviourTypeTag, 'String', handles.behaviour_type);
 
 %% Set the timeline parameters
@@ -111,7 +118,8 @@ set(handles.ToneDurationTag,'String','10'); handles.aud_stim_duration = str2doub
 set(handles.ToneAmpTag,'String','2'); handles.aud_stim_amp = str2double(get(handles.ToneAmpTag,'String'));
 set(handles.ToneFreqTag,'String','10000'); handles.aud_stim_freq= str2double(get(handles.ToneFreqTag,'String'));
 
-set(handles.BckgNoiseFolderPath,'String','folder_path'); handles.bckg_noise_directory = get(handles.BckgNoiseFolderPath,'String');
+set(handles.BckgNoiseFolderPath,'String','Enter path'); handles.bckg_noise_directory = get(handles.BckgNoiseFolderPath,'String');
+set(handles.BckgNoiseFolderPath,'Enable','off');
 
 %% Set Light parameters
 set(handles.OptoLightCheckbox,'Value',0); handles.light_flag = get(handles.OptoLightCheckbox,'Value');
@@ -159,12 +167,15 @@ set(handles.StimWeight1Tag,'String','0'); handles.wh_stim_weight(1) = str2double
 set(handles.NostimWeightTag,'String','1'); handles.no_stim_weight = str2double(get(handles.NostimWeightTag,'String'));
 set(handles.NostimWeightTag,'Enable','on');
 
-% Context Bloc Size
+% Context task information
 set(handles.BlockSizeTag,'String','1'); handles.context_block_size = str2double(get(handles.BlockSizeTag,'String'));
-set(handles.ContextTablePath,'String','folder_path'); handles.context_table_directory = get(handles.ContextTablePath,'String');
+set(handles.BlockSizeTag,'Enable','off');
+set(handles.ContextTablePath,'String','Enter path'); handles.context_table_directory = get(handles.ContextTablePath,'String');
+set(handles.ContextTablePath,'Enable','off');
 
 %% Set reward parameters
 set(handles.ValveOpeningTag,'String','50'); handles.reward_valve_duration = str2double(get(handles.ValveOpeningTag,'String'));
+set(handles.ValveOpeningTag, 'Enable', 'on');
 set(handles.RewardDelayCheckbox,'Value',0); handles.reward_delay_flag = get(handles.RewardDelayCheckbox,'Value');
 set(handles.RewardDelayCheckbox,'Enable','off');
 set(handles.RewardDelayTag,'String','50'); handles.reward_delay_time = str2double(get(handles.RewardDelayTag,'String'));
@@ -172,7 +183,7 @@ set(handles.RewardDelayTag,'Enable','off');
 set(handles.PartialRewardCheckbox,'Value',0); handles.partial_reward_flag = get(handles.PartialRewardCheckbox,'Value');
 set(handles.PartialRewardCheckbox,'Enable','on');
 set(handles.RewardProbTag,'String','1'); handles.reward_proba = str2double(get(handles.RewardProbTag,'String'));
-set(handles.RewardProbTag,'Enable','on');
+set(handles.RewardProbTag,'Enable','off');
 set(handles.AudRewTag,'Value',1); handles.aud_reward = get(handles.AudRewTag,'Value');
 set(handles.AudRewTag,'Enable','off');
 set(handles.WhRewTag,'Value',1); handles.wh_reward = get(handles.WhRewTag,'Value');
@@ -180,8 +191,10 @@ set(handles.WhRewTag,'Enable','on');
 
 %% Behaviour camera settings
 set(handles.CameraFrameRateTag,'String','200'); handles.camera_freq = str2double(get(handles.CameraFrameRateTag,'String'));
+set(handles.CameraFrameRateTag,'Enable','off');
 handles.video_directory = 'F:\Axel\';
 set(handles.VideoDirectoryTag,'String', handles.video_directory);
+set(handles.VideoDirectoryTag,'Enable','off');
 
 %% Initialize axes
 axes(handles.ProgressBarAxes); set(gca,'XTick',[]); set(gca,'XColor','w'); set(gca,'YTick',[]); set(gca,'YColor','w');set(gca,'Color',[0.4 0.4 0.4]);
@@ -196,7 +209,7 @@ set(handles.LastRecentTrialsTag,'String','5'); handles.last_recent_trials = str2
 axes(handles.LickTraceAxes); set(gca,'XTick',[]); set(gca,'XColor','w'); set(gca,'YTick',[]); set(gca,'YColor','w');
 axes(handles.LickTraceAxes2); set(gca,'XTick',[]); set(gca,'XColor','w'); set(gca,'YTick',[]); set(gca,'YColor','w');
 
-set(handles.LickThresholdTag,'String','0.1'); handles.lick_threshold = str2double(get(handles.LickThresholdTag,'String'));
+set(handles.LickThresholdTag,'String','0.05'); handles.lick_threshold = str2double(get(handles.LickThresholdTag,'String'));
 
 %% Initialize text display
 % set(handles.PerformanceText1Tag,'String',''); set(handles.PerformanceText1Tag,'Enable','off');
@@ -1648,6 +1661,14 @@ function CameraTagCheck_Callback(hObject, eventdata, handles)
 % Hint: get(hObject,'Value') returns toggle state of CameraTagCheck
 global handles2give
 handles.camera_flag=get(handles.CameraTagCheck,'Value');
+
+if handles.camera_flag
+    set(handles.CameraFrameRateTag,'Enable','on');
+    set(handles.VideoDirectoryTag,'Enable','on');
+else
+    set(handles.CameraFrameRateTag,'Enable','off');
+    set(handles.VideoDirectoryTag,'Enable','off');
+end
 handles2give=handles;
 guidata(hObject, handles)
 
@@ -2040,10 +2061,16 @@ function ContextCheckBox_Callback(hObject, eventdata, handles)
 global handles2give
 
 handles.context_flag = get(handles.ContextCheckBox,'Value');
-if handles.context_flag == 1
-    set(handles.WhRewTag,'Value',0); handles.wh_reward = get(handles.WhRewTag,'Value');
+if handles.context_flag
+    set(handles.BlockSizeTag,'Enable','on');
+    set(handles.ContextTablePath,'Enable','on');
+    set(handles.BckgNoiseFolderPath,'Enable','on');
+    set(handles.WhRewTag,'Value',1); handles.wh_reward = get(handles.WhRewTag,'Value');
     set(handles.WhRewTag,'Enable','off');
 else 
+    set(handles.BlockSizeTag,'Enable','off');
+    set(handles.ContextTablePath,'Enable','off');
+    set(handles.BckgNoiseFolderPath,'Enable','off');
     set(handles.WhRewTag,'Value',1); handles.wh_reward = get(handles.WhRewTag,'Value');
     set(handles.WhRewTag,'Enable','on');
 end
@@ -2082,21 +2109,6 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
-
-% --- If Enable == 'on', executes on mouse press in 5 pixel border.
-% --- Otherwise, executes on mouse press in 5 pixel border or over BckgNoiseFolder.
-function BckgNoiseFolder_ButtonDownFcn(hObject, eventdata, handles)
-% hObject    handle to BckgNoiseFolder (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-
-% --- If Enable == 'on', executes on mouse press in 5 pixel border.
-% --- Otherwise, executes on mouse press in 5 pixel border or over ContexteTableTxt.
-function ContexteTableTxt_ButtonDownFcn(hObject, eventdata, handles)
-% hObject    handle to ContexteTableTxt (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
 
 function BckgNoiseFolderPath_Callback(hObject, eventdata, handles)
