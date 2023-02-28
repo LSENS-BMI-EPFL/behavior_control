@@ -1,24 +1,23 @@
-%% Define daq session.
+%% Define data acquisition session.
 
 session = daq.createSession('ni');
 session_sampling_rate = 100000;
 session.Rate = session_sampling_rate;
 
-% Send coil impulse to amplifier.
+% Send coil impulse to amplifier. (This can be like your behaviour sessions.)
 addAnalogOutputChannel(session,'Dev2','ao0', 'Voltage');
 % channel_coil = addAnalogOutputChannel(session,'PXI1Slot2','ao0', 'Voltage');
 
 % Read teslameter or displacement sensor output.
 addAnalogInputChannel(session,'Dev2','ai1', 'Voltage');
 
-%% Define coil impulses.
+%% Define coil impulses as stimuli.
 
 sr = session_sampling_rate/1000;  % Sampling rate in ms.
 baseline_dur = 2000;
 trial_dur = 4000;
 
 % Blank stimulus.
-
 blank = zeros(1,trial_dur*sr);
 
 % Biphasic square pulse 1 ms 35 mT.
@@ -33,6 +32,18 @@ stim_duration_down = stim_duration/2*sr+1;
 biphasic_square_35 = stim_amp*[zeros(1,baseline_dur*sr) ones(1,stim_duration_up) -ones(1,stim_duration_down)*scale_factor];
 biphasic_square_35 = [biphasic_square_35 zeros(1,trial_dur*sr-numel(biphasic_square_35))];
 
+% Biphasic square pulse 3 ms 35 mT.
+
+stim_amp = 3.3;
+stim_duration = 3;
+scale_factor = .95;
+
+stim_duration_up = stim_duration/2*sr+6;
+stim_duration_down = stim_duration/2*sr+1;
+
+biphasic_square_3ms_35 = stim_amp*[zeros(1,baseline_dur*sr) ones(1,stim_duration_up) -ones(1,stim_duration_down)*scale_factor];
+biphasic_square_3ms_35 = [biphasic_square_3ms_35 zeros(1,trial_dur*sr-numel(biphasic_square_3ms_35))];
+
 
 % Biphasic square pulse 1 ms 30 mT.
 
@@ -45,7 +56,6 @@ stim_duration_down = stim_duration/2*sr+1;
 
 biphasic_square_30 = stim_amp*[zeros(1,baseline_dur*sr) ones(1,stim_duration_up) -ones(1,stim_duration_down)*scale_factor];
 biphasic_square_30 = [biphasic_square_30 zeros(1,trial_dur*sr-numel(biphasic_square_30))];
-
 
 % Biphasic Hann window 1.6 ms 35 mT.
 
@@ -145,6 +155,25 @@ biphasic_hann_15 = stim_amp * [zeros(1,baseline_dur*sr) impulse];
 biphasic_hann_15 = [biphasic_hann_15 zeros(1,trial_dur*sr - numel(biphasic_hann_15))];
 
 
+% Biphasic Hann window 3 ms 40 mT.
+
+stim_amp = 3.2;
+stim_duration_up = 1.5;
+stim_duration_down = 1.5;
+scale_factor = .9;
+
+stim_duration_up = stim_duration_up*sr;
+stim_duration_down = stim_duration_down*sr-5;
+
+impulse_up = tukeywin(stim_duration_up,1);
+impulse_up = impulse_up(1:end-1);
+impulse_down = -tukeywin(stim_duration_down,1);
+impulse_down = impulse_down(2:end);
+impulse = [impulse_up' scale_factor*impulse_down'];
+
+biphasic_hann_3ms_40 = stim_amp * [zeros(1,baseline_dur*sr) impulse];
+biphasic_hann_3ms_40 = [biphasic_hann_3ms_40 zeros(1,trial_dur*sr - numel(biphasic_hann_3ms_40))];
+
 % Biphasic Hann window 3 ms 35 mT.
 
 stim_amp = 2.85;
@@ -182,7 +211,6 @@ impulse = [impulse_up' scale_factor*impulse_down'];
 
 biphasic_hann_3ms_30 = stim_amp * [zeros(1,baseline_dur*sr) impulse];
 biphasic_hann_3ms_30 = [biphasic_hann_3ms_30 zeros(1,trial_dur*sr - numel(biphasic_hann_3ms_30))];
-
 
 
 % Biphasic Hann window 3 ms 25 mT.
@@ -438,94 +466,59 @@ monophasic_hann_3ms_15 = stim_amp * [zeros(1,baseline_dur*sr) impulse];
 monophasic_hann_3ms_15 = [monophasic_hann_3ms_15 zeros(1,trial_dur*sr - numel(monophasic_hann_3ms_15))];
 
 
-%%
+%% Test stimulus and plot.
 
+% Choose stim and run
 % stim = biphasic_square_35;
+% stim = biphasic_square_3ms_35;
+stim = biphasic_hann_3ms_40;
 % stim = biphasic_hann_35;
-stim = biphasic_hann_3ms_30;
+% stim = biphasic_hann_3ms_30;
 % stim = monophasic_hann_1ms_35;
 % stim = monophasic_hann_3ms_35;
 % stim = blank;
 
 
-ntrial = 1;
+ntrials = 5;
 len = numel(stim);
 
-data = zeros(ntrial,len);
+flux_data = zeros(ntrials,len);
 
-for itrial=1:ntrial
-   disp(itrial)
+for itrial=1:ntrials
+   disp(['Stim ' int2str(itrial)]);
    queueOutputData(session, stim');
    prepare(session);
    d = startForeground(session);
-   data(itrial,:) = d(:,1);
+   flux_data(itrial,:) = d(:,1);
    pause(.5);
 end
 
 session.stop();
 
 session.release();
-disp('Done')
-%
+disp('Done.')
 
 time = linspace(0,trial_dur,numel(stim));
 
+% Plot
 figure
 ax1 = subplot(2,1,1);
 plot(time, stim)
 ax2 = subplot(2,1,2);
-plot(time,data')
+plot(time,flux_data')
 linkaxes([ax1,ax2],'x')
 
-% for itrial=1:ntrial
-%     plot(data(itrial,:))
-% end
 
 %% Save calibration data.
 
-path_write = 'K:\calibration';
-% file = '220819_calibration_coil_fakemouse_biphasic_square_1ms_35mT.m';
-% file = '220819_calibration_coil_fakemouse_biphasic_hann_1.6ms_30mT.m';
-% file = '220819_calibration_coil_fakemouse_biphasic_hann_3ms_35mT.m';
-% file = '220819_calibration_coil_fakemouse_monophasic_hann_1ms_15mT.m';
-% file = '220819_calibration_coil_fakemouse_monophasic_hann_3ms_15mT.m';
+path_write = 'K:\BehaviourCode\Calibration';
 
-% file = '220819_calibration_displacement_fakemouse_biphasic_square_1ms_30mT.m';
-% file = '220819_calibration_displacement_fakemouse_biphasic_hann_1.6ms_15mT.m';
-% file = '220819_calibration_displacement_fakemouse_biphasic_hann_3ms_15mT.m';
-% file = '220819_calibration_displacement_fakemouse_monophasic_hann_1ms_15mT.m';
-file = '220819_calibration_displacement_fakemouse_monophasic_hann_3ms_15mT.m';
+date = datetime('today', 'Format', 'yyyymmdd');
+file = [int2str(yyyymmdd(date)) '_calibration_stim_magnetic_flux_biphasic_hann_3ms_40.m'];
 
-% file = '220819_calibration_sensor_fakemouse_blank_800um.m';
 file = fullfile(path_write, file);
-save(file,'data','stim')
-disp('Saved')
-
-%%
-% 
-% t = linspace(-pi,6/4*pi,100000);
-% s = cos(t);
-% plot(s)
-
-stim_amp = 3;
-stim_duration_up = 1;
-stim_duration_down = .5;
-scale_factor = 1.8;
-
-stim_duration_up = stim_duration_up*sr;
-stim_duration_down = stim_duration_down*sr;
-
-s1 = cos(linspace(-pi,0,stim_duration_up/2))/2 + 1/2;
-s2 = cos(linspace(0,1/2*pi,stim_duration_up/2));
-s3 = cos(linspace(1/2*pi,pi,stim_duration_down/2));
-s3 = s3(2:end);
-s3 = s3 * scale_factor;
-s4 = cos(linspace(pi,2*pi,stim_duration_down/2))/2 - 1/2;
-s4 = s4 * scale_factor;
-
-impulse = [s1 s2 s3 s4];
-test = stim_amp * [zeros(1,baseline_dur*sr) impulse];
-test = [test zeros(1,trial_dur*sr - numel(test))];
+save(file,'ntrials','flux_data','stim','stim_amp','stim_duration_up','stim_duration_down','scale_factor', 'session_sampling_rate')
+disp('Calibration data saved.')
 
 
 
