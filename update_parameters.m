@@ -6,7 +6,7 @@ function update_parameters
         reward_valve_duration  aud_reward wh_reward wh_vec aud_vec light_vec ...
         light_prestim_delay stim_flag perf lick_flag ...
         false_alarm_punish_flag false_alarm_timeout early_lick_punish_flag early_lick_timeout ...
-        Stim_S wh_stim_duration  aud_stim_duration  aud_stim_amp  aud_stim_freq  Stim_S_SR ScansTobeAcquired ...
+        Stim_S Log_S wh_stim_duration  aud_stim_duration  aud_stim_amp  aud_stim_freq  Stim_S_SR ScansTobeAcquired ...
         Reward_S Reward_S_SR  Trigger_S fid_lick_trace mouse_licked_flag reaction_time ...
         trial_started_flag  trial_number light_proba_old folder_name handles2give...
         stim_proba_old aud_stim_proba_old wh_stim_proba_old aud_light_proba_old wh_light_proba_old light_flag baseline_window camera_vec...
@@ -17,6 +17,7 @@ function update_parameters
         light_duration light_freq light_amp camera_freq SITrigger_vec main_trial_pool trial_lick_data...
         whisker_trial_counter mouse_rewarded_context context_block context_flag pink_noise brown_noise block_id wh_rewarded_context...
         pink_noise_player brown_noise_player identical_block_count
+        
        
 
     outputSingleScan(Trigger_S,[0 0 0])
@@ -517,7 +518,7 @@ function update_parameters
 
     %% Plotting the whisker/auditory stim and camera vector signals
     
-    % Set plotting params
+%     % Set plotting params
     acolor = [0 0.4470 0.7410];
     acolor_str = '0 0.4470 0.7410';
     if wh_reward
@@ -527,26 +528,26 @@ function update_parameters
         wcolor = [0.6350 0.0780 0.1840];
         wcolor_str = '0.6350 0.0780 0.1840';
     end
-    
-    timevec=linspace(0, trial_duration/1000,(trial_duration)*Stim_S_SR/1000);
-    trial_time_window=max(timevec);
-
-    plot(handles2give.CameraAxes,timevec(1:10:end),camera_vec(1:10:end),'k')
-    set(handles2give.CameraAxes,'XTick',[])
-    xlim(handles2give.CameraAxes,[0 trial_time_window])
-    ylabel(handles2give.CameraAxes,'Camera')
-
-    plot(handles2give.AudAxes,timevec(1:1:end),aud_vec(1:1:end),'Color', acolor)
-    set(handles2give.AudAxes,'XTick',[])
-    xlim(handles2give.AudAxes,[0 trial_time_window])
-    ylabel(handles2give.AudAxes,'Auditory')
-    ylim(handles2give.AudAxes,[-10 10])
-
-    plot(handles2give.WhAxes,timevec(1:10:end),wh_vec(1:10:end),'Color', wcolor)
-    xlim(handles2give.WhAxes,[0 trial_time_window])
-    xlabel(handles2give.WhAxes,'Time(s)')
-    ylabel(handles2give.WhAxes,'Whisker')
-    ylim(handles2give.WhAxes,[-5 5])
+%     
+%     timevec=linspace(0, trial_duration/1000,(trial_duration)*Stim_S_SR/1000);
+%     trial_time_window=max(timevec);
+% 
+%     plot(handles2give.CameraAxes,timevec(1:10:end),camera_vec(1:10:end),'k')
+%     set(handles2give.CameraAxes,'XTick',[])
+%     xlim(handles2give.CameraAxes,[0 trial_time_window])
+%     ylabel(handles2give.CameraAxes,'Camera')
+% 
+%     plot(handles2give.AudAxes,timevec(1:1:end),aud_vec(1:1:end),'Color', acolor)
+%     set(handles2give.AudAxes,'XTick',[])
+%     xlim(handles2give.AudAxes,[0 trial_time_window])
+%     ylabel(handles2give.AudAxes,'Auditory')
+%     ylim(handles2give.AudAxes,[-10 10])
+% 
+%     plot(handles2give.WhAxes,timevec(1:10:end),wh_vec(1:10:end),'Color', wcolor)
+%     xlim(handles2give.WhAxes,[0 trial_time_window])
+%     xlabel(handles2give.WhAxes,'Time(s)')
+%     ylabel(handles2give.WhAxes,'Whisker')
+%     ylim(handles2give.WhAxes,[-5 5])
 
 
     %% Online performance for plotting
@@ -660,10 +661,10 @@ function update_parameters
     
     % Open new lick trace file 
     fid_lick_trace=fopen([folder_name '\LickTrace' num2str(trial_number) '.bin'],'w');
-    % Listener for available data form piezo sensor
-    lh3 = addlistener(Stim_S,'DataAvailable',@(src, event) log_lick_data(src, event, trial_duration));
+    % Listener for available data from piezo sensor
+%     lh3 = addlistener(Stim_S,'DataAvailable',@(src, event) log_lick_data(src, event, trial_duration));
     
-    trial_lick_data=[];
+    trial_lick_data = [];
 
     SITrigger_vec=[ones(1,numel(wh_vec)-2) 0 0]; % ScanImage trigger vector
     queueOutputData(Stim_S,[wh_vec; aud_vec; camera_vec; SITrigger_vec]')

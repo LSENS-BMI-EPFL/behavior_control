@@ -3,20 +3,27 @@
 
     %% Define all global variables
 
-    global  Reward_S Stim_S association_flag lick_time  trial_number   ...
+    global  Reward_S Stim_S Log_S association_flag lick_time  trial_number   ...
         trial_start_time  trial_end_time  timeout_time ...
         Trigger_S  Stim_S_SR Main_S...
         lh1 lh2  fid_results  Reward_S_SR local_counter lick_channel_times lick_data camera_start_time ...
         folder_name handles2give early_lick_counter session_start_time...
-        Main_S_SR Reward_Ch trial_duration light_counter whisker_trial_counter
+        Main_S_SR Reward_Ch trial_duration light_counter whisker_trial_counter...
+        lh4 fid_continuous trial_start_ttl lick_data cam1_ttl cam2_ttl scan_pos continous_lick_data
+
+
 
     %% Initialize variables
 
     set(handles2give.OnlineTextTag, 'String', 'Session Started','FontWeight','bold');
 
     handles2give.ReportPause=1;
-    lick_channel_times=[];
-    lick_data=[];
+    trial_start_ttl = zeros(1,trial_duration*Log_S.Rate/1000);
+    continous_lick_data = zeros(1,trial_duration*Log_S.Rate/1000);
+    cam1_ttl = zeros(1,trial_duration*Log_S.Rate/1000);
+    cam2_ttl = zeros(1,trial_duration*Log_S.Rate/1000);
+    scan_pos = zeros(1,trial_duration*Log_S.Rate/1000);
+
     trial_number=0;
 
     % Sampling rates
@@ -55,16 +62,31 @@
     %% Create main control session
 
     Main_S = daq.createSession('ni');
-    aich1=addAnalogInputChannel(Main_S, 'Dev1', [0 1 2 3], 'Voltage'); % Reading the Lick signal (Ch0) and copies of trial onset and other stimuli
+    aich1=addAnalogInputChannel(Main_S, 'Dev1', 0, 'Voltage'); % Reading the Lick signal (Ch0) and copies of trial onset and other stimuli
     aich1(1).TerminalConfig='SingleEnded';
     Main_S.Rate = Main_S_SR;
     Main_S.IsContinuous = true;
     lh1 = addlistener(Main_S,'DataAvailable', @main_control);
-    lh2 = addlistener(Main_S,'DataAvailable', @(src, event) plot_lick_trace(src, event, trial_duration));
-
+%     lh2 = addlistener(Main_S,'DataAvailable', @(src, event) plot_lick_trace(src, event, trial_duration));
+%     lh4 = addlistener(Main_S,'DataAvailable', @(src, event) save_continuous(src, event));
+%     fid_continuous = fopen([folder_name '\log_continuous.bin'], 'a');
     % Define count to initiate callback functions
-    Main_S.NotifyWhenDataAvailableExceeds=Main_S_SR/Main_S_Ratio; % maximum is 20 hz, so sr should be divided by 20 to not get the reward!
+    Main_S.NotifyWhenDataAvailableExceeds=10;
 
+    %% Create logging session
+    Log_S = daq.createSession('ni');
+    
+    ai_log=addAnalogInputChannel(Log_S, 'Dev2', [0,1,2,3,4], 'Voltage');
+    ai_log(1).TerminalConfig='SingleEnded';
+    ai_log(2).TerminalConfig='SingleEnded';
+    ai_log(3).TerminalConfig='SingleEnded';
+    ai_log(4).TerminalConfig='SingleEnded';
+    ai_log(5).TerminalConfig='SingleEnded';
+    Log_S.Rate = 5000;
+    Log_S.IsContinuous = true;
+    lh4 = addlistener(Log_S,'DataAvailable', @(src, event) log_continuously(src, event));
+    fid_continuous = fopen([folder_name '\log_continuous.bin'], 'a');
+    
     %% Create trigger session
 
     Trigger_S = daq.createSession('ni');
@@ -91,8 +113,8 @@
 
     Stim_S = daq.createSession('ni');
     
-    aich2=addAnalogInputChannel(Stim_S,'Dev2','ai0', 'Voltage'); % Reading the Lick signal for logging
-    aich2.TerminalConfig='SingleEnded';
+%     aich2=addAnalogInputChannel(Stim_S,'Dev2','ai0', 'Voltage'); % Reading the Lick signal for logging
+%     aich2.TerminalConfig='SingleEnded';
 
     aoch_coil=addAnalogOutputChannel(Stim_S,'Dev2','ao0', 'Voltage'); % Whisker stim (coil/piezo) channel
     aoch_coil.TerminalConfig='SingleEnded';
@@ -103,13 +125,12 @@
     addDigitalChannel(Stim_S,'Dev2', 'Port0/Line0', 'OutputOnly'); %  Camera Channel
     addDigitalChannel(Stim_S,'Dev2', 'Port0/Line1', 'OutputOnly'); %  ScanImage Trigger Channel (2P-imaging)
 
-    addTriggerConnection(Stim_S,'External','Dev2/PFI0','StartTrigger'); 
+    addTriggerConnection(Stim_S,'External','Dev2/PFI0','StartTrigger');
 
     Stim_S.Rate = Stim_S_SR;
     Stim_S.IsContinuous=true;
     Stim_S.TriggersPerRun =1;
     Stim_S.ExternalTriggerTimeout = 2000;
-
     % Setup with Camera session - KEEP
     % %% Create a CameraClK session
     % Camera_S = daq.createSession('ni');
@@ -127,7 +148,7 @@
     whisker_trial_counter=0; %for partial rewards
 
     % Update parameters in GUI
-    update_parameters; 
+    update_parameters;
 
     % Set time variables
     camera_start_time=tic;
@@ -138,6 +159,7 @@
     timeout_time=tic;
 
     % Start acquisition
-    Main_S.startBackground(); 
+    Main_S.startBackground();
+    Log_S.startBackground();
 
 end

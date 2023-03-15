@@ -5,14 +5,14 @@ function plot_lick_trace(~,event,trial_duration)
 
 global local_counter lick_channel_times lick_data handles2give lick_threshold Main_S_SR
 
-local_counter=local_counter+1; %-> what is this? useful?
+local_counter=local_counter+1;
 
 %% Get data available
 lick_channel_times=[lick_channel_times; event.TimeStamps];
 lick_data=[lick_data; event.Data(:,1)]; % Get lick whole trial data
 
 %% Plot lick data if more data than trial_duration
-if length(lick_data)>trial_duration*Main_S_SR/1000 && local_counter>40 
+if length(lick_data)>trial_duration*Main_S_SR/1000 && local_counter>40
     lick_channel_times=lick_channel_times(end-trial_duration*Main_S_SR/1000:end); 
 
     % Get only most recent lick data (trial duration)
@@ -22,10 +22,11 @@ if length(lick_data)>trial_duration*Main_S_SR/1000 && local_counter>40
     % Plot lick data
     plot(handles2give.LickTraceAxes, lick_channel_times-lick_channel_times(1), abs(lick_data), 'Color', 'k'); 
 
+
     % Plot lick treshold
     line([0 lick_channel_times(end)-lick_channel_times(1)],[lick_threshold lick_threshold], ...
         'LineWidth',1, ...
-        'LineStyle','--',... 
+        'LineStyle','--',...
         'Color','r', ...
         'Parent', handles2give.LickTraceAxes);
 

@@ -334,16 +334,15 @@ function main_control(~,event)
         end
 
 
-        fclose(fid_lick_trace);
-        delete(lh3);
+%         fclose(fid_lick_trace);
+%         delete(lh3);
 
         trial_number = trial_number + 1;
         
+%         fid_lick_trace=fopen([folder_name '\LickTrace' num2str(trial_number) '.bin'], 'w');
+%         lh3 = addlistener(Stim_S,'DataAvailable',@(src, event)log_lick_data(src, event, trial_duration));
 
-        fid_lick_trace=fopen([folder_name '\LickTrace' num2str(trial_number) '.bin'], 'w');
-        lh3 = addlistener(Stim_S,'DataAvailable',@(src, event)log_lick_data(src, event, trial_duration));
-
-        trial_lick_data=[];
+%         trial_lick_data=[];
 
         % queueOutputData(Stim_S,[Wh_vec; Aud_vec;Light_vec;Camera_vec;SITrigger_vec]')
         queueOutputData(Stim_S,[wh_vec; aud_vec; camera_vec;SITrigger_vec]')

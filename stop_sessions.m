@@ -1,9 +1,8 @@
 function stop_sessions
 %STOP_SESSIONS Terminate DAQ sessions and close files.
 
-global  Reward_S Stim_S Main_S Trigger_S ...
-    lh1 lh2 lh3 handles2give Stim_S_SR Reward_S_SR folder_name
-
+global  Reward_S Stim_S Main_S Trigger_S Log_S...
+    lh1 lh2 lh3 lh4 handles2give Stim_S_SR Reward_S_SR folder_name
 
 outputSingleScan(Trigger_S,[0 0 1]);
 pause(.5)                       %---> why?
@@ -14,6 +13,12 @@ while Main_S.IsRunning
     continue
 end
 Main_S.release();
+
+Log_S.stop();
+while Log_S.IsRunning
+    continue
+end
+Log_S.release();
 
 Reward_S.stop();
 while Reward_S.IsRunning
@@ -72,6 +77,7 @@ Trigger_S.release();
 delete(lh1);
 delete(lh2);
 delete(lh3);
+delete(lh4)
 
 % Close all open files
 fclose('all');
