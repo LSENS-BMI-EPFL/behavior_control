@@ -16,8 +16,8 @@ function main_control(~,event)
         fid_results perf_and_save_results_flag lh3 reward_delivered_flag update_parameters_flag...
         is_reward...
         light_prestim_delay light_duration light_freq light_amp SITrigger_vec trial_lick_data...
-        context_block context_flag...
-        pink_noise_player brown_noise_player
+        context_block context_flag extra_time...
+        pink_noise_player brown_noise_player 
         
 
     %% Timing last lick detection for quiet window.
@@ -52,7 +52,8 @@ function main_control(~,event)
 
     % Trial start: 1. if stim flag ON, 2. no lick in quiet window 3. iti
     % has elapsed since trial_end_time
-    if stim_flag && toc(lick_time) > quiet_window/1000 && toc(trial_end_time) > iti/1000        
+    
+    if stim_flag && toc(lick_time) > quiet_window/1000 && toc(trial_end_time) > iti/1000+extra_time
 
         stim_flag=0; %reset
         set(handles2give.OnlineTextTag,'String','Trial Started','FontWeight','bold');

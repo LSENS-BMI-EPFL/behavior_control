@@ -16,7 +16,7 @@ function update_parameters
         is_reward reward_pool partial_reward_flag reward_proba_old...
         light_duration light_freq light_amp camera_freq SITrigger_vec main_trial_pool trial_lick_data...
         whisker_trial_counter mouse_rewarded_context context_block context_flag pink_noise brown_noise block_id wh_rewarded_context...
-        pink_noise_player brown_noise_player identical_block_count
+        pink_noise_player brown_noise_player identical_block_count extra_time
         
        
 
@@ -686,6 +686,7 @@ function update_parameters
         end
         Reward_S.startBackground();
      end
+     
     %% Define response window boundaries
     
     response_window_start = (artifact_window + baseline_window)/1000;
@@ -705,5 +706,13 @@ function update_parameters
 
     % Reset variables
     reaction_time=0;
+
+    % Give user extra time to start video and 2P acquisition before 1st trial start.
+    % Added to iti condition for trial start in main_control.
+    if trial_number == 1
+        extra_time = 10;
+    else
+        extra_time = 0;
+    end
 
 end
