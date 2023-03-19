@@ -1,50 +1,46 @@
  function defining_sessions
  % DEFINING_SESSIONS Define sessions for data acquisition.
 
-    %% Define all global variables
+    % Define all global variables
 
     global  Reward_S Stim_S Log_S association_flag lick_time  trial_number   ...
         trial_start_time  trial_end_time  timeout_time ...
-        Trigger_S  Stim_S_SR Main_S...
-        lh1 lh2  fid_results  Reward_S_SR local_counter lick_channel_times lick_data camera_start_time ...
+        Trigger_S  Stim_S_SR Main_S Log_S_SR...
+        lh1 lh2  fid_results  Reward_S_SR local_counter lick_channel_times camera_start_time ...
         folder_name handles2give early_lick_counter session_start_time...
-        Main_S_SR Reward_Ch trial_duration light_counter whisker_trial_counter...
+        Main_S_SR Reward_Ch light_counter whisker_trial_counter...
         lh4 fid_continuous trial_start_ttl lick_data cam1_ttl cam2_ttl scan_pos continous_lick_data
 
 
-
-    %% Initialize variables
+    % Initialize variables and result file
+    % ------------------------------------
 
     set(handles2give.OnlineTextTag, 'String', 'Session Started','FontWeight','bold');
 
-    handles2give.ReportPause=1;
-    trial_start_ttl = zeros(1,trial_duration*Log_S.Rate/1000);
-    continous_lick_data = zeros(1,trial_duration*Log_S.Rate/1000);
-    cam1_ttl = zeros(1,trial_duration*Log_S.Rate/1000);
-    cam2_ttl = zeros(1,trial_duration*Log_S.Rate/1000);
-    scan_pos = zeros(1,trial_duration*Log_S.Rate/1000);
-
-    trial_number=0;
-
+    handles2give.ReportPause = 1;
+  
     % Sampling rates
-    Main_S_SR=1000;
-    Main_S_Ratio=100;
-    Stim_S_SR=100000;
-    Reward_S_SR=2000;
-    Trigger_S_SR=1000;
+    Main_S_SR = 1000;
+    Stim_S_SR = 100000;
+    Reward_S_SR = 1000;
+    Trigger_S_SR = 1000;
+    Log_S_SR = 5000;
     
-    trial_duration=handles2give.trial_duration; % ms
+    trial_duration=handles2give.trial_duration;  % In ms.
+
+    % Initialized variables for continuous plotting with zeros.
+    trial_start_ttl = zeros(1,trial_duration*Log_S_SR/1000);
+    continous_lick_data = zeros(1,trial_duration*Log_S_SR/1000);
+    cam1_ttl = zeros(1,trial_duration*Log_S_SR/1000);
+    cam2_ttl = zeros(1,trial_duration*Log_S_SR/1000);
+    scan_pos = zeros(1,trial_duration*Log_S_SR/1000);
     
-
-    %% Create and open session results file
-
+    % Create and open session result file
     folder_name=[char(handles2give.behaviour_directory) '\' char(handles2give.mouse_name) ...
         '\' [char(handles2give.mouse_name) '_' char(handles2give.date) '_' char(handles2give.session_time)]]; % Folder to behaviour data output
-
     fid_results=fopen([folder_name '\results.txt'], 'w'); 
 
-    
-    % Define saved columns in results.txt!
+    % Define and write columns in results.txt
     fprintf(fid_results, '%6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s \n', ...
         'trial_number', 'perf', 'trial_time', 'association_flag', 'quiet_window','iti', ...
         'response_window', 'artifact_window','baseline_window','trial_duration', ...
@@ -56,10 +52,13 @@
         'is_light', 'light_amp','light_duration','light_freq','light_prestim');
 
 
-    % --- CREATE SESSIONS --- 
+    % Create sessions
+    % ---------------
+
     % This must be edited based on setup connections.
     
-    %% Create main control session
+
+    % Create main control session
 
     Main_S = daq.createSession('ni');
     aich1=addAnalogInputChannel(Main_S, 'Dev1', 0, 'Voltage'); % Reading the Lick signal (Ch0) and copies of trial onset and other stimuli
@@ -67,27 +66,35 @@
     Main_S.Rate = Main_S_SR;
     Main_S.IsContinuous = true;
     lh1 = addlistener(Main_S,'DataAvailable', @main_control);
-%     lh2 = addlistener(Main_S,'DataAvailable', @(src, event) plot_lick_trace(src, event, trial_duration));
-%     lh4 = addlistener(Main_S,'DataAvailable', @(src, event) save_continuous(src, event));
-%     fid_continuous = fopen([folder_name '\log_continuous.bin'], 'a');
-    % Define count to initiate callback functions
-    Main_S.NotifyWhenDataAvailableExceeds=10;
 
-    %% Create logging session
+    % Callback function (main_control) is called when that many samples are
+    % available.
+    Main_S.NotifyWhenDataAvailableExceeds=20;
+
+
+    % Create logging session
+
     Log_S = daq.createSession('ni');
+
+    % ai0: lick
+    % ai1: galvo scanner position
+    % ai2: trial start ttl
+    % ai3: camera 1
+    % ai4: camera 2
     
-    ai_log=addAnalogInputChannel(Log_S, 'Dev2', [0,1,2,3,4], 'Voltage');
+    ai_log = addAnalogInputChannel(Log_S, 'Dev2', [0,1,2,3,4], 'Voltage');
     ai_log(1).TerminalConfig='SingleEnded';
     ai_log(2).TerminalConfig='SingleEnded';
     ai_log(3).TerminalConfig='SingleEnded';
     ai_log(4).TerminalConfig='SingleEnded';
     ai_log(5).TerminalConfig='SingleEnded';
-    Log_S.Rate = 5000;
+    Log_S.Rate = Log_S_SR;
     Log_S.IsContinuous = true;
     lh4 = addlistener(Log_S,'DataAvailable', @(src, event) log_continuously(src, event));
     fid_continuous = fopen([folder_name '\log_continuous.bin'], 'a');
     
-    %% Create trigger session
+    
+    % Create trigger session
 
     Trigger_S = daq.createSession('ni');
    
@@ -96,20 +103,22 @@
     addDigitalChannel(Trigger_S,'Dev1', 'Port0/Line2', 'OutputOnly'); % Trigger_S signal for camera arming 
     Trigger_S.Rate = Trigger_S_SR;
 
-    %% Create a session Reward
+    
+    % Create a session Reward
 
     Reward_S = daq.createSession('ni');
-    Reward_Ch = addAnalogOutputChannel(Reward_S,'Dev1','ao0','Voltage'); % Valve channel
+    Reward_Ch = addAnalogOutputChannel(Reward_S,'Dev1','ao0','Voltage');  % Valve channel
     Reward_Ch.TerminalConfig='SingleEnded';
     
-    addTriggerConnection(Reward_S,'External','Dev1/PFI1','StartTrigger'); %Trigger from reward_delivery
+    addTriggerConnection(Reward_S,'External','Dev1/PFI1','StartTrigger');  % Trigger from reward_delivery
 
     Reward_S.Rate = Reward_S_SR;
     Reward_S.IsContinuous=true;
     Reward_S.TriggersPerRun = 1;
     Reward_S.ExternalTriggerTimeout = 2000; %sec
 
-    %% Create a session for Stimulus/Stimuli
+    
+    % Create a session for Stimulus/Stimuli
 
     Stim_S = daq.createSession('ni');
     
@@ -128,9 +137,10 @@
     addTriggerConnection(Stim_S,'External','Dev2/PFI0','StartTrigger');
 
     Stim_S.Rate = Stim_S_SR;
-    Stim_S.IsContinuous=true;
-    Stim_S.TriggersPerRun =1;
+    Stim_S.IsContinuous = true;
+    Stim_S.TriggersPerRun = 1;
     Stim_S.ExternalTriggerTimeout = 2000;
+
     % Setup with Camera session - KEEP
     % %% Create a CameraClK session
     % Camera_S = daq.createSession('ni');
@@ -138,13 +148,16 @@
     % cam_ch.Frequency = handles2give.camera_freq; %Hz
     % cam_ch.DutyCycle = 0.5;
 
-    %% Run the Main Control
+    
+    % Run Main Control
+    % ----------------
 
     % Set counters
     handles2give.PauseRequested=0;
+    trial_number=0;
     light_counter = 0;
     early_lick_counter=0;
-    local_counter=0; %for plot_lick_trace
+    local_counter=0; % for plot_lick_trace
     whisker_trial_counter=0; %for partial rewards
 
     % Update parameters in GUI
@@ -161,5 +174,5 @@
     % Start acquisition
     Main_S.startBackground();
     Log_S.startBackground();
-
+    
 end
