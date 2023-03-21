@@ -11,7 +11,7 @@ function update_parameters
         trial_started_flag  trial_number light_proba_old folder_name handles2give...
         stim_proba_old aud_stim_proba_old wh_stim_proba_old aud_light_proba_old wh_light_proba_old light_flag baseline_window camera_vec...
         deliver_reward_flag ...
-        wh_stim_amp response_window_start response_window_end...
+        wh_stim_amp wh_scaling_factor response_window_start response_window_end...
         perf_and_save_results_flag reward_delivered_flag update_parameters_flag...
         is_reward reward_pool partial_reward_flag reward_proba_old...
         light_duration light_freq light_amp camera_freq SITrigger_vec main_trial_pool...
@@ -133,15 +133,18 @@ function update_parameters
     early_lick_punish_flag = handles2give.early_lick_punish_flag;
     early_lick_timeout=handles2give.early_lick_timeout; % in ms
 
-    % Auditory and whisker stim parameters
+    % Stimuli parameters
     aud_stim_amp =  handles2give.aud_stim_amp;
     aud_stim_duration = handles2give.aud_stim_duration;
     aud_stim_freq = handles2give.aud_stim_freq;
+    
+    wh_stim_amp = handles2give.wh_stim_amp;
+    wh_stim_duration = handles2give.wh_stim_duration;
+    wh_scaling_factor = handles2give.wh_scaling_factor;
+
     aud_stim_weight = handles2give.aud_stim_weight;
-    
-    wh_stim_weight = handles2give.wh_stim_weight(1); %for whisker , hard-coded for now (see below)
-    
-    no_stim_weight=handles2give.no_stim_weight;
+    wh_stim_weight = handles2give.wh_stim_weight; %for whisker , hard-coded for now (see below)
+    no_stim_weight = handles2give.no_stim_weight;
     
 
     %% Compute stimulus probability
@@ -421,8 +424,8 @@ function update_parameters
             
             % Set whisker vec to zero
             wh_stim_duration = 0;
-            wh_stim_amp=0;
-            wh_vec=zeros(1,(trial_duration)*(Stim_S_SR/1000));
+            wh_stim_amp = 0;
+            wh_vec = zeros(1,(trial_duration)*(Stim_S_SR/1000));
 
         % Biphasic cosine whisker stimulus
         else
@@ -433,40 +436,14 @@ function update_parameters
 
             aud_vec=zeros(1,(trial_duration)*(Stim_S_SR/1000));
             
-
-            % CALIBRATE WHISKER STIMULUS SHAPE BASED ON GUI AMPLITUDE PARAM
-            % - KEPT BUT COULD BE DELETED?
-                %switch wh_stim_amp
-                %    case 0.5
-                %        ScaleFactor=1.1;
-                %        StimDurationRise = wh_stim_duration*Stim_S_SR/2000;
-                %        StimDurationDecrease = wh_stim_duration*Stim_S_SR/2000;
-                %    case 1
-                %        ScaleFactor=1.15;
-                %        StimDurationRise = wh_stim_duration*Stim_S_SR/2000;
-                %        StimDurationDecrease = wh_stim_duration*Stim_S_SR/2000;
-                %    otherwise
-                %        ScaleFactor=0.9;
-                %        StimDurationRise = wh_stim_duration*Stim_S_SR/2000+15;
-                %        StimDurationDecrease = wh_stim_duration*Stim_S_SR/2000+1;
-                %end
-
-            %HARD-CODED STIM PARAMS -> check magnetic field with calibration_coil.m 
-
-            wh_stim_amp = 2.3; %volt
-            wh_stim_duration_up = 1.5; %ms
-            wh_stim_duration_down = 1.5;
-            wh_stim_duration = wh_stim_duration_up + wh_stim_duration_down;
-            scale_factor = .6; % -> relative amplitude of both cosines to control for artefact transient
-
-            wh_stim_duration_up = wh_stim_duration_up*Stim_S_SR/1000;
-            wh_stim_duration_down = wh_stim_duration_down*Stim_S_SR/1000;
+            wh_stim_duration_up = wh_stim_duration/2*Stim_S_SR/1000;
+            wh_stim_duration_down = wh_stim_duration/2*Stim_S_SR/1000;
 
             impulse_up = tukeywin(wh_stim_duration_up,1);
             impulse_up = impulse_up(1:end-1);
             impulse_down = -tukeywin(wh_stim_duration_down,1);
             impulse_down = impulse_down(2:end);
-            impulse = [impulse_up' scale_factor*impulse_down'];
+            impulse = [impulse_up' wh_scaling_factor*impulse_down'];
 
             wh_vec = wh_stim_amp * [zeros(1,baseline_window*Stim_S_SR/1000) impulse];
             wh_vec = [wh_vec zeros(1,trial_duration*Stim_S_SR/1000 - numel(wh_vec))];
@@ -518,7 +495,7 @@ function update_parameters
 
     %% Plotting the whisker/auditory stim and camera vector signals
     
-%     % Set plotting params
+    % Set plotting params
     acolor = [0 0.4470 0.7410];
     acolor_str = '0 0.4470 0.7410';
     if wh_reward
@@ -528,27 +505,6 @@ function update_parameters
         wcolor = [0.6350 0.0780 0.1840];
         wcolor_str = '0.6350 0.0780 0.1840';
     end
-%     
-%     timevec=linspace(0, trial_duration/1000,(trial_duration)*Stim_S_SR/1000);
-%     trial_time_window=max(timevec);
-% 
-%     plot(handles2give.CameraAxes,timevec(1:10:end),camera_vec(1:10:end),'k')
-%     set(handles2give.CameraAxes,'XTick',[])
-%     xlim(handles2give.CameraAxes,[0 trial_time_window])
-%     ylabel(handles2give.CameraAxes,'Camera')
-% 
-%     plot(handles2give.AudAxes,timevec(1:1:end),aud_vec(1:1:end),'Color', acolor)
-%     set(handles2give.AudAxes,'XTick',[])
-%     xlim(handles2give.AudAxes,[0 trial_time_window])
-%     ylabel(handles2give.AudAxes,'Auditory')
-%     ylim(handles2give.AudAxes,[-10 10])
-% 
-%     plot(handles2give.WhAxes,timevec(1:10:end),wh_vec(1:10:end),'Color', wcolor)
-%     xlim(handles2give.WhAxes,[0 trial_time_window])
-%     xlabel(handles2give.WhAxes,'Time(s)')
-%     ylabel(handles2give.WhAxes,'Whisker')
-%     ylim(handles2give.WhAxes,[-5 5])
-
 
     %% Online performance for plotting
     if trial_number>1
