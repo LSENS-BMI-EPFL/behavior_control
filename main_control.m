@@ -13,9 +13,9 @@ function main_control(~,event)
         baseline_window camera_vec...
         deliver_reward_flag ...
         wh_stim_amp response_window response_window_start response_window_end...
-        fid_results perf_and_save_results_flag lh3 reward_delivered_flag update_parameters_flag...
+        fid_results perf_and_save_results_flag reward_delivered_flag update_parameters_flag...
         is_reward...
-        light_prestim_delay light_duration light_freq light_amp SITrigger_vec trial_lick_data...
+        light_prestim_delay light_duration light_freq light_amp SITrigger_vec...
         context_block context_flag extra_time...
         pink_noise_player brown_noise_player 
         
@@ -66,10 +66,10 @@ function main_control(~,event)
             deliver_reward_flag=1;
         end
 
-        trial_started_flag=1;
-        perf_and_save_results_flag=0;
-        mouse_licked_flag=0;
-        trial_time=toc(session_start_time); % time since session start
+        trial_started_flag = 1;
+        perf_and_save_results_flag = 0;
+        mouse_licked_flag = 0;
+        trial_time = toc(session_start_time); % time since session start
     end
 
 
@@ -334,16 +334,7 @@ function main_control(~,event)
             continue
         end
 
-
-%         fclose(fid_lick_trace);
-%         delete(lh3);
-
         trial_number = trial_number + 1;
-        
-%         fid_lick_trace=fopen([folder_name '\LickTrace' num2str(trial_number) '.bin'], 'w');
-%         lh3 = addlistener(Stim_S,'DataAvailable',@(src, event)log_lick_data(src, event, trial_duration));
-
-%         trial_lick_data=[];
 
         % queueOutputData(Stim_S,[Wh_vec; Aud_vec;Light_vec;Camera_vec;SITrigger_vec]')
         queueOutputData(Stim_S,[wh_vec; aud_vec; camera_vec;SITrigger_vec]')

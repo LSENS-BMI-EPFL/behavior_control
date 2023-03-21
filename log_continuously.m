@@ -24,10 +24,10 @@ fwrite(fid_continuous, data, 'double');
 trial_start_ttl = [trial_start_ttl, event.Data(:,3)'];
 trial_start_ttl = trial_start_ttl(end-trial_duration/1000*Log_S_SR+1:end);
 time = [0:numel(trial_start_ttl)-1]/Log_S_SR;
-plot(handles2give.TrialStartTTL, time, trial_start_ttl, 'Color', 'k'); 
+plot(handles2give.TrialStartTTL, time, trial_start_ttl, 'Color', 'k');
 ylabel(handles2give.TrialStartTTL,'Trial TTL')
 % Set axes limits
-ylim(handles2give.TrialStartTTL, [0 8]); 
+ylim(handles2give.TrialStartTTL, [0 8]);
 xlim(handles2give.TrialStartTTL, [0 time(end)]);
 
 % Plot lick traces.

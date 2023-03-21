@@ -12,9 +12,9 @@ function update_parameters
         stim_proba_old aud_stim_proba_old wh_stim_proba_old aud_light_proba_old wh_light_proba_old light_flag baseline_window camera_vec...
         deliver_reward_flag ...
         wh_stim_amp response_window_start response_window_end...
-        perf_and_save_results_flag lh3 reward_delivered_flag update_parameters_flag...
+        perf_and_save_results_flag reward_delivered_flag update_parameters_flag...
         is_reward reward_pool partial_reward_flag reward_proba_old...
-        light_duration light_freq light_amp camera_freq SITrigger_vec main_trial_pool trial_lick_data...
+        light_duration light_freq light_amp camera_freq SITrigger_vec main_trial_pool...
         whisker_trial_counter mouse_rewarded_context context_block context_flag pink_noise brown_noise block_id wh_rewarded_context...
         pink_noise_player brown_noise_player identical_block_count extra_time
         
@@ -653,19 +653,6 @@ function update_parameters
 
     %% Parameters are updated: now send signal vectors and triggers
     
-    % Close lick trace file for current trial
-    if trial_number~=1
-        fclose(fid_lick_trace);
-        delete(lh3)
-    end
-    
-    % Open new lick trace file 
-    fid_lick_trace=fopen([folder_name '\LickTrace' num2str(trial_number) '.bin'],'w');
-    % Listener for available data from piezo sensor
-%     lh3 = addlistener(Stim_S,'DataAvailable',@(src, event) log_lick_data(src, event, trial_duration));
-    
-    trial_lick_data = [];
-
     SITrigger_vec=[ones(1,numel(wh_vec)-2) 0 0]; % ScanImage trigger vector
     queueOutputData(Stim_S,[wh_vec; aud_vec; camera_vec; SITrigger_vec]')
 

@@ -6,10 +6,10 @@
     global  Reward_S Stim_S Log_S association_flag lick_time  trial_number   ...
         trial_start_time  trial_end_time  timeout_time ...
         Trigger_S  Stim_S_SR Main_S Log_S_SR...
-        lh1 lh2  fid_results  Reward_S_SR local_counter lick_channel_times camera_start_time ...
+        lh1 lh2 fid_results  Reward_S_SR local_counter lick_channel_times camera_start_time ...
         folder_name handles2give early_lick_counter session_start_time...
         Main_S_SR Reward_Ch light_counter whisker_trial_counter...
-        lh4 fid_continuous trial_start_ttl lick_data cam1_ttl cam2_ttl scan_pos continous_lick_data
+        fid_continuous trial_start_ttl lick_data cam1_ttl cam2_ttl scan_pos continous_lick_data
 
 
     % Initialize variables and result file
@@ -61,12 +61,11 @@
     % Create main control session
 
     Main_S = daq.createSession('ni');
-    aich1=addAnalogInputChannel(Main_S, 'Dev1', 0, 'Voltage'); % Reading the Lick signal (Ch0) and copies of trial onset and other stimuli
+    aich1=addAnalogInputChannel(Main_S, 'Dev1', 0, 'Voltage');
     aich1(1).TerminalConfig='SingleEnded';
     Main_S.Rate = Main_S_SR;
     Main_S.IsContinuous = true;
     lh1 = addlistener(Main_S,'DataAvailable', @main_control);
-
     % Callback function (main_control) is called when that many samples are
     % available.
     Main_S.NotifyWhenDataAvailableExceeds=20;
@@ -90,7 +89,7 @@
     ai_log(5).TerminalConfig='SingleEnded';
     Log_S.Rate = Log_S_SR;
     Log_S.IsContinuous = true;
-    lh4 = addlistener(Log_S,'DataAvailable', @(src, event) log_continuously(src, event));
+    lh2 = addlistener(Log_S,'DataAvailable', @(src, event) log_continuously(src, event));
     fid_continuous = fopen([folder_name '\log_continuous.bin'], 'a');
     
     
@@ -121,9 +120,6 @@
     % Create a session for Stimulus/Stimuli
 
     Stim_S = daq.createSession('ni');
-    
-%     aich2=addAnalogInputChannel(Stim_S,'Dev2','ai0', 'Voltage'); % Reading the Lick signal for logging
-%     aich2.TerminalConfig='SingleEnded';
 
     aoch_coil=addAnalogOutputChannel(Stim_S,'Dev2','ao0', 'Voltage'); % Whisker stim (coil/piezo) channel
     aoch_coil.TerminalConfig='SingleEnded';
@@ -154,22 +150,22 @@
 
     % Set counters
     handles2give.PauseRequested=0;
-    trial_number=0;
+    trial_number = 0;
     light_counter = 0;
-    early_lick_counter=0;
-    local_counter=0; % for plot_lick_trace
-    whisker_trial_counter=0; %for partial rewards
+    early_lick_counter = 0;
+    local_counter = 0; % for plot_lick_trace
+    whisker_trial_counter = 0; %for partial rewards
 
     % Update parameters in GUI
     update_parameters;
 
     % Set time variables
-    camera_start_time=tic;
-    session_start_time=tic;
-    trial_end_time=tic;
-    trial_start_time=tic;
-    lick_time=tic;
-    timeout_time=tic;
+    camera_start_time = tic;
+    session_start_time = tic;
+    trial_end_time = tic;
+    trial_start_time = tic;
+    lick_time = tic;
+    timeout_time = tic;
 
     % Start acquisition
     Main_S.startBackground();
