@@ -8,7 +8,7 @@ function update_parameters
         false_alarm_punish_flag false_alarm_timeout early_lick_punish_flag early_lick_timeout ...
         Stim_S Log_S wh_stim_duration  aud_stim_duration  aud_stim_amp  aud_stim_freq  Stim_S_SR ScansTobeAcquired ...
         Reward_S Reward_S_SR  Trigger_S fid_lick_trace mouse_licked_flag reaction_time ...
-        trial_started_flag  trial_number light_proba_old folder_name handles2give...
+        trial_started_flag  trial_number main_pool_size_old light_proba_old folder_name handles2give...
         stim_proba_old aud_stim_proba_old wh_stim_proba_old aud_light_proba_old wh_light_proba_old light_flag baseline_window camera_vec...
         deliver_reward_flag ...
         wh_stim_amp wh_scaling_factor response_window_start response_window_end...
@@ -143,7 +143,7 @@ function update_parameters
     wh_scaling_factor = handles2give.wh_scaling_factor;
 
     aud_stim_weight = handles2give.aud_stim_weight;
-    wh_stim_weight = handles2give.wh_stim_weight; %for whisker , hard-coded for now (see below)
+    wh_stim_weight = handles2give.wh_stim_weight; 
     no_stim_weight = handles2give.no_stim_weight;
     
 
@@ -197,6 +197,11 @@ function update_parameters
     % Size of pool (i.e. trial block) to get trials from
     % If context is not used:
     main_pool_size = aud_stim_weight + wh_stim_weight + no_stim_weight; %in an non-light task
+    if isempty(main_pool_size_old)
+        main_pool_size_old = main_pool_size;
+    end
+
+    
     % If use context blocks (check sum is valid) 
     if context_flag
         if context_block_size ~= main_pool_size
@@ -217,9 +222,11 @@ function update_parameters
     wh_stim_proba_old = wh_stim_proba;
 
     % CREATE NEW TRIAL POOL WHEN CURRENT POOL FINISHED
+    disp(main_pool_size_old);
+    disp(main_pool_size);
 
-    if mod(n_completed_trials, main_pool_size)==0 || light_proba_old ~= light_proba || aud_light_proba_old ~= light_aud_proba ||  wh_light_proba_old ~= light_wh_proba ||stim_proba_old ~= stim_proba || aud_stim_proba_old ~= aud_stim_proba|| wh_stim_proba_old ~= wh_stim_proba
-
+    if mod(n_completed_trials, main_pool_size)==0 || main_pool_size_old ~= main_pool_size|| stim_proba_old ~= stim_proba || aud_stim_proba_old ~= aud_stim_proba|| wh_stim_proba_old ~= wh_stim_proba || light_proba_old ~= light_proba || aud_light_proba_old ~= light_aud_proba ||  wh_light_proba_old ~= light_wh_proba
+        main_pool_size_old = main_pool_size;
         % Stim. probability and trial pool when light stimulus
         if light_flag
 
@@ -250,7 +257,7 @@ function update_parameters
         %Randomize occurrence of trials in pool
         main_trial_pool=main_trial_pool(randperm(numel(main_trial_pool)));
 
-        % specify absence of context
+        % Specify absence of context
         context_code = 0;
 
         % if context 
