@@ -16,7 +16,7 @@ function update_parameters
         is_reward reward_pool partial_reward_flag reward_proba_old...
         light_duration light_freq light_amp camera_freq SITrigger_vec main_trial_pool...
         whisker_trial_counter mouse_rewarded_context context_block context_flag pink_noise brown_noise block_id wh_rewarded_context...
-        pink_noise_player brown_noise_player identical_block_count extra_time
+        pink_noise_player brown_noise_player identical_block_count extra_time context_code
         
        
 
@@ -250,9 +250,13 @@ function update_parameters
         %Randomize occurrence of trials in pool
         main_trial_pool=main_trial_pool(randperm(numel(main_trial_pool)));
 
+        % specify absence of context
+        context_code = 0;
+
         % if context 
         if context_flag
             contexts = {'pink', 'brown'};
+            context_codes = [1, 2];
             if trial_number==1
                 [pink_noise, pink_SR] = audioread(strcat(handles2give.bckg_noise_directory, '\pink_noise.wav'));
                 pink_noise_player = audioplayer(pink_noise, pink_SR);
@@ -273,6 +277,7 @@ function update_parameters
                     end
                 block_id = randi([1, size(contexts, 2)], 1); 
                 context_block = contexts{block_id};
+                context_code = context_codes(block_id);
             else
                 old_block_id = block_id;
                 block_id = randi([1, size(contexts, 2)], 1);
@@ -290,6 +295,7 @@ function update_parameters
                 identical_block_count = 1;
                 end
                 context_block = contexts{block_id};
+                context_code = context_codes(block_id);
             end
             wh_rewarded_context = strcmp(context_block, mouse_rewarded_context);    
         end

@@ -16,7 +16,7 @@ function main_control(~,event)
         fid_results perf_and_save_results_flag reward_delivered_flag update_parameters_flag...
         is_reward...
         light_prestim_delay light_duration light_freq light_amp SITrigger_vec...
-        context_block context_flag extra_time...
+        context_code context_flag extra_time...
         pink_noise_player brown_noise_player 
         
 
@@ -222,6 +222,7 @@ function main_control(~,event)
             light_duration  '%10.4f';
             light_freq  '%10.4f';
             light_prestim_delay '%10.4f';
+            context_code '%8.0f';
             };
 
         fprintf(fid_results, string(strjoin(results_config(:,2))) + ' \n', cell2mat(results_config(:,1))); 
@@ -313,6 +314,7 @@ function main_control(~,event)
             light_duration  '%10.4f';
             light_freq  '%10.4f';
             light_prestim_delay '%10.4f';
+            context_code '%8.0f';
             };
         
         fprintf(fid_results, string(strjoin(results_config(:,2))) + ' \n', cell2mat(results_config(:,1))); 

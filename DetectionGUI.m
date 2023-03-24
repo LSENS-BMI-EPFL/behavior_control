@@ -156,7 +156,7 @@ set(handles.AStimWeightTag,'Enable','on')
 set(handles.AStimWeightTag,'String','1'); handles.aud_stim_weight = str2double(get(handles.AStimWeightTag,'String'));
 
 % Whisker stimuli 
-set(handles.StimDuration1Tag,'String','1'); handles.wh_stim_duration = str2double(get(handles.StimDuration1Tag,'String'));
+set(handles.StimDuration1Tag,'String','3'); handles.wh_stim_duration = str2double(get(handles.StimDuration1Tag,'String'));
 set(handles.StimDuration1Tag,'Enable','on');
 set(handles.StimAmp1Tag,'String','3.2'); handles.wh_stim_amp = str2double(get(handles.StimAmp1Tag,'String'));
 set(handles.scaling_factor,'String','0.6'); handles.wh_scaling_factor = str2double(get(handles.scaling_factor,'String'));
@@ -209,7 +209,7 @@ axes(handles.PerformanceAxes); set(gca,'XTick',[]); set(gca,'XColor','w'); set(g
 set(handles.LastRecentTrialsTag,'String','5'); handles.last_recent_trials = str2double(get(handles.LastRecentTrialsTag,'String'));
 axes(handles.LickTraceAx); set(gca,'XTick',[]); set(gca,'XColor','w'); set(gca,'YTick',[]); set(gca,'YColor','w');
 
-set(handles.LickThresholdTag,'String','0.05'); handles.lick_threshold = str2double(get(handles.LickThresholdTag,'String'));
+set(handles.LickThresholdTag,'String','0.1'); handles.lick_threshold = str2double(get(handles.LickThresholdTag,'String'));
 
 %% Initialize text display
 
