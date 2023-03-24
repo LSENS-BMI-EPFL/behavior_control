@@ -145,6 +145,25 @@ biphasic_hann_15 = stim_amp * [zeros(1,baseline_dur*sr) impulse];
 biphasic_hann_15 = [biphasic_hann_15 zeros(1,trial_dur*sr - numel(biphasic_hann_15))];
 
 
+% Biphasic Hann window 3 ms 40 mT.
+
+stim_amp = 3.2;
+stim_duration_up = 1.5;
+stim_duration_down = 1.5;
+scale_factor = .6;
+
+stim_duration_up = stim_duration_up*sr;
+stim_duration_down = stim_duration_down*sr-5;
+
+impulse_up = tukeywin(stim_duration_up,1);
+impulse_up = impulse_up(1:end-1);
+impulse_down = -tukeywin(stim_duration_down,1);
+impulse_down = impulse_down(2:end);
+impulse = [impulse_up' scale_factor*impulse_down'];
+
+biphasic_hann_3ms_40 = stim_amp * [zeros(1,baseline_dur*sr) impulse];
+biphasic_hann_3ms_40 = [biphasic_hann_3ms_40 zeros(1,trial_dur*sr - numel(biphasic_hann_3ms_40))];
+
 % Biphasic Hann window 3 ms 35 mT.
 
 stim_amp = 2.85;
@@ -442,13 +461,13 @@ monophasic_hann_3ms_15 = [monophasic_hann_3ms_15 zeros(1,trial_dur*sr - numel(mo
 
 % stim = biphasic_square_35;
 % stim = biphasic_hann_35;
-stim = biphasic_hann_3ms_30;
+stim = biphasic_hann_3ms_40;
 % stim = monophasic_hann_1ms_35;
 % stim = monophasic_hann_3ms_35;
 % stim = blank;
 
 
-ntrial = 1;
+ntrial = 10;
 len = numel(stim);
 
 data = zeros(ntrial,len);
