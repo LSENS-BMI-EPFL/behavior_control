@@ -16,11 +16,20 @@ for k=1:numel(field)
     field_value = gui_handles.(field{k});
    
     % Keep numeric or string variables (i.e. remove GUI objects)
-    if not(isa(field_value,'numeric')) && not(isa(field_value,'string'))  && not(isa(field_value,'char'))
+    if not(isa(field_value,'numeric')) && not(isa(field_value,'string')) && not(isa(field_value,'char')) 
         
         handles2save = rmfield(handles2save, field_name);
         
     end
+
+    % Remove temporary directory variables
+    if (isa(field_value,'string') || isa(field_value,'char')) && contains(field_name, 'directory')
+
+        handles2save = rmfield(handles2save, field_name);
+    end
+
+
+    % Remove path 
     
 end
 

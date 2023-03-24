@@ -6,17 +6,18 @@ function update_parameters
         reward_valve_duration  aud_reward wh_reward wh_vec aud_vec light_vec ...
         light_prestim_delay stim_flag perf lick_flag ...
         false_alarm_punish_flag false_alarm_timeout early_lick_punish_flag early_lick_timeout ...
-        Stim_S wh_stim_duration  aud_stim_duration  aud_stim_amp  aud_stim_freq  Stim_S_SR ScansTobeAcquired ...
+        Stim_S Log_S wh_stim_duration  aud_stim_duration  aud_stim_amp  aud_stim_freq  Stim_S_SR ScansTobeAcquired ...
         Reward_S Reward_S_SR  Trigger_S fid_lick_trace mouse_licked_flag reaction_time ...
         trial_started_flag  trial_number light_proba_old folder_name handles2give...
         stim_proba_old aud_stim_proba_old wh_stim_proba_old aud_light_proba_old wh_light_proba_old light_flag baseline_window camera_vec...
         deliver_reward_flag ...
-        wh_stim_amp response_window_start response_window_end...
-        perf_and_save_results_flag lh3 reward_delivered_flag update_parameters_flag...
+        wh_stim_amp wh_scaling_factor response_window_start response_window_end...
+        perf_and_save_results_flag reward_delivered_flag update_parameters_flag...
         is_reward reward_pool partial_reward_flag reward_proba_old...
-        light_duration light_freq light_amp camera_freq SITrigger_vec main_trial_pool trial_lick_data...
+        light_duration light_freq light_amp camera_freq SITrigger_vec main_trial_pool...
         whisker_trial_counter mouse_rewarded_context context_block context_flag pink_noise brown_noise block_id wh_rewarded_context...
-        pink_noise_player brown_noise_player identical_block_count
+        pink_noise_player brown_noise_player identical_block_count extra_time context_code
+        
        
 
     outputSingleScan(Trigger_S,[0 0 0])
@@ -132,15 +133,18 @@ function update_parameters
     early_lick_punish_flag = handles2give.early_lick_punish_flag;
     early_lick_timeout=handles2give.early_lick_timeout; % in ms
 
-    % Auditory and whisker stim parameters
+    % Stimuli parameters
     aud_stim_amp =  handles2give.aud_stim_amp;
     aud_stim_duration = handles2give.aud_stim_duration;
     aud_stim_freq = handles2give.aud_stim_freq;
+    
+    wh_stim_amp = handles2give.wh_stim_amp;
+    wh_stim_duration = handles2give.wh_stim_duration;
+    wh_scaling_factor = handles2give.wh_scaling_factor;
+
     aud_stim_weight = handles2give.aud_stim_weight;
-    
-    wh_stim_weight = handles2give.wh_stim_weight(1); %for whisker , hard-coded for now (see below)
-    
-    no_stim_weight=handles2give.no_stim_weight;
+    wh_stim_weight = handles2give.wh_stim_weight; %for whisker , hard-coded for now (see below)
+    no_stim_weight = handles2give.no_stim_weight;
     
 
     %% Compute stimulus probability
@@ -246,9 +250,13 @@ function update_parameters
         %Randomize occurrence of trials in pool
         main_trial_pool=main_trial_pool(randperm(numel(main_trial_pool)));
 
+        % specify absence of context
+        context_code = 0;
+
         % if context 
         if context_flag
             contexts = {'pink', 'brown'};
+            context_codes = [1, 2];
             if trial_number==1
                 [pink_noise, pink_SR] = audioread(strcat(handles2give.bckg_noise_directory, '\pink_noise.wav'));
                 pink_noise_player = audioplayer(pink_noise, pink_SR);
@@ -269,6 +277,7 @@ function update_parameters
                     end
                 block_id = randi([1, size(contexts, 2)], 1); 
                 context_block = contexts{block_id};
+                context_code = context_codes(block_id);
             else
                 old_block_id = block_id;
                 block_id = randi([1, size(contexts, 2)], 1);
@@ -286,6 +295,7 @@ function update_parameters
                 identical_block_count = 1;
                 end
                 context_block = contexts{block_id};
+                context_code = context_codes(block_id);
             end
             wh_rewarded_context = strcmp(context_block, mouse_rewarded_context);    
         end
@@ -420,8 +430,8 @@ function update_parameters
             
             % Set whisker vec to zero
             wh_stim_duration = 0;
-            wh_stim_amp=0;
-            wh_vec=zeros(1,(trial_duration)*(Stim_S_SR/1000));
+            wh_stim_amp = 0;
+            wh_vec = zeros(1,(trial_duration)*(Stim_S_SR/1000));
 
         % Biphasic cosine whisker stimulus
         else
@@ -432,40 +442,14 @@ function update_parameters
 
             aud_vec=zeros(1,(trial_duration)*(Stim_S_SR/1000));
             
-
-            % CALIBRATE WHISKER STIMULUS SHAPE BASED ON GUI AMPLITUDE PARAM
-            % - KEPT BUT COULD BE DELETED?
-                %switch wh_stim_amp
-                %    case 0.5
-                %        ScaleFactor=1.1;
-                %        StimDurationRise = wh_stim_duration*Stim_S_SR/2000;
-                %        StimDurationDecrease = wh_stim_duration*Stim_S_SR/2000;
-                %    case 1
-                %        ScaleFactor=1.15;
-                %        StimDurationRise = wh_stim_duration*Stim_S_SR/2000;
-                %        StimDurationDecrease = wh_stim_duration*Stim_S_SR/2000;
-                %    otherwise
-                %        ScaleFactor=0.9;
-                %        StimDurationRise = wh_stim_duration*Stim_S_SR/2000+15;
-                %        StimDurationDecrease = wh_stim_duration*Stim_S_SR/2000+1;
-                %end
-
-            %HARD-CODED STIM PARAMS -> check magnetic field with calibration_coil.m 
-
-            wh_stim_amp = 2.3; %volt
-            wh_stim_duration_up = 1.5; %ms
-            wh_stim_duration_down = 1.5;
-            wh_stim_duration = wh_stim_duration_up + wh_stim_duration_down;
-            scale_factor = .6; % -> relative amplitude of both cosines to control for artefact transient
-
-            wh_stim_duration_up = wh_stim_duration_up*Stim_S_SR/1000;
-            wh_stim_duration_down = wh_stim_duration_down*Stim_S_SR/1000;
+            wh_stim_duration_up = wh_stim_duration/2*Stim_S_SR/1000;
+            wh_stim_duration_down = wh_stim_duration/2*Stim_S_SR/1000;
 
             impulse_up = tukeywin(wh_stim_duration_up,1);
             impulse_up = impulse_up(1:end-1);
             impulse_down = -tukeywin(wh_stim_duration_down,1);
             impulse_down = impulse_down(2:end);
-            impulse = [impulse_up' scale_factor*impulse_down'];
+            impulse = [impulse_up' wh_scaling_factor*impulse_down'];
 
             wh_vec = wh_stim_amp * [zeros(1,baseline_window*Stim_S_SR/1000) impulse];
             wh_vec = [wh_vec zeros(1,trial_duration*Stim_S_SR/1000 - numel(wh_vec))];
@@ -527,27 +511,6 @@ function update_parameters
         wcolor = [0.6350 0.0780 0.1840];
         wcolor_str = '0.6350 0.0780 0.1840';
     end
-    
-    timevec=linspace(0, trial_duration/1000,(trial_duration)*Stim_S_SR/1000);
-    trial_time_window=max(timevec);
-
-    plot(handles2give.CameraAxes,timevec(1:10:end),camera_vec(1:10:end),'k')
-    set(handles2give.CameraAxes,'XTick',[])
-    xlim(handles2give.CameraAxes,[0 trial_time_window])
-    ylabel(handles2give.CameraAxes,'Camera')
-
-    plot(handles2give.AudAxes,timevec(1:1:end),aud_vec(1:1:end),'Color', acolor)
-    set(handles2give.AudAxes,'XTick',[])
-    xlim(handles2give.AudAxes,[0 trial_time_window])
-    ylabel(handles2give.AudAxes,'Auditory')
-    ylim(handles2give.AudAxes,[-10 10])
-
-    plot(handles2give.WhAxes,timevec(1:10:end),wh_vec(1:10:end),'Color', wcolor)
-    xlim(handles2give.WhAxes,[0 trial_time_window])
-    xlabel(handles2give.WhAxes,'Time(s)')
-    ylabel(handles2give.WhAxes,'Whisker')
-    ylim(handles2give.WhAxes,[-5 5])
-
 
     %% Online performance for plotting
     if trial_number>1
@@ -652,19 +615,6 @@ function update_parameters
 
     %% Parameters are updated: now send signal vectors and triggers
     
-    % Close lick trace file for current trial
-    if trial_number~=1
-        fclose(fid_lick_trace);
-        delete(lh3)
-    end
-    
-    % Open new lick trace file 
-    fid_lick_trace=fopen([folder_name '\LickTrace' num2str(trial_number) '.bin'],'w');
-    % Listener for available data form piezo sensor
-    lh3 = addlistener(Stim_S,'DataAvailable',@(src, event) log_lick_data(src, event, trial_duration));
-    
-    trial_lick_data=[];
-
     SITrigger_vec=[ones(1,numel(wh_vec)-2) 0 0]; % ScanImage trigger vector
     queueOutputData(Stim_S,[wh_vec; aud_vec; camera_vec; SITrigger_vec]')
 
@@ -685,6 +635,7 @@ function update_parameters
         end
         Reward_S.startBackground();
      end
+     
     %% Define response window boundaries
     
     response_window_start = (artifact_window + baseline_window)/1000;
@@ -704,5 +655,13 @@ function update_parameters
 
     % Reset variables
     reaction_time=0;
+
+    % Give user extra time to start video and 2P acquisition before 1st trial start.
+    % Added to iti condition for trial start in main_control.
+    if trial_number == 1
+        extra_time = 10;
+    else
+        extra_time = 0;
+    end
 
 end

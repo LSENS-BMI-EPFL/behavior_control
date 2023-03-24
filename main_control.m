@@ -7,17 +7,17 @@ function main_control(~,event)
         aud_reward wh_reward wh_vec aud_vec ...
         stim_flag perf session_start_time lick_flag lick_time trial_start_time trial_end_time trial_time...
         false_alarm_punish_flag false_alarm_timeout early_lick_counter early_lick_punish_flag early_lick_timeout ...
-        Stim_S wh_stim_duration  aud_stim_duration  aud_stim_amp  aud_stim_freq  Stim_S_SR ...
+        Stim_S wh_stim_duration wh_scaling_factor aud_stim_duration  aud_stim_amp  aud_stim_freq  Stim_S_SR ...
         Reward_S  Trigger_S fid_lick_trace mouse_licked_flag reaction_time ...
         trial_started_flag  trial_number folder_name handles2give...
         baseline_window camera_vec...
         deliver_reward_flag ...
         wh_stim_amp response_window response_window_start response_window_end...
-        fid_results perf_and_save_results_flag lh3 reward_delivered_flag update_parameters_flag...
+        fid_results perf_and_save_results_flag reward_delivered_flag update_parameters_flag...
         is_reward...
-        light_prestim_delay light_duration light_freq light_amp SITrigger_vec trial_lick_data...
-        context_block context_flag...
-        pink_noise_player brown_noise_player
+        light_prestim_delay light_duration light_freq light_amp SITrigger_vec...
+        context_code context_flag extra_time...
+        pink_noise_player brown_noise_player 
         
 
     %% Timing last lick detection for quiet window.
@@ -52,7 +52,8 @@ function main_control(~,event)
 
     % Trial start: 1. if stim flag ON, 2. no lick in quiet window 3. iti
     % has elapsed since trial_end_time
-    if stim_flag && toc(lick_time) > quiet_window/1000 && toc(trial_end_time) > iti/1000        
+    
+    if stim_flag && toc(lick_time) > quiet_window/1000 && toc(trial_end_time) > iti/1000+extra_time
 
         stim_flag=0; %reset
         set(handles2give.OnlineTextTag,'String','Trial Started','FontWeight','bold');
@@ -65,10 +66,10 @@ function main_control(~,event)
             deliver_reward_flag=1;
         end
 
-        trial_started_flag=1;
-        perf_and_save_results_flag=0;
-        mouse_licked_flag=0;
-        trial_time=toc(session_start_time); % time since session start
+        trial_started_flag = 1;
+        perf_and_save_results_flag = 0;
+        mouse_licked_flag = 0;
+        trial_time = toc(session_start_time); % time since session start
     end
 
 
@@ -208,6 +209,7 @@ function main_control(~,event)
             reaction_time '%10.4f';
             wh_stim_duration '%10.1f';
             wh_stim_amp '%8.0f';
+            wh_scaling_factor '%10.4f';
             wh_reward '%8.0f';
             is_reward '%8.0f';
             aud_stim_duration '%10.4f';
@@ -220,6 +222,7 @@ function main_control(~,event)
             light_duration  '%10.4f';
             light_freq  '%10.4f';
             light_prestim_delay '%10.4f';
+            context_code '%8.0f';
             };
 
         fprintf(fid_results, string(strjoin(results_config(:,2))) + ' \n', cell2mat(results_config(:,1))); 
@@ -298,6 +301,7 @@ function main_control(~,event)
             reaction_time '%10.4f';
             wh_stim_duration '%10.1f';
             wh_stim_amp '%8.0f';
+            wh_scaling_factor '%10.4f';
             wh_reward '%8.0f';
             is_reward '%8.0f';
             aud_stim_duration '%10.4f';
@@ -310,6 +314,7 @@ function main_control(~,event)
             light_duration  '%10.4f';
             light_freq  '%10.4f';
             light_prestim_delay '%10.4f';
+            context_code '%8.0f';
             };
         
         fprintf(fid_results, string(strjoin(results_config(:,2))) + ' \n', cell2mat(results_config(:,1))); 
@@ -333,17 +338,7 @@ function main_control(~,event)
             continue
         end
 
-
-        fclose(fid_lick_trace);
-        delete(lh3);
-
         trial_number = trial_number + 1;
-        
-
-        fid_lick_trace=fopen([folder_name '\LickTrace' num2str(trial_number) '.bin'], 'w');
-        lh3 = addlistener(Stim_S,'DataAvailable',@(src, event)log_lick_data(src, event, trial_duration));
-
-        trial_lick_data=[];
 
         % queueOutputData(Stim_S,[Wh_vec; Aud_vec;Light_vec;Camera_vec;SITrigger_vec]')
         queueOutputData(Stim_S,[wh_vec; aud_vec; camera_vec;SITrigger_vec]')
