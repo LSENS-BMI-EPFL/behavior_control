@@ -22,7 +22,7 @@ function varargout = DetectionGUI(varargin)
 
 % Edit the above text to modify the response to help DetectionGUI
 
-% Last Modified by GUIDE v2.5 24-Feb-2023 10:22:41
+% Last Modified by GUIDE v2.5 21-Mar-2023 18:49:16
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -76,8 +76,8 @@ set(handles.SetDateTag,'String',Date2Display);
 set(handles.SetDateTag,'Enable','off');
 
 % [TO CUSTOMIZE BY EACH USER]
-set(handles.MouseNameTag,'String','ABXXX'); handles.mouse_name = get(handles.MouseNameTag,'String');
-handles.behaviour_directory = 'C:\Users\bisi\Desktop\BehaviourData';
+set(handles.MouseNameTag,'String','RDXXX'); handles.mouse_name = get(handles.MouseNameTag,'String');
+handles.behaviour_directory = 'C:\BehaviourData';
 set(handles.BehaviorDirectoryTag,'String', handles.behaviour_directory);
 
 %% Set general session settings
@@ -102,24 +102,12 @@ set(handles.BehaviourTypeTag, 'String', handles.behaviour_type);
 set(handles.MinQuietWindowTag,'String','1000'); handles.min_quiet_window = str2double(get(handles.MinQuietWindowTag,'String'));
 set(handles.MaxQuietWindowTag,'String','5000'); handles.max_quiet_window = str2double(get(handles.MaxQuietWindowTag,'String'));
 set(handles.ResponseWindowTag,'String','1000'); handles.response_window = str2double(get(handles.ResponseWindowTag,'String'));
-set(handles.ArtifactWindowTag,'String','50'); handles.artifact_window = str2double(get(handles.ArtifactWindowTag,'String'));
+set(handles.ArtifactWindowTag,'String','100'); handles.artifact_window = str2double(get(handles.ArtifactWindowTag,'String'));
 set(handles.MinISITag,'String','6000'); handles.min_iti = str2double(get(handles.MinISITag,'String'));
 set(handles.MaxISITag,'String','10000'); handles.max_iti = str2double(get(handles.MaxISITag,'String'));
 set(handles.BaselineWindowTag,'String','0'); handles.baseline_window = str2double(get(handles.BaselineWindowTag,'String'));
-set(handles.TrialDurationTag,'String','7000'); handles.trial_duration = str2double(get(handles.TrialDurationTag,'String'));
+set(handles.TrialDurationTag,'String','5000'); handles.trial_duration = str2double(get(handles.TrialDurationTag,'String'));
 
-%% Set Auditory parameters
-
-set(handles.ToneDurationTag,'Enable','on');
-set(handles.ToneAmpTag,'Enable','on');
-set(handles.ToneFreqTag,'Enable','on');
-
-set(handles.ToneDurationTag,'String','10'); handles.aud_stim_duration = str2double(get(handles.ToneDurationTag,'String'));
-set(handles.ToneAmpTag,'String','2'); handles.aud_stim_amp = str2double(get(handles.ToneAmpTag,'String'));
-set(handles.ToneFreqTag,'String','10000'); handles.aud_stim_freq= str2double(get(handles.ToneFreqTag,'String'));
-
-set(handles.BckgNoiseFolderPath,'String','Enter path'); handles.bckg_noise_directory = get(handles.BckgNoiseFolderPath,'String');
-set(handles.BckgNoiseFolderPath,'Enable','off');
 
 %% Set Light parameters
 set(handles.OptoLightCheckbox,'Value',0); handles.light_flag = get(handles.OptoLightCheckbox,'Value');
@@ -142,6 +130,7 @@ set(handles.LightDutyTag,'String','0.65'); handles.light_duty = str2double(get(h
 set(handles.LightProbAudTag,'String','0.4'); handles.light_aud_proba = str2double(get(handles.LightProbAudTag,'String'));
 set(handles.LightProbWhTag,'String','0.4'); handles.light_wh_proba = str2double(get(handles.LightProbWhTag,'String'));
 set(handles.LightProbNoStimTag,'String','0.4'); handles.light_proba = str2double(get(handles.LightProbNoStimTag,'String'));
+
 %% Set Punishment parameters
 
 set(handles.FalseAlarmTimeOutTag,'String','0000'); handles.false_alarm_timeout = str2double(get(handles.FalseAlarmTimeOutTag,'String'));
@@ -150,20 +139,32 @@ set(handles.FalseAlarmTimeOutTag,'Enable','off');
 set(handles.EarlyLickTimeOutTag,'String','0000'); handles.early_lick_timeout = str2double(get(handles.EarlyLickTimeOutTag,'String'));
 set(handles.EarlyLickTimeOutTag,'Enable','off');
 
-%% Set the stimulus parameters
+%% Set stimuli parameters
 
-%Auditory stim
+% Auditory stim
+set(handles.ToneDurationTag,'String','10'); handles.aud_stim_duration = str2double(get(handles.ToneDurationTag,'String'));
+set(handles.ToneDurationTag,'Enable','on');
+set(handles.ToneAmpTag,'String','2'); handles.aud_stim_amp = str2double(get(handles.ToneAmpTag,'String'));
+set(handles.ToneAmpTag,'Enable','on');
+set(handles.ToneFreqTag,'String','10000'); handles.aud_stim_freq= str2double(get(handles.ToneFreqTag,'String'));
+set(handles.ToneFreqTag,'Enable','on');
+
+set(handles.BckgNoiseFolderPath,'String','Enter path'); handles.bckg_noise_directory = get(handles.BckgNoiseFolderPath,'String');
+set(handles.BckgNoiseFolderPath,'Enable','off');
+
 set(handles.AStimWeightTag,'Enable','on')
 set(handles.AStimWeightTag,'String','1'); handles.aud_stim_weight = str2double(get(handles.AStimWeightTag,'String'));
 
-%Whisker stimuli 
-set(handles.StimDuration1Tag,'String','1'); handles.wh_stim_duration(1) = str2double(get(handles.StimDuration1Tag,'String'));
-set(handles.StimDuration1Tag,'Enable','off');
-set(handles.StimAmp1Tag,'String','5'); handles.wh_stim_amp(1) = str2double(get(handles.StimAmp1Tag,'String'));
-set(handles.StimAmp1Tag,'Enable','off');
-set(handles.StimWeight1Tag,'String','0'); handles.wh_stim_weight(1) = str2double(get(handles.StimWeight1Tag,'String'));
+% Whisker stimuli 
+set(handles.StimDuration1Tag,'String','3'); handles.wh_stim_duration = str2double(get(handles.StimDuration1Tag,'String'));
+set(handles.StimDuration1Tag,'Enable','on');
+set(handles.StimAmp1Tag,'String','3.2'); handles.wh_stim_amp = str2double(get(handles.StimAmp1Tag,'String'));
+set(handles.scaling_factor,'String','0.6'); handles.wh_scaling_factor = str2double(get(handles.scaling_factor,'String'));
+set(handles.scaling_factor,'Enable','on');
+set(handles.StimWeight1Tag,'String','0'); handles.wh_stim_weight = str2double(get(handles.StimWeight1Tag,'String'));
+set(handles.StimAmp1Tag,'Enable','on');
 
-% Stim probability
+% Blank stimulus probability
 set(handles.NostimWeightTag,'String','1'); handles.no_stim_weight = str2double(get(handles.NostimWeightTag,'String'));
 set(handles.NostimWeightTag,'Enable','on');
 
@@ -197,26 +198,20 @@ set(handles.VideoDirectoryTag,'String', handles.video_directory);
 set(handles.VideoDirectoryTag,'Enable','off');
 
 %% Initialize axes
-axes(handles.ProgressBarAxes); set(gca,'XTick',[]); set(gca,'XColor','w'); set(gca,'YTick',[]); set(gca,'YColor','w');set(gca,'Color',[0.4 0.4 0.4]);
-axes(handles.CameraAxes); set(gca,'XTick',[]); set(gca,'XColor','w'); set(gca,'YTick',[]); set(gca,'YColor','w');
-axes(handles.AudAxes); set(gca,'XTick',[]); set(gca,'XColor','w'); set(gca,'YTick',[]); set(gca,'YColor','w');
-axes(handles.LightAxes); set(gca,'XTick',[]); set(gca,'XColor','w'); set(gca,'YTick',[]); set(gca,'YColor','w');
-axes(handles.WhAxes); set(gca,'XTick',[]); set(gca,'XColor','w'); set(gca,'YTick',[]); set(gca,'YColor','w');
+axes(handles.TrialStartTTL); set(gca,'XTick',[]); set(gca,'XColor','w'); set(gca,'YTick',[]); set(gca,'YColor','w');
+axes(handles.Cam1Ax); set(gca,'XTick',[]); set(gca,'XColor','w'); set(gca,'YTick',[]); set(gca,'YColor','w');
+axes(handles.Cam2Ax); set(gca,'XTick',[]); set(gca,'XColor','w'); set(gca,'YTick',[]); set(gca,'YColor','w');
+axes(handles.LightAx); set(gca,'XTick',[]); set(gca,'XColor','w'); set(gca,'YTick',[]); set(gca,'YColor','w');
+axes(handles.ScanAx); set(gca,'XTick',[]); set(gca,'XColor','w'); set(gca,'YTick',[]); set(gca,'YColor','w');
 
 axes(handles.EarlyLickAxes); set(gca,'XTick',[]); set(gca,'XColor','w'); set(gca,'YTick',[]); set(gca,'YColor','w');
 axes(handles.PerformanceAxes); set(gca,'XTick',[]); set(gca,'XColor','w'); set(gca,'YTick',[]); set(gca,'YColor','w');
 set(handles.LastRecentTrialsTag,'String','5'); handles.last_recent_trials = str2double(get(handles.LastRecentTrialsTag,'String'));
-axes(handles.LickTraceAxes); set(gca,'XTick',[]); set(gca,'XColor','w'); set(gca,'YTick',[]); set(gca,'YColor','w');
-axes(handles.LickTraceAxes2); set(gca,'XTick',[]); set(gca,'XColor','w'); set(gca,'YTick',[]); set(gca,'YColor','w');
+axes(handles.LickTraceAx); set(gca,'XTick',[]); set(gca,'XColor','w'); set(gca,'YTick',[]); set(gca,'YColor','w');
 
-set(handles.LickThresholdTag,'String','0.05'); handles.lick_threshold = str2double(get(handles.LickThresholdTag,'String'));
+set(handles.LickThresholdTag,'String','0.1'); handles.lick_threshold = str2double(get(handles.LickThresholdTag,'String'));
 
 %% Initialize text display
-% set(handles.PerformanceText1Tag,'String',''); set(handles.PerformanceText1Tag,'Enable','off');
-% set(handles.PerformanceText2Tag,'String',''); set(handles.PerformanceText2Tag,'Enable','off');
-% set(handles.PerformanceText3Tag,'String',''); set(handles.PerformanceText3Tag,'Enable','off');
-% set(handles.OnlineTextTag,'String',''); set(handles.OnlineTextTag,'Enable','off');
-% set(handles.TrialTimeLineTextTag,'String',''); set(handles.TrialTimeLineTextTag,'Enable','off');
 
 handles.PauseRequested=0;
 
@@ -715,8 +710,8 @@ function StimDuration1Tag_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of StimDuration1Tag as a double
 global handles2give
 
-handles.wh_stim_duration(1) = round(str2double(get(handles.StimDuration1Tag,'String'))*100)/100;
-set(handles.StimDuration1Tag,'String',num2str(handles.wh_stim_duration(1)));
+handles.wh_stim_duration = round(str2double(get(handles.StimDuration1Tag,'String'))*100)/100;
+set(handles.StimDuration1Tag,'String',num2str(handles.wh_stim_duration));
 
 % Update handles structure
 handles2give=handles;
@@ -746,8 +741,8 @@ function StimAmp1Tag_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of StimAmp1Tag as a double
 global handles2give
 
-handles.wh_stim_amp(1) = round(str2double(get(handles.StimAmp1Tag,'String'))*100)/100;
-set(handles.StimAmp1Tag,'String',num2str(handles.wh_stim_amp(1)));
+handles.wh_stim_amp = round(str2double(get(handles.StimAmp1Tag,'String'))*100)/100;
+set(handles.StimAmp1Tag,'String',num2str(handles.wh_stim_amp));
 
 % Update handles structure
 handles2give=handles;
@@ -777,8 +772,8 @@ function StimWeight1Tag_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of StimWeight1Tag as a double
 global handles2give
 
-handles.wh_stim_weight(1) = round(str2double(get(handles.StimWeight1Tag,'String')));
-set(handles.StimWeight1Tag,'String',num2str(handles.wh_stim_weight(1)));
+handles.wh_stim_weight = round(str2double(get(handles.StimWeight1Tag,'String')));
+set(handles.StimWeight1Tag,'String',num2str(handles.wh_stim_weight));
 
 % Update handles structure
 handles2give=handles;
@@ -825,14 +820,13 @@ if ~exist([char(handles.behaviour_directory) '\' char(handles.mouse_name) '\'  c
 end
 
 % Clear current GUI axes
-cla(handles.ProgressBarAxes);
-cla(handles.CameraAxes);
-cla(handles.AudAxes);
-cla(handles.WhAxes);
-cla(handles.LightAxes);
+cla(handles.TrialStartTTL);
+cla(handles.Cam1Ax);
+cla(handles.Cam2Ax);
+cla(handles.ScanAx);
+cla(handles.LightAx);
 cla(handles.PerformanceAxes);
-cla(handles.LickTraceAxes);
-cla(handles.LickTraceAxes2);
+cla(handles.LickTraceAx);
 cla(handles.EarlyLickAxes);
 
 set(handles2give.PerformanceText1Tag,'String',' ');
@@ -2117,7 +2111,7 @@ function BckgNoiseFolderPath_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hints: get(hObject,'String') returns contents of BckgNoiseFolderPath as text
-%        str2double(get(hObject,'String')) returns contents of BckgNoiseFolderPath as a double
+%        str2double(get(hObject,'String')) returns contents of BckgNoiseFolderPath as a doublewh_scale_factor
 global handles2give
 handles.bckg_noise_directory = get(handles.BckgNoiseFolderPath,'String');
 
@@ -2158,6 +2152,36 @@ guidata(hObject, handles);
 % --- Executes during object creation, after setting all properties.
 function ContextTablePath_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to ContextTablePath (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function scaling_factor_Callback(hObject, eventdata, handles)
+% hObject    handle to scaling_factor (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of scaling_factor as text
+%        str2double(get(hObject,'String')) returns contents of scaling_factor as a double
+global handles2give
+
+handles.wh_scaling_factor = round(str2double(get(handles.scaling_factor,'String'))*100)/100;
+set(handles.scaling_factor,'String',num2str(handles.scaling_factor));
+
+% Update handles structure
+handles2give= handles;
+guidata(hObject, handles);
+
+% --- Executes during object creation, after setting all properties.
+function scaling_factor_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to scaling_factor (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
