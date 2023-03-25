@@ -73,7 +73,7 @@ function main_control(~,event)
     end
 
 
-    %% Detecting rewarded licks and trigger reward.
+    %% Detecting rewarded licks and trigger reward. 
     % --------------------------------------------
 
     if trial_started_flag && ~association_flag  && ... %check if currently within a trial
@@ -88,7 +88,7 @@ function main_control(~,event)
         if aud_reward && ~wh_reward
             if is_auditory
                 hit_time=toc(trial_start_time);
-                reward_delivery(is_stim, is_auditory, is_whisker, aud_reward, wh_reward); %deliver reward
+                reward_delivery; %deliver reward
                 first_threshold_cross=find(abs(event.Data(1:end-1,1))<lick_threshold & abs(event.Data(2:end,1))>lick_threshold',1,'first');
                 hit_time_adjusted=hit_time-first_threshold_cross/Main_S_SR;
                 reaction_time=hit_time_adjusted-(baseline_window)/1000;
@@ -114,13 +114,30 @@ function main_control(~,event)
 
         elseif aud_reward && wh_reward
             hit_time=toc(trial_start_time);
-            reward_delivery(is_stim, is_auditory, is_whisker, aud_reward, wh_reward);
+            reward_delivery;
             first_threshold_cross=find(abs(event.Data(1:end-1,1))<lick_threshold & abs(event.Data(2:end,1))>lick_threshold',1,'first');
             hit_time_adjusted=hit_time-first_threshold_cross/Main_S_SR;
             reaction_time=hit_time_adjusted-(baseline_window)/1000;
-
             mouse_licked_flag=1;
             perf_and_save_results_flag=1;
+
+        elseif ~aud_reward && wh_reward
+            if is_auditory
+                hit_time=toc(trial_start_time);
+                first_threshold_cross=find(abs(event.Data(1:end-1,1))<lick_threshold & abs(event.Data(2:end,1))>lick_threshold',1,'first');
+                hit_time_adjusted=hit_time-first_threshold_cross/Main_S_SR;
+                reaction_time=hit_time_adjusted-(baseline_window)/1000;
+                mouse_licked_flag=1;
+                perf_and_save_results_flag=1;
+            elseif is_whisker
+                hit_time=toc(trial_start_time);
+                reward_delivery;
+                first_threshold_cross=find(abs(event.Data(1:end-1,1))<lick_threshold & abs(event.Data(2:end,1))>lick_threshold',1,'first');
+                hit_time_adjusted=hit_time-first_threshold_cross/Main_S_SR;
+                reaction_time=hit_time_adjusted-(baseline_window)/1000;
+                mouse_licked_flag=1;
+                perf_and_save_results_flag=1;
+            end
         end
     end
 
