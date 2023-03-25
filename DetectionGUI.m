@@ -189,6 +189,7 @@ set(handles.AudRewTag,'Value',1); handles.aud_reward = get(handles.AudRewTag,'Va
 set(handles.AudRewTag,'Enable','off');
 set(handles.WhRewTag,'Value',1); handles.wh_reward = get(handles.WhRewTag,'Value');
 set(handles.WhRewTag,'Enable','on');
+set(handles.LickThresholdTag,'String','0.2'); handles.lick_threshold = str2double(get(handles.LickThresholdTag,'String'));
 
 %% Behaviour camera settings
 set(handles.CameraFrameRateTag,'String','200'); handles.camera_freq = str2double(get(handles.CameraFrameRateTag,'String'));
@@ -209,7 +210,6 @@ axes(handles.PerformanceAxes); set(gca,'XTick',[]); set(gca,'XColor','w'); set(g
 set(handles.LastRecentTrialsTag,'String','5'); handles.last_recent_trials = str2double(get(handles.LastRecentTrialsTag,'String'));
 axes(handles.LickTraceAx); set(gca,'XTick',[]); set(gca,'XColor','w'); set(gca,'YTick',[]); set(gca,'YColor','w');
 
-set(handles.LickThresholdTag,'String','0.1'); handles.lick_threshold = str2double(get(handles.LickThresholdTag,'String'));
 
 %% Initialize text display
 

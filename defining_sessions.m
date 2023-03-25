@@ -21,6 +21,7 @@
   
     % Sampling rates
     Main_S_SR = 1000;
+    Main_S_frq = 100;
     Stim_S_SR = 100000;
     Reward_S_SR = 1000;
     Trigger_S_SR = 1000;
@@ -64,9 +65,9 @@
     Main_S.Rate = Main_S_SR;
     Main_S.IsContinuous = true;
     lh1 = addlistener(Main_S,'DataAvailable', @main_control);
-    % Callback function (main_control) is called when that many samples are
-    % available.
-    Main_S.NotifyWhenDataAvailableExceeds=20;
+    % Number of available scans needed to trigger main_control
+    % callback. Determines at which frequency licks are detected.
+    Main_S.NotifyWhenDataAvailableExceeds = Main_S_SR/Main_S_frq;
 
 
     % Create logging session
