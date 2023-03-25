@@ -222,8 +222,6 @@ function update_parameters
     wh_stim_proba_old = wh_stim_proba;
 
     % CREATE NEW TRIAL POOL WHEN CURRENT POOL FINISHED
-    disp(main_pool_size_old);
-    disp(main_pool_size);
 
     if mod(n_completed_trials, main_pool_size)==0 || main_pool_size_old ~= main_pool_size|| stim_proba_old ~= stim_proba || aud_stim_proba_old ~= aud_stim_proba|| wh_stim_proba_old ~= wh_stim_proba || light_proba_old ~= light_proba || aud_light_proba_old ~= light_aud_proba ||  wh_light_proba_old ~= light_wh_proba
         main_pool_size_old = main_pool_size;
@@ -522,68 +520,41 @@ function update_parameters
     %% Online performance for plotting
     if trial_number>1
         
-        % Load results data and get asso/non-asso trial indices
+        % Load results data
         results=importdata([folder_name '\results.txt']);
-        asso_trials = results.data(:,4)==1;
-        non_asso_trials = results.data(:,4)~=1;
-       
-        % Get perf column and trial types
-        perf = results.data(non_asso_trials, 2);
-        aud_trials = results.data(non_asso_trials, 13);
-        wh_trials = results.data(non_asso_trials, 12);
-        stim_trials = results.data(non_asso_trials, 11);
-        asso_stim_trials = results.data(asso_trials, 11);
+        
+        % Compute performance and display on GUI
+        [aud_hit_rate, wh_hit_rate, fa_rate, stim_trial_number, aud_stim_number, wh_stim_number] = compute_performance(results);
 
-        % Compute performance and metrics -> could be a function
-        wh_hit_rate = round(sum(perf==2)/sum(wh_trials==1)*100)/100;
-        aud_hit_rate = round(sum(perf==3)/sum(aud_trials==1)*100)/100;
-        fa_rate = round(sum(perf==5)/sum(stim_trials==0)*100)/100;
-        stim_trial_number = sum(stim_trials==1);
-        wh_stim_number = sum(wh_trials==1);
-        aud_stim_number = sum(aud_trials==1);
-
-        % Display current performance & trial counts on GUI
         set(handles2give.PerformanceText1Tag, 'String', ...
-            ['AHR =' num2str(aud_hit_rate) ', ' ...
+            ['AHR=' num2str(aud_hit_rate) ', ' ...
             ' WHR=' num2str(wh_hit_rate) ', ' ...
             ' FAR=' num2str(fa_rate) ', ' ...
-            ' Stim.='  num2str(stim_trial_number) ', '...
-            ' WhStim=' num2str(wh_stim_number) ', '...
-            ' AudStim=' num2str(aud_stim_number)], ...
+            ' Stim='  num2str(stim_trial_number) ', '...
+            ' AudStim=' num2str(aud_stim_number) ', '...
+            ' WhStim=' num2str(wh_stim_number)], ...
             'FontWeight', 'Bold');
         
         % Make performance plot
         perf_win_size=handles2give.last_recent_trials;
         plot_performance(results, perf_win_size);
         
-    % Calculate approx. reward volume obtained -> could be a function
-    volume_per_reward = 5; % in microliter (THIS MUST BE CALIBRATED)
-    reward_trials_non_asso = results.data(non_asso_trials,14)==1; %ones only if reward_proba=1
-    
-    aud_hits = perf==3;
-    wh_hits = perf==2;
-    aud_trials_rewarded = results.data(aud_hits & reward_trials_non_asso, 13); %here vector comparison element-wise
-    wh_trials_rewarded = results.data(wh_hits & reward_trials_non_asso, 12);
-    
-    % Get volumes and print
-    aud_tot_volume = volume_per_reward * sum(aud_trials_rewarded);
-    if wh_reward
-        wh_tot_volume = volume_per_reward * sum(wh_trials_rewarded);
-    else
-        wh_tot_volume = 0;
-    end
-    
-    asso_tot_volume = volume_per_reward * sum(asso_stim_trials);
-    
+        % Compute approx. reward volume obtained and display on GUI
+        volume_per_reward = 5; % in microliter <- THIS MUST BE CALIBRATED 
+        [aud_tot_volume, wh_tot_volume, asso_tot_volume] = compute_reward_volume(results, volume_per_reward);
+        if wh_reward
+            wh_tot_volume = wh_tot_volume;
+        else
+            wh_tot_volume = 0;
+        end        
  
-    set(handles2give.PerformanceText2Tag, 'String', ...
-        ['Reward: Auditory=' num2str(aud_tot_volume) 'uL, '  ...
-        ' Whisker=' num2str(wh_tot_volume) 'uL, ' ...
-        ' Total=' num2str(aud_tot_volume+wh_tot_volume) 'uL, ' ...
-        ' (Asso.=' num2str(asso_tot_volume) 'uL)'], ...
-         'FontWeight', 'Bold');
-    
-      
+        set(handles2give.PerformanceText2Tag, 'String', ...
+            ['Reward: Auditory=' num2str(aud_tot_volume) 'uL, '  ...
+            ' Whisker=' num2str(wh_tot_volume) 'uL, ' ...
+            ' Total=' num2str(aud_tot_volume+wh_tot_volume) 'uL, ' ...
+            ' (Asso.=' num2str(asso_tot_volume) 'uL)'], ...
+             'FontWeight', 'Bold');
+
     end
 
     %% Printing out the next trial specs
