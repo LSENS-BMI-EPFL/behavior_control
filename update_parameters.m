@@ -571,18 +571,19 @@ function update_parameters
         if is_auditory
 
             set(handles2give.TrialTimeLineTextTag,'String', ['Next trial: Auditory.  ' char(trial_titles(is_stim+2)) ' '...
-                char(association_titles(association_flag+1)) '   ' char(reward_titles(is_reward+1)) '     ' char(light_titles(is_light+1))],'ForegroundColor',acolor);
+                char(association_titles(association_flag+1)) '   ' char(reward_titles(aud_reward+1)) '     ' char(light_titles(is_light+1))],'ForegroundColor',acolor);
 
         else
-            %if is_reward %&& wh_reward
-            %    reward_title = 'Rewarded';
-            %else%if ~wh_reward || ~is_reward
-            %    reward_title = 'Not rewarded';
-            %end
-            reward_title=reward_titles(wh_reward+1);
+            if is_reward==1 % =1 always when no partial rewards
+                reward_title = 'Rewarded';
+                wcolor = [0.4660 0.6740 0.1880]';
+            else
+                reward_title = 'Not rewarded';
+                wcolor = [0.6350 0.0780 0.1840];
+            end
             
             set(handles2give.TrialTimeLineTextTag,'String',['Next trial: Whisker. ' char(trial_titles(is_stim+1)) ' '...
-                char(association_titles(association_flag+1)) '   ' char(reward_title) '     ' char(light_titles(is_light+1))],'ForegroundColor',wcolor);
+                char(association_titles(association_flag+1)) '   ' char(reward_title) '     ' char(light_titles(is_light+1))],'ForegroundColor', wcolor);
 
         end
 
