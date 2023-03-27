@@ -574,7 +574,7 @@ function update_parameters
                 char(association_titles(association_flag+1)) '   ' char(reward_titles(aud_reward+1)) '     ' char(light_titles(is_light+1))],'ForegroundColor',acolor);
 
         else
-            if is_reward==1 % =1 always when no partial rewards
+            if is_reward==1 && wh_reward==1 % =1 always when no partial rewards
                 reward_title = 'Rewarded';
                 wcolor = [0.4660 0.6740 0.1880]';
             else
