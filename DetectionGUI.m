@@ -76,8 +76,8 @@ set(handles.SetDateTag,'String',Date2Display);
 set(handles.SetDateTag,'Enable','off');
 
 % [TO CUSTOMIZE BY EACH USER]
-set(handles.MouseNameTag,'String','RDXXX'); handles.mouse_name = get(handles.MouseNameTag,'String');
-handles.behaviour_directory = 'C:\BehaviourData';
+set(handles.MouseNameTag,'String','ABXXX'); handles.mouse_name = get(handles.MouseNameTag,'String');
+handles.behaviour_directory = 'C:\Users\bisi\Desktop\BehaviourData';
 set(handles.BehaviorDirectoryTag,'String', handles.behaviour_directory);
 
 %% Set general session settings
@@ -144,7 +144,7 @@ set(handles.EarlyLickTimeOutTag,'Enable','off');
 % Auditory stim
 set(handles.ToneDurationTag,'String','10'); handles.aud_stim_duration = str2double(get(handles.ToneDurationTag,'String'));
 set(handles.ToneDurationTag,'Enable','on');
-set(handles.ToneAmpTag,'String','2'); handles.aud_stim_amp = str2double(get(handles.ToneAmpTag,'String'));
+set(handles.ToneAmpTag,'String','10'); handles.aud_stim_amp = str2double(get(handles.ToneAmpTag,'String'));
 set(handles.ToneAmpTag,'Enable','on');
 set(handles.ToneFreqTag,'String','10000'); handles.aud_stim_freq= str2double(get(handles.ToneFreqTag,'String'));
 set(handles.ToneFreqTag,'Enable','on');
