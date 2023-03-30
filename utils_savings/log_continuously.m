@@ -1,7 +1,7 @@
 function log_continuously(~, event)
 
 global  Log_S_SR fid_continuous...
-        trial_start_ttl lick_threshold handles2give continous_lick_data cam1_ttl cam2_ttl scan_pos
+        trial_start_ttl lick_threshold handles2give continuous_lick_data cam1_ttl cam2_ttl scan_pos
 
 % Get and save data to binary file.
 % ---------------------------------
@@ -32,9 +32,9 @@ xlim(handles2give.TrialStartTTL, [0 time(end)]);
 
 % Plot lick traces.
 
-continous_lick_data = [continous_lick_data, abs(event.Data(:,1)')];
-continous_lick_data = continous_lick_data(end-10*Log_S_SR+1:end);
-plot(handles2give.LickTraceAx, time, continous_lick_data, 'Color', 'k'); 
+continuous_lick_data = [continuous_lick_data, abs(event.Data(:,1)')];
+continuous_lick_data = continuous_lick_data(end-10*Log_S_SR+1:end);
+plot(handles2give.LickTraceAx, time, continuous_lick_data, 'Color', 'k'); 
 % Set axes limits
 ylim(handles2give.LickTraceAx, [0 lick_threshold*5]); 
 xlim(handles2give.LickTraceAx, [0 time(end)]);
