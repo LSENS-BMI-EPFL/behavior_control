@@ -9,7 +9,7 @@
         lh1 lh2 fid_results  Reward_S_SR local_counter lick_channel_times camera_start_time ...
         folder_name handles2give early_lick_counter session_start_time...
         Main_S_SR Reward_Ch light_counter whisker_trial_counter...
-        fid_continuous trial_start_ttl lick_data cam1_ttl cam2_ttl scan_pos continous_lick_data
+        fid_continuous trial_start_ttl lick_data cam1_ttl cam2_ttl scan_pos continous_lick_data 
 
 
     % Initialize variables and result file
@@ -49,7 +49,7 @@
         'aud_stim_duration','aud_stim_amp','aud_stim_freq','aud_reward', ...
         'early_lick', ...
         'is_light', 'light_amp','light_duration','light_freq','light_prestim', 'context_code');
-
+    
 
     % Create sessions
     % ---------------
