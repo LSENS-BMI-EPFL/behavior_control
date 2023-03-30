@@ -8,7 +8,7 @@ function plot_performance(results, perf_win_size)
 global handles2give wh_reward
 
 % Count current trial number (omitting early licks and association trials).
-n_current_trials = sum(results.data(:,2) ~= 6);
+n_current_trials = sum(results.perf~=6);
 
 % Set plotting params
 lw = 1.5;
@@ -25,7 +25,7 @@ end
 %% Plot hit rates and false alarm rates
 if n_current_trials > 0
     
-    perf = results.data(results.data(:,2) ~= 6, 2);
+    perf = results.perf(results.data(:,2) ~= 6, 2);
     stim_trials = results.data(results.data(:,2) ~= 6, 11);
     wh_trials = results.data(results.data(:,2) ~= 6, 12);
     aud_trials = results.data(results.data(:,2) ~= 6, 13);

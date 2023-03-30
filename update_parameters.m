@@ -8,15 +8,15 @@ function update_parameters
         false_alarm_punish_flag false_alarm_timeout early_lick_punish_flag early_lick_timeout ...
         Stim_S Log_S wh_stim_duration  aud_stim_duration  aud_stim_amp  aud_stim_freq  Stim_S_SR ScansTobeAcquired ...
         Reward_S Reward_S_SR  Trigger_S fid_lick_trace mouse_licked_flag reaction_time ...
-        trial_started_flag  trial_number light_proba_old folder_name handles2give...
+        trial_started_flag  trial_number main_pool_size_old light_proba_old folder_name handles2give...
         stim_proba_old aud_stim_proba_old wh_stim_proba_old aud_light_proba_old wh_light_proba_old light_flag baseline_window camera_vec...
         deliver_reward_flag ...
         wh_stim_amp wh_scaling_factor response_window_start response_window_end...
         perf_and_save_results_flag reward_delivered_flag update_parameters_flag...
         is_reward reward_pool partial_reward_flag reward_proba_old...
         light_duration light_freq light_amp camera_freq SITrigger_vec main_trial_pool...
-        whisker_trial_counter mouse_rewarded_context context_block context_flag pink_noise brown_noise block_id wh_rewarded_context...
-        pink_noise_player brown_noise_player identical_block_count extra_time context_code
+        whisker_trial_counter mouse_rewarded_context context_block context_flag block_id wh_rewarded_context...
+        pink_noise_player brown_noise_player identical_block_count extra_time 
         
        
 
@@ -143,7 +143,7 @@ function update_parameters
     wh_scaling_factor = handles2give.wh_scaling_factor;
 
     aud_stim_weight = handles2give.aud_stim_weight;
-    wh_stim_weight = handles2give.wh_stim_weight; %for whisker , hard-coded for now (see below)
+    wh_stim_weight = handles2give.wh_stim_weight; 
     no_stim_weight = handles2give.no_stim_weight;
     
 
@@ -188,8 +188,8 @@ function update_parameters
     %% Define new pool of stimuli
 
     if trial_number > 1
-        results=importdata([folder_name '\results.txt']);
-        n_completed_trials=sum(results.data(:,2)~=6);
+        results=readtable(strcat(folder_name, '\results.csv'));
+        n_completed_trials=sum(results.perf~=6);
     else
         n_completed_trials=0;
     end
@@ -197,6 +197,11 @@ function update_parameters
     % Size of pool (i.e. trial block) to get trials from
     % If context is not used:
     main_pool_size = aud_stim_weight + wh_stim_weight + no_stim_weight; %in an non-light task
+    if isempty(main_pool_size_old)
+        main_pool_size_old = main_pool_size;
+    end
+
+    
     % If use context blocks (check sum is valid) 
     if context_flag
         if context_block_size ~= main_pool_size
@@ -218,8 +223,8 @@ function update_parameters
 
     % CREATE NEW TRIAL POOL WHEN CURRENT POOL FINISHED
 
-    if mod(n_completed_trials, main_pool_size)==0 || light_proba_old ~= light_proba || aud_light_proba_old ~= light_aud_proba ||  wh_light_proba_old ~= light_wh_proba ||stim_proba_old ~= stim_proba || aud_stim_proba_old ~= aud_stim_proba|| wh_stim_proba_old ~= wh_stim_proba
-
+    if mod(n_completed_trials, main_pool_size)==0 || main_pool_size_old ~= main_pool_size|| stim_proba_old ~= stim_proba || aud_stim_proba_old ~= aud_stim_proba|| wh_stim_proba_old ~= wh_stim_proba || light_proba_old ~= light_proba || aud_light_proba_old ~= light_aud_proba ||  wh_light_proba_old ~= light_wh_proba
+        main_pool_size_old = main_pool_size;
         % Stim. probability and trial pool when light stimulus
         if light_flag
 
@@ -250,34 +255,18 @@ function update_parameters
         %Randomize occurrence of trials in pool
         main_trial_pool=main_trial_pool(randperm(numel(main_trial_pool)));
 
-        % specify absence of context
-        context_code = 0;
+        % Specify absence of context
+        context_block = {'NA'};
 
         % if context 
         if context_flag
             contexts = {'pink', 'brown'};
-            context_codes = [1, 2];
             if trial_number==1
-                [pink_noise, pink_SR] = audioread(strcat(handles2give.bckg_noise_directory, '\pink_noise.wav'));
-                pink_noise_player = audioplayer(pink_noise, pink_SR);
-                [brown_noise, brown_SR] = audioread(strcat(handles2give.bckg_noise_directory, '\brown_noise.wav'));
-                brown_noise_player = audioplayer(brown_noise, brown_SR);
                 identical_block_count = 1;
-                rewarded_context_table = readtable(strcat(handles2give.context_table_directory, '\rewarded_context.csv'));
-                mice_names = rewarded_context_table.MouseName;
-                    if any(strcmp(mice_names, handles2give.mouse_name))
-                        rows = strcmp(rewarded_context_table.MouseName, handles2give.mouse_name);
-                        mouse_rewarded_context = rewarded_context_table(rows, :).RewardedContext{1};
-                    else
-                        r = randi([1, size(contexts, 2)], 1); 
-                        mouse_rewarded_context = contexts{r};
-                        T1 = table({handles2give.mouse_name}, {mouse_rewarded_context}, 'VariableNames', {'MouseName','RewardedContext'});
-                        rewarded_context_table = [rewarded_context_table; T1];
-                        writetable(rewarded_context_table, strcat(handles2give.context_table_directory, '\rewarded_context.csv'))
-                    end
+                [pink_noise_player, brown_noise_player] = create_context_background_noise(handles2give.bckg_noise_directory);
+                mouse_rewarded_context = get_or_determine_mouse_rewarded_context(handles2give.context_table_directory, handles2give.mouse_name, contexts);
                 block_id = randi([1, size(contexts, 2)], 1); 
-                context_block = contexts{block_id};
-                context_code = context_codes(block_id);
+                context_block = contexts(block_id);
             else
                 old_block_id = block_id;
                 block_id = randi([1, size(contexts, 2)], 1);
@@ -294,8 +283,7 @@ function update_parameters
                 block_id = new_block_id;
                 identical_block_count = 1;
                 end
-                context_block = contexts{block_id};
-                context_code = context_codes(block_id);
+                context_block = contexts(block_id);
             end
             wh_rewarded_context = strcmp(context_block, mouse_rewarded_context);    
         end
@@ -515,68 +503,41 @@ function update_parameters
     %% Online performance for plotting
     if trial_number>1
         
-        % Load results data and get asso/non-asso trial indices
-        results=importdata([folder_name '\results.txt']);
-        asso_trials = results.data(:,4)==1;
-        non_asso_trials = results.data(:,4)~=1;
-       
-        % Get perf column and trial types
-        perf = results.data(non_asso_trials, 2);
-        aud_trials = results.data(non_asso_trials, 13);
-        wh_trials = results.data(non_asso_trials, 12);
-        stim_trials = results.data(non_asso_trials, 11);
-        asso_stim_trials = results.data(asso_trials, 11);
+        % Load results data
+        results=readtable(strcat(folder_name, '\results.csv'));
+        
+        % Compute performance and display on GUI
+        [aud_hit_rate, wh_hit_rate, fa_rate, stim_trial_number, aud_stim_number, wh_stim_number] = compute_performance(results);
 
-        % Compute performance and metrics -> could be a function
-        wh_hit_rate = round(sum(perf==2)/sum(wh_trials==1)*100)/100;
-        aud_hit_rate = round(sum(perf==3)/sum(aud_trials==1)*100)/100;
-        fa_rate = round(sum(perf==5)/sum(stim_trials==0)*100)/100;
-        stim_trial_number = sum(stim_trials==1);
-        wh_stim_number = sum(wh_trials==1);
-        aud_stim_number = sum(aud_trials==1);
-
-        % Display current performance & trial counts on GUI
         set(handles2give.PerformanceText1Tag, 'String', ...
-            ['AHR =' num2str(aud_hit_rate) ', ' ...
+            ['AHR=' num2str(aud_hit_rate) ', ' ...
             ' WHR=' num2str(wh_hit_rate) ', ' ...
             ' FAR=' num2str(fa_rate) ', ' ...
-            ' Stim.='  num2str(stim_trial_number) ', '...
-            ' WhStim=' num2str(wh_stim_number) ', '...
-            ' AudStim=' num2str(aud_stim_number)], ...
+            ' Stim='  num2str(stim_trial_number) ', '...
+            ' AudStim=' num2str(aud_stim_number) ', '...
+            ' WhStim=' num2str(wh_stim_number)], ...
             'FontWeight', 'Bold');
         
         % Make performance plot
         perf_win_size=handles2give.last_recent_trials;
         plot_performance(results, perf_win_size);
         
-    % Calculate approx. reward volume obtained -> could be a function
-    volume_per_reward = 5; % in microliter (THIS MUST BE CALIBRATED)
-    reward_trials_non_asso = results.data(non_asso_trials,14)==1; %ones only if reward_proba=1
-    
-    aud_hits = perf==3;
-    wh_hits = perf==2;
-    aud_trials_rewarded = results.data(aud_hits & reward_trials_non_asso, 13); %here vector comparison element-wise
-    wh_trials_rewarded = results.data(wh_hits & reward_trials_non_asso, 12);
-    
-    % Get volumes and print
-    aud_tot_volume = volume_per_reward * sum(aud_trials_rewarded);
-    if wh_reward
-        wh_tot_volume = volume_per_reward * sum(wh_trials_rewarded);
-    else
-        wh_tot_volume = 0;
-    end
-    
-    asso_tot_volume = volume_per_reward * sum(asso_stim_trials);
-    
+        % Compute approx. reward volume obtained and display on GUI
+        volume_per_reward = 5; % in microliter <- THIS MUST BE CALIBRATED 
+        [aud_tot_volume, wh_tot_volume, asso_tot_volume] = compute_reward_volume(results, volume_per_reward);
+        if wh_reward
+            wh_tot_volume = wh_tot_volume;
+        else
+            wh_tot_volume = 0;
+        end        
  
-    set(handles2give.PerformanceText2Tag, 'String', ...
-        ['Reward: Auditory=' num2str(aud_tot_volume) 'uL, '  ...
-        ' Whisker=' num2str(wh_tot_volume) 'uL, ' ...
-        ' Total=' num2str(aud_tot_volume+wh_tot_volume) 'uL, ' ...
-        ' (Asso.=' num2str(asso_tot_volume) 'uL)'], ...
-         'FontWeight', 'Bold');
-    
-      
+        set(handles2give.PerformanceText2Tag, 'String', ...
+            ['Reward: Auditory=' num2str(aud_tot_volume) 'uL, '  ...
+            ' Whisker=' num2str(wh_tot_volume) 'uL, ' ...
+            ' Total=' num2str(aud_tot_volume+wh_tot_volume) 'uL, ' ...
+            ' (Asso.=' num2str(asso_tot_volume) 'uL)'], ...
+             'FontWeight', 'Bold');
+
     end
 
     %% Printing out the next trial specs
@@ -593,18 +554,19 @@ function update_parameters
         if is_auditory
 
             set(handles2give.TrialTimeLineTextTag,'String', ['Next trial: Auditory.  ' char(trial_titles(is_stim+2)) ' '...
-                char(association_titles(association_flag+1)) '   ' char(reward_titles(is_reward+1)) '     ' char(light_titles(is_light+1))],'ForegroundColor',acolor);
+                char(association_titles(association_flag+1)) '   ' char(reward_titles(aud_reward+1)) '     ' char(light_titles(is_light+1))],'ForegroundColor',acolor);
 
         else
-            %if is_reward %&& wh_reward
-            %    reward_title = 'Rewarded';
-            %else%if ~wh_reward || ~is_reward
-            %    reward_title = 'Not rewarded';
-            %end
-            reward_title=reward_titles(wh_reward+1);
+            if is_reward==1 && wh_reward==1 % =1 always when no partial rewards
+                reward_title = 'Rewarded';
+                wcolor = [0.4660 0.6740 0.1880]';
+            else
+                reward_title = 'Not rewarded';
+                wcolor = [0.6350 0.0780 0.1840];
+            end
             
             set(handles2give.TrialTimeLineTextTag,'String',['Next trial: Whisker. ' char(trial_titles(is_stim+1)) ' '...
-                char(association_titles(association_flag+1)) '   ' char(reward_title) '     ' char(light_titles(is_light+1))],'ForegroundColor',wcolor);
+                char(association_titles(association_flag+1)) '   ' char(reward_title) '     ' char(light_titles(is_light+1))],'ForegroundColor', wcolor);
 
         end
 
