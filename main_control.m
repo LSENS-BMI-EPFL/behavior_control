@@ -4,7 +4,7 @@ function main_control(~,event)
 
     global Main_S_SR association_flag trial_duration quiet_window lick_threshold...
         artifact_window iti camera_flag is_stim is_auditory is_whisker is_light ...
-        aud_reward wh_reward wh_vec aud_vec ...
+        aud_reward wh_reward wh_vec aud_vec early_lick...
         stim_flag perf session_start_time lick_flag lick_time trial_start_time trial_end_time trial_time...
         false_alarm_punish_flag false_alarm_timeout early_lick_counter early_lick_punish_flag early_lick_timeout ...
         Stim_S wh_stim_duration wh_scaling_factor aud_stim_duration  aud_stim_amp  aud_stim_freq  Stim_S_SR ...
@@ -16,8 +16,8 @@ function main_control(~,event)
         fid_results perf_and_save_results_flag reward_delivered_flag update_parameters_flag...
         is_reward...
         light_prestim_delay light_duration light_freq light_amp SITrigger_vec...
-        context_code context_flag extra_time...
-        pink_noise_player brown_noise_player context_block
+        context_flag extra_time...
+        pink_noise_player brown_noise_player context_block  
         
 
     %% Timing last lick detection for quiet window.
@@ -155,6 +155,24 @@ function main_control(~,event)
     %% Defining performance and update results file
     % ---------------------------------------------
     
+    % Set variables to save and namings. Be careful updating here / order & names
+    variables_to_save = {trial_number perf trial_time association_flag ...
+            quiet_window iti response_window artifact_window baseline_window ...
+            trial_duration is_stim is_whisker is_auditory lick_flag reaction_time ...
+            wh_stim_duration wh_stim_amp wh_scaling_factor wh_reward is_reward ...
+            aud_stim_duration aud_stim_amp aud_stim_freq aud_reward early_lick ...
+            is_light light_amp light_duration light_freq light_prestim_delay ...
+            context_block};
+
+    variable_saving_names = {'trial_number', 'perf', 'trial_time', 'association_flag', 'quiet_window','iti', ...
+    'response_window', 'artifact_window','baseline_window','trial_duration', ...
+    'is_stim', 'is_whisker', 'is_auditory', 'lick_flag', 'reaction_time', ...
+    'wh_stim_duration', 'wh_stim_amp', 'wh_scaling_factor', 'wh_reward', ...
+    'is_reward', ...
+    'aud_stim_duration','aud_stim_amp','aud_stim_freq','aud_reward', ...
+    'early_lick', ...
+    'is_light', 'light_amp','light_duration','light_freq','light_prestim', 'context_block'};
+    
     % Check if results update needed
     if perf_and_save_results_flag
         perf_and_save_results_flag=0;
@@ -206,44 +224,9 @@ function main_control(~,event)
                 
             end
         end
-
-        % Save as results .txt file 
-        results_config = {
-            trial_number '%6.0f'; %variable / format spec
-            perf '%8.0f';
-            trial_time '%10.4f';
-            association_flag '%10.0f';
-            quiet_window '%10.4f';
-            iti '%10.4f';
-            response_window '%10.4f';
-            artifact_window '%10.4f';
-            baseline_window '%10.4f';
-            trial_duration '%10.4f';
-            is_stim '%8.0f';
-            is_whisker '%8.0f';
-            is_auditory '%8.0f';
-            lick_flag '%8.0f';
-            reaction_time '%10.4f';
-            wh_stim_duration '%10.1f';
-            wh_stim_amp '%8.0f';
-            wh_scaling_factor '%10.4f';
-            wh_reward '%8.0f';
-            is_reward '%8.0f';
-            aud_stim_duration '%10.4f';
-            aud_stim_amp '%8.0f';
-            aud_stim_freq  '%10.4f';
-            aud_reward '%8.0f';
-            early_lick '%8.0f';
-            is_light '%8.0f';
-            light_amp '%8.0f';
-            light_duration  '%10.4f';
-            light_freq  '%10.4f';
-            light_prestim_delay '%10.4f';
-            context_code '%8.0f';
-            };
-
-        fprintf(fid_results, string(strjoin(results_config(:,2))) + ' \n', cell2mat(results_config(:,1))); 
         
+        % Update csv result file
+        update_and_save_results_csv(variables_to_save, variable_saving_names)
 
         % Reset time and flag
         trial_end_time=tic; %trial end time after reward delivery and results are saved
@@ -298,44 +281,9 @@ function main_control(~,event)
 
         lick_flag = 1;
         perf = 7;
-
-        % Save as results .txt file 
-        results_config = {
-            trial_number '%6.0f'; %variable / format spec
-            perf '%8.0f';
-            trial_time '%10.4f';
-            association_flag '%10.0f';
-            quiet_window '%10.4f';
-            iti '%10.4f';
-            response_window '%10.4f';
-            artifact_window '%10.4f';
-            baseline_window '%10.4f';
-            trial_duration '%10.4f';
-            is_stim '%8.0f';
-            is_whisker '%8.0f';
-            is_auditory '%8.0f';
-            lick_flag '%8.0f';
-            reaction_time '%10.4f';
-            wh_stim_duration '%10.1f';
-            wh_stim_amp '%8.0f';
-            wh_scaling_factor '%10.4f';
-            wh_reward '%8.0f';
-            is_reward '%8.0f';
-            aud_stim_duration '%10.4f';
-            aud_stim_amp '%8.0f';
-            aud_stim_freq  '%10.4f';
-            aud_reward '%8.0f';
-            early_lick '%8.0f';
-            is_light '%8.0f';
-            light_amp '%8.0f';
-            light_duration  '%10.4f';
-            light_freq  '%10.4f';
-            light_prestim_delay '%10.4f';
-            context_code '%8.0f';
-            };
         
-        fprintf(fid_results, string(strjoin(results_config(:,2))) + ' \n', cell2mat(results_config(:,1))); 
-       
+        % Update csv result file
+        update_and_save_results_csv(variables_to_save, variable_saving_names)
 
         while ~Stim_S.IsRunning
             continue

@@ -15,8 +15,8 @@ function update_parameters
         perf_and_save_results_flag reward_delivered_flag update_parameters_flag...
         is_reward reward_pool partial_reward_flag reward_proba_old...
         light_duration light_freq light_amp camera_freq SITrigger_vec main_trial_pool...
-        whisker_trial_counter mouse_rewarded_context context_block context_flag pink_noise brown_noise block_id wh_rewarded_context...
-        pink_noise_player brown_noise_player identical_block_count extra_time context_code
+        whisker_trial_counter mouse_rewarded_context context_block context_flag block_id wh_rewarded_context...
+        pink_noise_player brown_noise_player identical_block_count extra_time 
         
        
 
@@ -188,8 +188,8 @@ function update_parameters
     %% Define new pool of stimuli
 
     if trial_number > 1
-        results=importdata([folder_name '\results.txt']);
-        n_completed_trials=sum(results.data(:,2)~=6);
+        results=readtable(strcat(folder_name, '\results.csv'));
+        n_completed_trials=sum(results.perf~=6);
     else
         n_completed_trials=0;
     end
@@ -256,33 +256,17 @@ function update_parameters
         main_trial_pool=main_trial_pool(randperm(numel(main_trial_pool)));
 
         % Specify absence of context
-        context_code = 0;
+        context_block = {'NA'};
 
         % if context 
         if context_flag
             contexts = {'pink', 'brown'};
-            context_codes = [1, 2];
             if trial_number==1
-                [pink_noise, pink_SR] = audioread(strcat(handles2give.bckg_noise_directory, '\pink_noise.wav'));
-                pink_noise_player = audioplayer(pink_noise, pink_SR);
-                [brown_noise, brown_SR] = audioread(strcat(handles2give.bckg_noise_directory, '\brown_noise.wav'));
-                brown_noise_player = audioplayer(brown_noise, brown_SR);
                 identical_block_count = 1;
-                rewarded_context_table = readtable(strcat(handles2give.context_table_directory, '\rewarded_context.csv'));
-                mice_names = rewarded_context_table.MouseName;
-                    if any(strcmp(mice_names, handles2give.mouse_name))
-                        rows = strcmp(rewarded_context_table.MouseName, handles2give.mouse_name);
-                        mouse_rewarded_context = rewarded_context_table(rows, :).RewardedContext{1};
-                    else
-                        r = randi([1, size(contexts, 2)], 1); 
-                        mouse_rewarded_context = contexts{r};
-                        T1 = table({handles2give.mouse_name}, {mouse_rewarded_context}, 'VariableNames', {'MouseName','RewardedContext'});
-                        rewarded_context_table = [rewarded_context_table; T1];
-                        writetable(rewarded_context_table, strcat(handles2give.context_table_directory, '\rewarded_context.csv'))
-                    end
+                [pink_noise_player, brown_noise_player] = create_context_background_noise(handles2give.bckg_noise_directory);
+                mouse_rewarded_context = get_or_determine_mouse_rewarded_context(handles2give.context_table_directory, handles2give.mouse_name, contexts);
                 block_id = randi([1, size(contexts, 2)], 1); 
-                context_block = contexts{block_id};
-                context_code = context_codes(block_id);
+                context_block = contexts(block_id);
             else
                 old_block_id = block_id;
                 block_id = randi([1, size(contexts, 2)], 1);
@@ -299,8 +283,7 @@ function update_parameters
                 block_id = new_block_id;
                 identical_block_count = 1;
                 end
-                context_block = contexts{block_id};
-                context_code = context_codes(block_id);
+                context_block = contexts(block_id);
             end
             wh_rewarded_context = strcmp(context_block, mouse_rewarded_context);    
         end
@@ -521,7 +504,7 @@ function update_parameters
     if trial_number>1
         
         % Load results data
-        results=importdata([folder_name '\results.txt']);
+        results=readtable(strcat(folder_name, '\results.csv'));
         
         % Compute performance and display on GUI
         [aud_hit_rate, wh_hit_rate, fa_rate, stim_trial_number, aud_stim_number, wh_stim_number] = compute_performance(results);

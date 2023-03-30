@@ -2,13 +2,13 @@ function [aud_hit_rate,wh_hit_rate,fa_rate,stim_trial_number,aud_stim_number,wh_
 %COMPUTE_PERFORMANCE Compute session-wide performance.
 % RESULTS: results structure to compute metrics from.
 
-non_asso_trials = results.data(:,4)~=1;
+non_asso_trials = results.association_flag~=1;
 
 % Get perf column and trial types
-perf = results.data(non_asso_trials, 2);
-aud_trials = results.data(non_asso_trials, 13);
-wh_trials = results.data(non_asso_trials, 12);
-stim_trials = results.data(non_asso_trials, 11);
+perf = results.perf(non_asso_trials);
+aud_trials = results.is_auditory(non_asso_trials);
+wh_trials = results.is_whisker(non_asso_trials);
+stim_trials = results.is_stim(non_asso_trials);
 
 % Compute performance and completed trial counts 
 stim_trial_number = sum(stim_trials==1);
