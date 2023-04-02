@@ -56,6 +56,11 @@ global handles2give
 % Choose default command line output for DetectionGUI
 handles.output = hObject;
 
+% Add subfolders to MATLAB path
+addpath('utils_context\');
+addpath('utils_plots\')
+addpath('utils_savings\')
+
 
 %% Set default session type
 set(handles.TwoPhotonCheckbox,'Value',0); handles.twophoton_session = get(handles.TwoPhotonCheckbox,'Value');
@@ -153,7 +158,7 @@ set(handles.BckgNoiseFolderPath,'String','Enter path'); handles.bckg_noise_direc
 set(handles.BckgNoiseFolderPath,'Enable','off');
 
 set(handles.AStimWeightTag,'Enable','on')
-set(handles.AStimWeightTag,'String','1'); handles.aud_stim_weight = str2double(get(handles.AStimWeightTag,'String'));
+set(handles.AStimWeightTag,'String','10'); handles.aud_stim_weight = str2double(get(handles.AStimWeightTag,'String'));
 
 % Whisker stimuli 
 set(handles.StimDuration1Tag,'String','3'); handles.wh_stim_duration = str2double(get(handles.StimDuration1Tag,'String'));
@@ -165,7 +170,7 @@ set(handles.StimWeight1Tag,'String','0'); handles.wh_stim_weight = str2double(ge
 set(handles.StimAmp1Tag,'Enable','on');
 
 % Blank stimulus probability
-set(handles.NostimWeightTag,'String','1'); handles.no_stim_weight = str2double(get(handles.NostimWeightTag,'String'));
+set(handles.NostimWeightTag,'String','10'); handles.no_stim_weight = str2double(get(handles.NostimWeightTag,'String'));
 set(handles.NostimWeightTag,'Enable','on');
 
 % Context task information
@@ -2111,7 +2116,8 @@ function BckgNoiseFolderPath_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hints: get(hObject,'String') returns contents of BckgNoiseFolderPath as text
-%        str2double(get(hObject,'String')) returns contents of BckgNoiseFolderPath as a doublewh_scale_factor
+%        str2double(get(hObject,'String')) returns contents of
+%        BckgNoiseFolderPath as a double
 global handles2give
 handles.bckg_noise_directory = get(handles.BckgNoiseFolderPath,'String');
 

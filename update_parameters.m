@@ -149,17 +149,17 @@ function update_parameters
 
     %% Compute stimulus probability
     stim_proba = (aud_stim_weight + wh_stim_weight)/(aud_stim_weight + wh_stim_weight + no_stim_weight);
-    if trial_number == 1
+    if isempty(stim_proba_old)
         stim_proba_old = stim_proba;
     end
 
     aud_stim_proba = (aud_stim_weight)/(aud_stim_weight + wh_stim_weight + no_stim_weight);
-    if trial_number == 1
+    if isempty(aud_stim_proba_old)
         aud_stim_proba_old = aud_stim_proba;
     end
 
     wh_stim_proba = (wh_stim_weight)/(aud_stim_weight + wh_stim_weight + no_stim_weight);
-    if trial_number == 1
+    if isempty(wh_stim_proba_old)
         wh_stim_proba_old = wh_stim_proba;
     end
 
@@ -201,7 +201,6 @@ function update_parameters
         main_pool_size_old = main_pool_size;
     end
 
-    
     % If use context blocks (check sum is valid) 
     if context_flag
         if context_block_size ~= main_pool_size
@@ -213,18 +212,22 @@ function update_parameters
   
     stim_light_list=[900,901,902,903,904,905]; % code for each stimuli
     
-    % Save old probabilities
-    aud_light_proba_old =light_aud_proba;
-    light_proba_old =light_proba;
-    wh_light_proba_old = light_wh_proba;
 
-    aud_stim_proba_old = aud_stim_proba;
-    wh_stim_proba_old = wh_stim_proba;
-
-    % CREATE NEW TRIAL POOL WHEN CURRENT POOL FINISHED
-
+    % CREATE NEW TRIAL POOL WHEN CURRENT POOL FINISHED, OR, WHEN CHANGE IN
+    % PARAMETERS
     if mod(n_completed_trials, main_pool_size)==0 || main_pool_size_old ~= main_pool_size|| stim_proba_old ~= stim_proba || aud_stim_proba_old ~= aud_stim_proba|| wh_stim_proba_old ~= wh_stim_proba || light_proba_old ~= light_proba || aud_light_proba_old ~= light_aud_proba ||  wh_light_proba_old ~= light_wh_proba
-        main_pool_size_old = main_pool_size;
+            
+            % Save old probabilities and pool size
+            aud_light_proba_old =light_aud_proba;
+            light_proba_old =light_proba;
+            wh_light_proba_old = light_wh_proba;
+
+            aud_stim_proba_old = aud_stim_proba;
+            wh_stim_proba_old = wh_stim_proba;
+            stim_proba_old = stim_proba;
+
+            main_pool_size_old = main_pool_size;
+
         % Stim. probability and trial pool when light stimulus
         if light_flag
 
