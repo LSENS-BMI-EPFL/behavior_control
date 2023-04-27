@@ -80,15 +80,15 @@ end
 
 %% Plot early-lick rate 
 if sum(results.perf==6) >= 1
-    EarlyLicksCount=zeros(1, size(results.trial_number));
+    EarlyLicksCount=zeros(1, length(results.trial_number));
     for i=1:size(results.trial_number)
         indices=max(1,i-perf_win_size):i;
         EarlyLicksCount(i)=sum(results.early_lick(indices))/length(indices); %Early lick rate from results, at each "real" trial
     end
     stairs(handles2give.EarlyLickAxes, 1:size(results.trial_number),EarlyLicksCount, 'LineWidth',lw, 'Color','k')
-    h_ticks = 1:ceil(size(results.trial_number)/10):size(results.trial_number);
-    if ~ismember(h_ticks, size(rresults.trial_number))
-        h_ticks = [h_ticks  size(results.trial_number)];
+    h_ticks = 1:ceil(length(results.trial_number)/10):length(results.trial_number);
+    if ~ismember(h_ticks, length(results.trial_number))
+        h_ticks = [h_ticks  length(results.trial_number)];
     end
     set(handles2give.EarlyLickAxes,'XTick', h_ticks)
     ylabel(handles2give.EarlyLickAxes,'Early Lick rate')
