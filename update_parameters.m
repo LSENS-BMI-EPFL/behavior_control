@@ -33,53 +33,9 @@ function update_parameters
     light_prestim_delays =[light_prestim_delay];
     light_duration = handles2give.light_duration;
 
-    camera_block_duration = 300; % in seconds (added for block filming)
     trial_number = trial_number+1;
 
-    %% Update Video Parameters and Arm the Camera
-
-    camera_flag = handles2give.camera_flag;
-
-    % SAVING CAMERA FRAMES
-    % if camera_flag && (trial_number==1 || toc(cameraStartTime)>Block_Duration)
-    if camera_flag
-        camera_freq=handles2give.camera_freq; % Hz
-
-        VideoFileInfo.trial_number=trial_number;
-
-        % TODO: remove hard coded basename 
-        VideoFileInfo.directory=[handles2give.video_directory char(handles2give.mouse_name)...
-            '\' [char(handles2give.mouse_name) '_' char(handles2give.date) '_' char(handles2give.session_time) '\']];
-
-        % Define number of frames to save in block
-        VideoFileInfo.n_frames_to_grab = trial_duration*camera_freq/1000;
-        %VideoFileInfo.n_frames_to_grab = camera_block_duration*camera_freq/1000; %KEEP
-
-        save('D:\Behavior\TemplateConfigFile\VideoFileInfo', 'VideoFileInfo');
-        arm_camera()
-
-    % TO KEEP - Block design of camera acquisition
-    %     if trial_number~=1
-    %         cameraClk.stop()
-    %         pause(0.05)
-    %         cameraClk.release()
-    %     end
-    %
-    %     outputSingleScan(Trigger_S,[0 0 1])
-    %     pause(5)
-    %     outputSingleScan(Trigger_S,[0 0 0])
-    %
-    %     cameraClk.startBackground()
-    %     pause(3)
-    %     cameraStartTime=tic;
-
-
-    % NOT SAVING CAMERA FRAMES
-    % else
-    %     outputSingleScan(Trigger_S,[0 0 0])
-    end
-
-    %% GENERAL SETTINGS FROM BEHAVIOUR GUI
+   %% GENERAL SETTINGS FROM BEHAVIOUR GUI
 
     association_flag=handles2give.association_flag; % 0 detection 1 assosiation
     light_flag=handles2give.light_flag;
