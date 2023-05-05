@@ -9,7 +9,7 @@
         lh1 lh2 fid_results  Reward_S_SR local_counter lick_channel_times camera_start_time ...
         folder_name handles2give early_lick_counter session_start_time...
         Main_S_SR Reward_Ch light_counter whisker_trial_counter...
-        fid_continuous trial_start_ttl lick_data cam1_ttl cam2_ttl scan_pos continuous_lick_data 
+        fid_continuous trial_start_ttl lick_data cam1_ttl cam2_ttl scan_pos continuous_lick_data Camera_S
 
 
     % Initialize variables and result file
@@ -91,7 +91,6 @@
     lh2 = addlistener(Log_S,'DataAvailable', @(src, event) log_continuously(src, event));
     fid_continuous = fopen([folder_name '\log_continuous.bin'], 'a');
     
-    
     % Create trigger session
 
     Trigger_S = daq.createSession('ni');
@@ -136,14 +135,17 @@
     Stim_S.TriggersPerRun = 1;
     Stim_S.ExternalTriggerTimeout = 2000;
 
-    % Setup with Camera session - KEEP
-    % %% Create a CameraClK session
-    % Camera_S = daq.createSession('ni');
-    % cam_ch = addAnalogOutputChannel(Camera_S, 'Dev1', 'ctr0', 'PulseGeneration'); % Camera frames
-    % cam_ch.Frequency = handles2give.camera_freq; %Hz
-    % cam_ch.DutyCycle = 0.5;
 
-    
+    % Create a Camera Continuous recording session
+
+    Camera_S = daq('ni');
+    Camera_S.Rate = 5000;
+    cam_ch = addoutput(Camera_S, 'Dev1', 'ctr0', 'PulseGeneration'); % Camera frames
+    cam_ch.Frequency = handles2give.camera_freq; %Hz
+    cam_ch.DutyCycle = (handles2give.camera_exposure_time / 1000 ) / (1 / cam_ch.Frequency);
+    cam_ch.InitialDelay = handles2give.camera_start_delay;
+   
+
     % Run Main Control
     % ----------------
 
@@ -169,5 +171,6 @@
     % Start acquisition
     Main_S.startBackground();
     Log_S.startBackground();
+    start(Camera_S, "Continuous")
     
 end

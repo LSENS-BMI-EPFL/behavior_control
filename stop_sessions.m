@@ -2,7 +2,7 @@ function stop_sessions
 %STOP_SESSIONS Terminate DAQ sessions and close files.
 
 global  Reward_S Stim_S Main_S Trigger_S Log_S...
-    lh1 lh2 handles2give Stim_S_SR Reward_S_SR folder_name
+    lh1 lh2 handles2give Stim_S_SR Reward_S_SR folder_name Camera_S
 
 outputSingleScan(Trigger_S,[0 0 1]);
 pause(.5)                       %---> why?
@@ -14,11 +14,10 @@ while Main_S.IsRunning
 end
 Main_S.release();
 
-Log_S.stop();
-while Log_S.IsRunning
+stop(Camera_S);
+while Camera_S.Running
     continue
 end
-Log_S.release();
 
 Reward_S.stop();
 while Reward_S.IsRunning
@@ -72,6 +71,11 @@ while Trigger_S.IsRunning
 end
 Trigger_S.release();
 
+Log_S.stop();
+while Log_S.IsRunning
+    continue
+end
+Log_S.release();
 
 % Delete listeners
 delete(lh1);

@@ -22,7 +22,7 @@ function varargout = DetectionGUI(varargin)
 
 % Edit the above text to modify the response to help DetectionGUI
 
-% Last Modified by GUIDE v2.5 21-Mar-2023 18:49:16
+% Last Modified by GUIDE v2.5 05-May-2023 08:54:12
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -57,9 +57,9 @@ global handles2give
 handles.output = hObject;
 
 % Add subfolders to MATLAB path
-addpath('utils_context\');
-addpath('utils_plots\')
-addpath('utils_savings\')
+% addpath('utils_context\');
+% addpath('utils_plots\')
+% addpath('utils_savings\')
 
 
 %% Set default session type
@@ -81,8 +81,8 @@ set(handles.SetDateTag,'String',Date2Display);
 set(handles.SetDateTag,'Enable','off');
 
 % [TO CUSTOMIZE BY EACH USER]
-set(handles.MouseNameTag,'String','ABXXX'); handles.mouse_name = get(handles.MouseNameTag,'String');
-handles.behaviour_directory = 'C:\Users\bisi\Desktop\BehaviourData';
+set(handles.MouseNameTag,'String','ARXXX'); handles.mouse_name = get(handles.MouseNameTag,'String');
+handles.behaviour_directory = 'E:\behavior';
 set(handles.BehaviorDirectoryTag,'String', handles.behaviour_directory);
 
 %% Set general session settings
@@ -199,9 +199,13 @@ set(handles.LickThresholdTag,'String','0.2'); handles.lick_threshold = str2doubl
 %% Behaviour camera settings
 set(handles.CameraFrameRateTag,'String','200'); handles.camera_freq = str2double(get(handles.CameraFrameRateTag,'String'));
 set(handles.CameraFrameRateTag,'Enable','off');
-handles.video_directory = 'F:\Axel\';
-set(handles.VideoDirectoryTag,'String', handles.video_directory);
-set(handles.VideoDirectoryTag,'Enable','off');
+set(handles.CameraStartDelayTag,'String','3'); handles.camera_start_delay = str2double(get(handles.CameraStartDelayTag,'String'));
+set(handles.CameraStartDelayTag,'Enable','off');
+set(handles.CameraExposureTimeTag,'String','2'); handles.camera_exposure_time = str2double(get(handles.CameraExposureTimeTag,'String'));
+set(handles.CameraExposureTimeTag,'Enable','off');
+% handles.video_directory = 'F:\Axel\';
+% set(handles.VideoDirectoryTag,'String', handles.video_directory);
+% set(handles.VideoDirectoryTag,'Enable','off');
 
 %% Initialize axes
 axes(handles.TrialStartTTL); set(gca,'XTick',[]); set(gca,'XColor','w'); set(gca,'YTick',[]); set(gca,'YColor','w');
@@ -647,25 +651,25 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-function VideoDirectoryTag_Callback(hObject, eventdata, handles)
-% hObject    handle to VideoDirectoryTag (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of BehaviorDirectoryTag as text
-%        str2double(get(hObject,'String')) returns contents of BehaviorDirectoryTag as a double
-global handles2give
-handles.video_directory = get(handles.VideoDirectoryTag,'String');
-
-% Update handles structure
-handles2give=handles;
-guidata(hObject, handles);
-
-% --- Executes during object creation, after setting all properties.
-function VideoDirectoryTag_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to VideoDirectoryTag (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
+% function VideoDirectoryTag_Callback(hObject, eventdata, handles)
+% % hObject    handle to VideoDirectoryTag (see GCBO)
+% % eventdata  reserved - to be defined in a future version of MATLAB
+% % handles    structure with handles and user data (see GUIDATA)
+% 
+% % Hints: get(hObject,'String') returns contents of BehaviorDirectoryTag as text
+% %        str2double(get(hObject,'String')) returns contents of BehaviorDirectoryTag as a double
+% global handles2give
+% handles.video_directory = get(handles.VideoDirectoryTag,'String');
+% 
+% % Update handles structure
+% handles2give=handles;
+% guidata(hObject, handles);
+% 
+% % --- Executes during object creation, after setting all properties.
+% function VideoDirectoryTag_CreateFcn(hObject, eventdata, handles)
+% % hObject    handle to VideoDirectoryTag (see GCBO)
+% % eventdata  reserved - to be defined in a future version of MATLAB
+% % handles    empty - handles not created until after all CreateFcns called
 
 % Hint: edit controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
@@ -1663,10 +1667,12 @@ handles.camera_flag=get(handles.CameraTagCheck,'Value');
 
 if handles.camera_flag
     set(handles.CameraFrameRateTag,'Enable','on');
-    set(handles.VideoDirectoryTag,'Enable','on');
+    set(handles.CameraStartDelayTag,'Enable','on');
+    set(handles.CameraExposureTimeTag,'Enable','on');
 else
     set(handles.CameraFrameRateTag,'Enable','off');
-    set(handles.VideoDirectoryTag,'Enable','off');
+    set(handles.CameraStartDelayTag,'Enable','off');
+    set(handles.CameraExposureTimeTag,'Enable','off');
 end
 handles2give=handles;
 guidata(hObject, handles)
@@ -2188,6 +2194,67 @@ guidata(hObject, handles);
 % --- Executes during object creation, after setting all properties.
 function scaling_factor_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to scaling_factor (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function CameraExposureTimeTag_Callback(hObject, eventdata, handles)
+% hObject    handle to CameraExposureTimeTag (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of CameraExposureTimeTag as text
+%        str2double(get(hObject,'String')) returns contents of CameraExposureTimeTag as a double
+global handles2give
+
+handles.camera_exposure_time = round(str2double(get(handles.CameraExposureTimeTag,'String'))*100)/100;
+set(handles.CameraExposureTimeTag,'String',num2str(handles.camera_exposure_time));
+
+% Update handles structure
+handles2give= handles;
+guidata(hObject, handles);
+
+
+% --- Executes during object creation, after setting all properties.
+function CameraExposureTimeTag_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to CameraExposureTimeTag (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function CameraStartDelayTag_Callback(hObject, eventdata, handles)
+% hObject    handle to CameraStartDelayTag (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of CameraStartDelayTag as text
+%        str2double(get(hObject,'String')) returns contents of CameraStartDelayTag as a double
+global handles2give
+
+handles.camera_start_delay = round(str2double(get(handles.CameraStartDelayTag,'String'))*100)/100;
+set(handles.CameraStartDelayTag,'String',num2str(handles.camera_start_delay));
+
+% Update handles structure
+handles2give= handles;
+guidata(hObject, handles);
+
+% --- Executes during object creation, after setting all properties.
+function CameraStartDelayTag_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to CameraStartDelayTag (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
