@@ -28,25 +28,7 @@ function main_control(~,event)
         lick_time=tic;
     end
 
-    %% Play context noise backgrounds
-    if context_flag
-        if strcmp(context_block, 'pink')
-            if ~ pink_noise_player.isplaying
-                pink_noise_player.play
-            end
-            if brown_noise_player.isplaying
-                brown_noise_player.pause
-            end
-        elseif strcmp(context_block, 'brown')
-            if ~ brown_noise_player.isplaying
-                brown_noise_player.play
-            end
-            if pink_noise_player.isplaying
-                pink_noise_player.pause
-            end
-        end
-    end
-
+    
     %% Stimulus delivery at trial start.
     % ------------------
 
