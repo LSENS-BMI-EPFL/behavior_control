@@ -9,7 +9,7 @@
         lh1 lh2 fid_results  Reward_S_SR local_counter lick_channel_times camera_start_time ...
         folder_name handles2give early_lick_counter session_start_time...
         Main_S_SR Reward_Ch light_counter whisker_trial_counter...
-        fid_continuous trial_start_ttl lick_data cam1_ttl cam2_ttl scan_pos continuous_lick_data Camera_S
+        fid_continuous trial_start_ttl lick_data cam1_ttl cam2_ttl scan_pos continuous_lick_data Camera_S Context_S context_ttl
 
 
     % Initialize variables and result file
@@ -33,6 +33,7 @@
     cam1_ttl = zeros(1,10*Log_S_SR);
     cam2_ttl = zeros(1,10*Log_S_SR);
     scan_pos = zeros(1,10*Log_S_SR);
+    context_ttl =  zeros(1,10*Log_S_SR);
     
     % Create and open session result file
     folder_name=[char(handles2give.behaviour_directory) '\' char(handles2give.mouse_name) ...
@@ -79,13 +80,15 @@
     % ai2: trial start ttl
     % ai3: camera 1
     % ai4: camera 2
+    % ai5: context transition
     
-    ai_log = addAnalogInputChannel(Log_S, 'Dev2', [0,1,2,3,4], 'Voltage');
+    ai_log = addAnalogInputChannel(Log_S, 'Dev2', [0,1,2,3,4, 5], 'Voltage');
     ai_log(1).TerminalConfig='SingleEnded';
     ai_log(2).TerminalConfig='SingleEnded';
     ai_log(3).TerminalConfig='SingleEnded';
     ai_log(4).TerminalConfig='SingleEnded';
     ai_log(5).TerminalConfig='SingleEnded';
+    ai_log(6).TerminalConfig='SingleEnded';
     Log_S.Rate = Log_S_SR;
     Log_S.IsContinuous = true;
     lh2 = addlistener(Log_S,'DataAvailable', @(src, event) log_continuously(src, event));
@@ -144,7 +147,10 @@
     cam_ch.Frequency = handles2give.camera_freq; %Hz
     cam_ch.DutyCycle = (handles2give.camera_exposure_time / 1000 ) / (1 / cam_ch.Frequency);
     cam_ch.InitialDelay = handles2give.camera_start_delay;
-   
+    
+    % Session for context block switch output
+    Context_S = daq.createSession('ni');
+    addDigitalChannel(Context_S,'Dev2', 'Port0/Line2', 'OutputOnly'); %  Context channel
 
     % Run Main Control
     % ----------------
@@ -156,7 +162,7 @@
     early_lick_counter = 0;
     local_counter = 0; % for plot_lick_trace
     whisker_trial_counter = 0; %for partial rewards
-
+ 
     % Update parameters in GUI
     update_parameters;
 

@@ -9,7 +9,7 @@ addAnalogOutputChannel(session,'Dev2','ao0', 'Voltage');
 % channel_coil = addAnalogOutputChannel(session,'PXI1Slot2','ao0', 'Voltage');
 
 % Read teslameter or displacement sensor output.
-addAnalogInputChannel(session,'Dev2','ai5', 'Voltage');
+addAnalogInputChannel(session,'Dev2','ai6', 'Voltage');
 
 sr = session_sampling_rate/1000;  % Sampling rate in ms.
 baseline_dur = 2000;

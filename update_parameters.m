@@ -16,7 +16,7 @@ function update_parameters
         is_reward reward_pool partial_reward_flag reward_proba_old...
         light_duration light_freq light_amp camera_freq SITrigger_vec main_trial_pool...
         whisker_trial_counter mouse_rewarded_context context_block context_flag block_id wh_rewarded_context...
-        pink_noise_player brown_noise_player identical_block_count extra_time 
+        pink_noise_player brown_noise_player identical_block_count extra_time Context_S
         
        
 
@@ -226,6 +226,8 @@ function update_parameters
                 mouse_rewarded_context = get_or_determine_mouse_rewarded_context(handles2give.context_table_directory, handles2give.mouse_name, contexts);
                 block_id = randi([1, size(contexts, 2)], 1); 
                 context_block = contexts(block_id);
+                outputSingleScan(Context_S,[0])
+                play_context_background(context_block, pink_noise_player, brown_noise_player, Context_S)
             else
                 old_block_id = block_id;
                 block_id = randi([1, size(contexts, 2)], 1);
@@ -243,6 +245,8 @@ function update_parameters
                 identical_block_count = 1;
                 end
                 context_block = contexts(block_id);
+                outputSingleScan(Context_S,[0])
+                play_context_background(context_block, pink_noise_player, brown_noise_player, Context_S)
             end
             wh_rewarded_context = strcmp(context_block, mouse_rewarded_context);    
         end

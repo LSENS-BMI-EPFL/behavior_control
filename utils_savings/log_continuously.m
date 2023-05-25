@@ -1,7 +1,7 @@
 function log_continuously(~, event)
 
 global  Log_S_SR fid_continuous...
-        trial_start_ttl lick_threshold handles2give continuous_lick_data cam1_ttl cam2_ttl scan_pos
+        trial_start_ttl lick_threshold handles2give continuous_lick_data cam1_ttl cam2_ttl scan_pos context_flag context_ttl
 
 % Get and save data to binary file.
 % ---------------------------------
@@ -11,21 +11,29 @@ global  Log_S_SR fid_continuous...
 % ai2: trial start ttl
 % ai3: camera 1
 % ai4: camera 2
+% ai5: context transition
 
-data = [event.Data(:,1), event.Data(:,2), event.Data(:,3), event.Data(:,4), event.Data(:,5)]';
+data = [event.Data(:,1), event.Data(:,2), event.Data(:,3), event.Data(:,4), event.Data(:,5), event.Data(:,6)]';
 fwrite(fid_continuous, data, 'double');
 
 
 % Plot continuously.
 % ------------------
 
-% Plot trial start TTL.
+% Plot trial start TTL and context transition (if context task)
 
 trial_start_ttl = [trial_start_ttl, event.Data(:,3)'];
 trial_start_ttl = trial_start_ttl(end-10*Log_S_SR+1:end);
 time = [0:numel(trial_start_ttl)-1]/Log_S_SR;
-plot(handles2give.TrialStartTTL, time, trial_start_ttl, 'Color', 'k');
+if context_flag
+    context_ttl = [context_ttl, event.Data(:, 6)'];
+    context_ttl = context_ttl(end-10*Log_S_SR+1:end);
+    plot(handles2give.TrialStartTTL, time, trial_start_ttl, 'k', time, context_ttl, 'r');
+else
+    plot(handles2give.TrialStartTTL, time, trial_start_ttl, 'Color', 'k');
+end
 ylabel(handles2give.TrialStartTTL,'Trial TTL')
+
 % Set axes limits
 ylim(handles2give.TrialStartTTL, [-1 8]);
 xlim(handles2give.TrialStartTTL, [0 time(end)]);
