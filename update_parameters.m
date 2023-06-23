@@ -236,7 +236,7 @@ function update_parameters
                 else
                     identical_block_count = 1;
                 end
-                if identical_block_count ==3  % We don't want more than 2 consecutive context A or B block
+                if identical_block_count > 1  % We don't want more than 2 consecutive context A or B block
                      new_block_id = block_id;
                      while new_block_id == block_id
                          new_block_id = randi([1, size(contexts, 2)], 1);
