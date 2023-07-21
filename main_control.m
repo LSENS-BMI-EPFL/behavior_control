@@ -24,7 +24,10 @@ function main_control(~,event)
     % --------------------------------------------
 
     % A lick is defined as a single scan crossing the lick threshold.
-    if sum(abs(event.Data(1:end-1,1)) < lick_threshold & abs(event.Data(2:end,1)) > lick_threshold)
+    % if sum(abs(event.Data(1:end-1,1)) < lick_threshold & abs(event.Data(2:end,1)) > lick_threshold)
+    % To make the detection more robust to noise, a lick is defined as 8 samples (out
+    % of the 10 samples from data available notifications) above the threshold.
+    if sum(abs(event.Data(1:end,1)) > lick_threshold) >= 8
         lick_time=tic;
     end
 
@@ -58,20 +61,21 @@ function main_control(~,event)
     %% Detecting rewarded licks and trigger reward. 
     % --------------------------------------------
 
-    if trial_started_flag && ~association_flag  && ... %check if currently within a trial
+    % sum(abs(event.Data(1:end-1,1))<lick_threshold & abs(event.Data(2:end,1))>lick_threshold) &&... %check if lick
+    if trial_started_flag && ~association_flag  &&... %check if currently within a trial
         toc(trial_start_time)>response_window_start && toc(trial_start_time)<response_window_end &&... %check if in response window
-        sum(abs(event.Data(1:end-1,1))<lick_threshold & abs(event.Data(2:end,1))>lick_threshold) &&... %check if lick
+        sum(abs(event.Data(1:end,1)) > lick_threshold) >= 8 &&...
         ~sum(abs(event.Data(1:end-1,1))<10000*lick_threshold & abs(event.Data(2:end,1))>10000*lick_threshold) % <- WHY THIS?
-
 
         trial_started_flag=0;
         
-        %Check conditions for reward delivery
+        % Check conditions for reward delivery
         if aud_reward && ~wh_reward
             if is_auditory
                 hit_time=toc(trial_start_time);
                 reward_delivery; %deliver reward
-                first_threshold_cross=find(abs(event.Data(1:end-1,1))<lick_threshold & abs(event.Data(2:end,1))>lick_threshold',1,'first');
+%                 first_threshold_cross=find(abs(event.Data(1:end-1,1))<lick_threshold & abs(event.Data(2:end,1))>lick_threshold',1,'first');
+                first_threshold_cross=find(abs(event.Data(2:end,1))>lick_threshold',1,'first');
                 hit_time_adjusted=hit_time-first_threshold_cross/Main_S_SR;
                 reaction_time=hit_time_adjusted-(baseline_window)/1000;
                 mouse_licked_flag=1;
@@ -79,7 +83,8 @@ function main_control(~,event)
 
             elseif is_whisker
                 hit_time=toc(trial_start_time);
-                first_threshold_cross=find(abs(event.Data(1:end-1,1))<lick_threshold & abs(event.Data(2:end,1))>lick_threshold',1,'first');
+                % first_threshold_cross=find(abs(event.Data(1:end-1,1))<lick_threshold & abs(event.Data(2:end,1))>lick_threshold',1,'first');
+                first_threshold_cross=find(abs(event.Data(2:end,1))>lick_threshold',1,'first');
                 hit_time_adjusted=hit_time-first_threshold_cross/Main_S_SR;
                 reaction_time=hit_time_adjusted-(baseline_window)/1000;
                 mouse_licked_flag=1;
@@ -87,7 +92,8 @@ function main_control(~,event)
 
             else %no stim -> false alarm
                 hit_time=toc(trial_start_time);
-                first_threshold_cross=find(abs(event.Data(1:end-1,1))<lick_threshold & abs(event.Data(2:end,1))>lick_threshold',1,'first');
+                % first_threshold_cross=find(abs(event.Data(1:end-1,1))<lick_threshold & abs(event.Data(2:end,1))>lick_threshold',1,'first');
+                first_threshold_cross=find(abs(event.Data(2:end,1))>lick_threshold',1,'first');
                 hit_time_adjusted=hit_time-first_threshold_cross/Main_S_SR;
                 reaction_time=hit_time_adjusted-(baseline_window)/1000;
                 mouse_licked_flag=1;
@@ -97,7 +103,8 @@ function main_control(~,event)
         elseif aud_reward && wh_reward
             hit_time=toc(trial_start_time);
             reward_delivery;
-            first_threshold_cross=find(abs(event.Data(1:end-1,1))<lick_threshold & abs(event.Data(2:end,1))>lick_threshold',1,'first');
+            % first_threshold_cross=find(abs(event.Data(1:end-1,1))<lick_threshold & abs(event.Data(2:end,1))>lick_threshold',1,'first');
+            first_threshold_cross=find(abs(event.Data(2:end,1))>lick_threshold',1,'first'); 
             hit_time_adjusted=hit_time-first_threshold_cross/Main_S_SR;
             reaction_time=hit_time_adjusted-(baseline_window)/1000;
             mouse_licked_flag=1;
@@ -106,7 +113,8 @@ function main_control(~,event)
         elseif ~aud_reward && wh_reward
             if is_auditory
                 hit_time=toc(trial_start_time);
-                first_threshold_cross=find(abs(event.Data(1:end-1,1))<lick_threshold & abs(event.Data(2:end,1))>lick_threshold',1,'first');
+                % first_threshold_cross=find(abs(event.Data(1:end-1,1))<lick_threshold & abs(event.Data(2:end,1))>lick_threshold',1,'first');
+                first_threshold_cross=find(abs(event.Data(2:end,1))>lick_threshold',1,'first'); 
                 hit_time_adjusted=hit_time-first_threshold_cross/Main_S_SR;
                 reaction_time=hit_time_adjusted-(baseline_window)/1000;
                 mouse_licked_flag=1;
@@ -114,7 +122,8 @@ function main_control(~,event)
             elseif is_whisker
                 hit_time=toc(trial_start_time);
                 reward_delivery;
-                first_threshold_cross=find(abs(event.Data(1:end-1,1))<lick_threshold & abs(event.Data(2:end,1))>lick_threshold',1,'first');
+                % first_threshold_cross=find(abs(event.Data(1:end-1,1))<lick_threshold & abs(event.Data(2:end,1))>lick_threshold',1,'first');
+                first_threshold_cross=find(abs(event.Data(2:end,1))>lick_threshold',1,'first'); 
                 hit_time_adjusted=hit_time-first_threshold_cross/Main_S_SR;
                 reaction_time=hit_time_adjusted-(baseline_window)/1000;
                 mouse_licked_flag=1;
@@ -137,7 +146,6 @@ function main_control(~,event)
     %% Defining performance and update results file
     % ---------------------------------------------
 
-    
     % Check if results update needed
     if perf_and_save_results_flag
         perf_and_save_results_flag=0;
@@ -198,7 +206,8 @@ function main_control(~,event)
             aud_stim_duration aud_stim_amp aud_stim_freq aud_reward early_lick ...
             is_light light_amp light_duration light_freq light_prestim_delay ...
             context_block};
-        
+        disp(variables_to_save)
+
         variable_saving_names = {'trial_number', 'perf', 'trial_time', 'association_flag', 'quiet_window','iti', ...
             'response_window', 'artifact_window','baseline_window','trial_duration', ...
             'is_stim', 'is_whisker', 'is_auditory', 'lick_flag', 'reaction_time', ...
@@ -207,7 +216,8 @@ function main_control(~,event)
             'aud_stim_duration','aud_stim_amp','aud_stim_freq','aud_reward', ...
             'early_lick', ...
             'is_light', 'light_amp','light_duration','light_freq','light_prestim', 'context_block'};
-        
+        disp(variable_saving_names)
+
         % Update csv result file
         update_and_save_results_csv(variables_to_save, variable_saving_names)
 
@@ -236,8 +246,9 @@ function main_control(~,event)
     %% UNCLEAR PART - Detecting early licks (licks between baseline start and stimulus or between light start and stim) <- CHECK THIS
     % Early licks results in aborted trials, before starting a new trial
 
+    %        && sum(abs(event.Data(1:end-1,1))<lick_threshold & abs(event.Data(2:end,1))>lick_threshold)
     if trial_started_flag && toc(trial_start_time)<response_window_start-(artifact_window)/1000 ...
-       && sum(abs(event.Data(1:end-1,1))<lick_threshold & abs(event.Data(2:end,1))>lick_threshold)
+        && sum(abs(event.Data(1:end,1)) > lick_threshold) >= 8
 
         trial_started_flag=0;
         early_lick = 1;
