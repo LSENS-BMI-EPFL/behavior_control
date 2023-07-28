@@ -2,11 +2,29 @@ function stop_sessions
 %STOP_SESSIONS Terminate DAQ sessions and close files.
 
 global  Reward_S Stim_S Main_S Trigger_S Log_S...
-    lh1 lh2 handles2give Stim_S_SR Reward_S_SR folder_name Camera_S pink_noise_player brown_noise_player context_flag
+    lh1 lh2 handles2give Stim_S_SR Reward_S_SR folder_name Camera_S...
+    pink_noise_player brown_noise_player context_flag WF_S
 
 outputSingleScan(Trigger_S,[0 0 1]);
 pause(.5)                       %---> why?
 outputSingleScan(Trigger_S,[0 0 0]);
+
+%% Stop widefield session
+if handles2give.wf_session
+    wf_stop
+%     stop(WF_S)
+%     WF_S.delete()
+%     wf_setup
+%     global Cam_vec LED1_vec LED2_vec WF_S
+%     write(WF_S, [zeros(1,50000)', zeros(1,50000)', zeros(1,50000)'])
+%     write(WF_S, [Cam_vec(1:length(Cam_vec)/2); LED1_vec(1:length(Cam_vec)/2); LED2_vec(1:length(Cam_vec)/2)]')
+%     write(WF_S, [zeros(1,50000)', zeros(1,50000)', zeros(1,50000)'])
+%     
+%     while WF_S.Running
+%         continue
+%     end
+%     WF_S.delete()
+end
     
 Main_S.stop();
 while Main_S.IsRunning
