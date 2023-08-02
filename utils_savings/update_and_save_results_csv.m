@@ -7,12 +7,12 @@ path_results_csv = strcat(folder_name, '\results.csv');
 
 if trial_number == 1
     results_table = table(variables_to_save{:}, 'VariableNames', variable_saving_names);
-    writetable(results_table, path_results_csv)
+    writetable(results_table, path_results_csv);
 else
     results_table = readtable(path_results_csv);
     trial_to_add = table(variables_to_save{:}, 'VariableNames', variable_saving_names);
     results_table = [results_table; trial_to_add];
-    writetable(results_table, path_results_csv)
+    writetable(results_table, path_results_csv);
 end
 
 end

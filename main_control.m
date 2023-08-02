@@ -17,7 +17,7 @@ function main_control(~,event)
         is_reward...
         light_prestim_delay light_duration light_freq light_amp SITrigger_vec...
         context_flag extra_time...
-        pink_noise_player brown_noise_player context_block  
+        pink_noise_player brown_noise_player context_block WF_S
         
 
     %% Timing last lick detection for quiet window.
@@ -27,7 +27,7 @@ function main_control(~,event)
     % if sum(abs(event.Data(1:end-1,1)) < lick_threshold & abs(event.Data(2:end,1)) > lick_threshold)
     % To make the detection more robust to noise, a lick is defined as 8 samples (out
     % of the 10 samples from data available notifications) above the threshold.
-    if sum(abs(event.Data(1:end,1)) > lick_threshold) >= 3
+    if sum(abs(event.Data(1:end,1)) > lick_threshold) >= 8
         lick_time=tic;
     end
 
@@ -64,7 +64,7 @@ function main_control(~,event)
     % sum(abs(event.Data(1:end-1,1))<lick_threshold & abs(event.Data(2:end,1))>lick_threshold) &&... %check if lick
     if trial_started_flag && ~association_flag  &&... %check if currently within a trial
         toc(trial_start_time)>response_window_start && toc(trial_start_time)<response_window_end &&... %check if in response window
-        sum(abs(event.Data(1:end,1)) > lick_threshold) >= 3 &&...
+        sum(abs(event.Data(1:end,1)) > lick_threshold) >= 8 &&...
         ~sum(abs(event.Data(1:end-1,1))<10000*lick_threshold & abs(event.Data(2:end,1))>10000*lick_threshold) % <- WHY THIS?
 
         trial_started_flag=0;
@@ -206,6 +206,7 @@ function main_control(~,event)
             aud_stim_duration aud_stim_amp aud_stim_freq aud_reward early_lick ...
             is_light light_amp light_duration light_freq light_prestim_delay ...
             context_block};
+%         disp(variables_to_save)
 
         variable_saving_names = {'trial_number', 'perf', 'trial_time', 'association_flag', 'quiet_window','iti', ...
             'response_window', 'artifact_window','baseline_window','trial_duration', ...
@@ -215,9 +216,10 @@ function main_control(~,event)
             'aud_stim_duration','aud_stim_amp','aud_stim_freq','aud_reward', ...
             'early_lick', ...
             'is_light', 'light_amp','light_duration','light_freq','light_prestim', 'context_block'};
+%         disp(variable_saving_names)
 
         % Update csv result file
-        update_and_save_results_csv(variables_to_save, variable_saving_names)
+        update_and_save_results_csv(variables_to_save, variable_saving_names);
 
         % Reset time and flag
         trial_end_time=tic; %trial end time after reward delivery and results are saved
@@ -246,13 +248,20 @@ function main_control(~,event)
 
     %        && sum(abs(event.Data(1:end-1,1))<lick_threshold & abs(event.Data(2:end,1))>lick_threshold)
     if trial_started_flag && toc(trial_start_time)<response_window_start-(artifact_window)/1000 ...
-        && sum(abs(event.Data(1:end,1)) > lick_threshold) >= 3
+        && sum(abs(event.Data(1:end,1)) > lick_threshold) >= 8
 
         trial_started_flag=0;
         early_lick = 1;
         early_lick_counter=early_lick_counter+1;
         deliver_reward_flag=0;
         Stim_S.stop();
+
+        if handles2give.wf_session % for trial based WF imaging
+            global WF_FileInfo
+            if ~WF_FileInfo.RecordingContinuous
+                WF_S.stop()
+            end
+        end
 
         outputSingleScan(Trigger_S,[0 0 0]);
 

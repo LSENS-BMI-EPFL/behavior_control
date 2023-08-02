@@ -9,7 +9,9 @@
         lh1 lh2 fid_results  Reward_S_SR local_counter lick_channel_times camera_start_time ...
         folder_name handles2give early_lick_counter session_start_time...
         Main_S_SR Reward_Ch light_counter whisker_trial_counter...
-        fid_continuous trial_start_ttl lick_data cam1_ttl cam2_ttl scan_pos continuous_lick_data Camera_S Context_S context_ttl
+        fid_continuous trial_start_ttl lick_data cam1_ttl cam2_ttl scan_pos...
+        continuous_lick_data Camera_S Context_S context_ttl WF_S
+        
 
 
     % Initialize variables and result file
@@ -178,5 +180,17 @@
     Main_S.startBackground();
     Log_S.startBackground();
     start(Camera_S, "Continuous")
+
+    % Setup WF_S and start continuous WF imaging, if applicable
+    if handles2give.wf_session  
+        global WF_FileInfo % Generated in WF_GUI
+        addpath([fileparts(cd) '\WF_imaging\'])
+        if WF_FileInfo.RecordingContinuous
+            wf_setup
+            wf_imaging_continuous  
+        else
+            wf_setup(1)
+        end
+    end
     
 end
