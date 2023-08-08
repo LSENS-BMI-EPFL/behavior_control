@@ -471,8 +471,17 @@ function OptoCheckbox_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of OptoCheckbox
-global handles2give
+global handles2give opto_gui
+
 handles.opto_session = get(handles.OptoCheckbox,'Value');
+
+if handles.opto_session == 1
+    addpath([cd '\utils_opto\'])
+    opto_gui = Opto_GUI;
+elseif exist('opto_gui') && handles.opto_session==0
+    opto_gui.delete()
+    clear wf_gui
+end
 
 % Update handles structure
 handles2give=handles;
