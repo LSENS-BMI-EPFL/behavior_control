@@ -27,7 +27,7 @@ function main_control(~,event)
     % if sum(abs(event.Data(1:end-1,1)) < lick_threshold & abs(event.Data(2:end,1)) > lick_threshold)
     % To make the detection more robust to noise, a lick is defined as 8 samples (out
     % of the 10 samples from data available notifications) above the threshold.
-    if sum(abs(event.Data(1:end,1)) > lick_threshold) >= 8
+    if sum(abs(event.Data(1:end,1)) > lick_threshold) >= 3
         lick_time=tic;
     end
 
@@ -64,7 +64,7 @@ function main_control(~,event)
     % sum(abs(event.Data(1:end-1,1))<lick_threshold & abs(event.Data(2:end,1))>lick_threshold) &&... %check if lick
     if trial_started_flag && ~association_flag  &&... %check if currently within a trial
         toc(trial_start_time)>response_window_start && toc(trial_start_time)<response_window_end &&... %check if in response window
-        sum(abs(event.Data(1:end,1)) > lick_threshold) >= 8 &&...
+        sum(abs(event.Data(1:end,1)) > lick_threshold) >= 3 &&...
         ~sum(abs(event.Data(1:end-1,1))<10000*lick_threshold & abs(event.Data(2:end,1))>10000*lick_threshold) % <- WHY THIS?
 
         trial_started_flag=0;
@@ -248,7 +248,7 @@ function main_control(~,event)
 
     %        && sum(abs(event.Data(1:end-1,1))<lick_threshold & abs(event.Data(2:end,1))>lick_threshold)
     if trial_started_flag && toc(trial_start_time)<response_window_start-(artifact_window)/1000 ...
-        && sum(abs(event.Data(1:end,1)) > lick_threshold) >= 8
+        && sum(abs(event.Data(1:end,1)) > lick_threshold) >= 3
 
         trial_started_flag=0;
         early_lick = 1;
