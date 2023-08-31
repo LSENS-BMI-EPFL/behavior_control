@@ -1,7 +1,7 @@
 function log_continuously(~, event)
 
 global  Log_S_SR fid_continuous...
-        trial_start_ttl lick_threshold handles2give continuous_lick_data cam1_ttl cam2_ttl scan_pos context_flag context_ttl
+        trial_start_ttl lick_threshold handles2give continuous_lick_data cam1_ttl cam2_ttl scan_pos context_flag context_ttl wh_rewarded_context
 
 % Get and save data to binary file.
 % ---------------------------------
@@ -28,7 +28,12 @@ time = [0:numel(trial_start_ttl)-1]/Log_S_SR;
 if context_flag
     context_ttl = [context_ttl, event.Data(:, 6)'];
     context_ttl = context_ttl(end-10*Log_S_SR+1:end);
-    plot(handles2give.TrialStartTTL, time, trial_start_ttl, 'k', time, context_ttl, 'r');
+    if wh_rewarded_context
+        context_color = 'g';
+    else
+        context_color = 'r';
+    end
+    plot(handles2give.TrialStartTTL, time, trial_start_ttl, 'k', time, context_ttl, context_color);
 else
     plot(handles2give.TrialStartTTL, time, trial_start_ttl, 'Color', 'k');
 end
