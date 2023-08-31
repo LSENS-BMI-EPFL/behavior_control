@@ -33,8 +33,10 @@ This code currently supports (uncued, undelayed) simple sensory (auditory, whisk
 
 #### Default usage
 - Run `DetectionGUI.m` to open GUI.
-- Make sure Camera tickbox is unticked (unsupported), otherwise it won't execute.
 - Control desired choice GUI text input, general settings and task parameters. <- These together design a sensory detection task.
+- **Video filming**:
+    - Make sure the parameters specified in the camera settings match that in IC Capture (frame rate, exposure time).
+    - The start delay imposes a wait time before triggering frame acquisition.
 
 Description of the main action buttons: 
 - **START**: a new session is created. After a START, one can stop and pause. Resume has no effect.
@@ -55,10 +57,11 @@ During and at the end of the behavioural session, the software outputs several f
 - `response_window`: duration of response window
 - `wh_reward`: boolean if whisker trials were rewarded by default
 - `aud_reward`: idem for auditory trials
+- `mouse_weight_before`: weight of mouse before session
 - etc.
 
 
-2. **Trial information:** `results.txt`: trial-based file, appended after each trial during the session. This file is converted into a `result.csv` after stopping the session. These files contain trial-wide parameters, such as:
+2. **Trial information:** `results.csv: trial-based file, appended after each trial during the session. This file contains trial-wide parameters, such as:
 - `trial_number`: index of trial
 - `trial_time`: time of trial, relative to session start, in seconds (MATLAB tic/toc)
 - `is_stim`: boolean, if trial is a stimulus trial
