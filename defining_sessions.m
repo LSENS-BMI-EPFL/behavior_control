@@ -10,7 +10,7 @@
         folder_name handles2give early_lick_counter session_start_time...
         Main_S_SR Reward_Ch light_counter whisker_trial_counter...
         fid_continuous trial_start_ttl lick_data cam1_ttl cam2_ttl scan_pos...
-        continuous_lick_data Camera_S Context_S context_ttl WF_S
+        continuous_lick_data Camera_S Context_S context_ttl WF_S Opto_S
         
 
 
@@ -181,6 +181,12 @@
     Log_S.startBackground();
     start(Camera_S, "Continuous")
 
+    % Setup Opto_S with trigger, if applicable
+    if handles2give.opto_session
+        global Opto_info
+        opto_setup(1);
+    end
+    
     % Setup WF_S and start continuous WF imaging, if applicable
     if handles2give.wf_session  
         global WF_FileInfo % Generated in WF_GUI

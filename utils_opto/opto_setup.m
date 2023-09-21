@@ -16,6 +16,10 @@ function opto_setup(trigger)
     if trigger
         addtrigger(Opto_S, 'Digital', 'StartTrigger', 'External', 'Dev3/PFI0');
         Opto_S.DigitalTriggerTimeout = Inf;
+%         Opto_S.ExternalTriggerTimeout = Inf;
     end
+    
+    [opto_vec, galv_x, galv_y] = load_opto_vec(0,0);
+
 end
 

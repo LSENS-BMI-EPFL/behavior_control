@@ -7,9 +7,6 @@ function [x_coord,y_coord] = get_stim_grid(grid_type, AP, ML)
         ML = 0;
     end
     warning('off', 'all');
-    
-    x_range = [4.5,4.5,4.25,4,3.75,3.5,3.25,3,0.25,0.25,0.25,0,0,0.25,0.25,4.5];
-    y_range = [0,1.5,1.75,2,2.25,2.5,2.75,3,3,2.5,2.25,2.25,0.75,0.75,0,0];
 
     switch grid_type
         case 'No Grid'
@@ -22,7 +19,7 @@ function [x_coord,y_coord] = get_stim_grid(grid_type, AP, ML)
             step = 0.5;
             scale = step/.25;
             [x, y] = meshgrid(-6:step:4, -1:step:7);
-            brain_mask = poly2mask(scale/step*x_range+2,scale/step*y_range+3,length(-1:step:7), length(-6:step:4));
+            brain_mask = poly2mask(scale/step*x_range+2,scale/step*y_range+3, length(-1:step:7), length(-6:step:4));
             x(~brain_mask) = nan;
             y(~brain_mask) = nan;
 %             figure; scatter(x,y); hold on; plot(scale*x_range-5, scale*y_range+0.5)
