@@ -461,16 +461,19 @@ function update_parameters
             scatter(opto_gui.UIAxes, -5, 5, 'filled', 'MarkerEdgeColor','#DC143C', 'MarkerFaceColor', '#DC143C');
             text(opto_gui.UIAxes, 1, 6.5, {['No opto trial: ' num2str(count) '/' num2str(trial_number)]})
         end
-           
+        
+            while Opto_S.Running
+                disp('Here in update_params')
+            end
+        
+
         try
-            queueOutputData(Opto_S, [opto_vec; galv_x; galv_y]')
-%             Opto_S.preload([opto_vec; galv_x; galv_y]');
+            Opto_S.preload([opto_vec; galv_x; galv_y]');
         catch
             disp(['Error preloading Opto_S coords ap ml: ' num2str(AP) ' ' num2str(ML)])
             disp(Opto_S)
         end
-%         Opto_S.start();
-        Opto_S.startBackground();
+        Opto_S.start();
 
         variables_to_save_opto = {trial_number is_stim is_auditory is_whisker context_block opto_gui.baseline*1000 power opto_gui.frequency...
             opto_gui.duration opto_gui.pulse_width grid_no count AP ML ...
