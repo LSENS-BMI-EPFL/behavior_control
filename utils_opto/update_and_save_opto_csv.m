@@ -1,6 +1,7 @@
 function update_and_save_opto_csv(variables_to_save, variable_saving_names)
 
-% UPDATE_AND_SAVE_RESULTS_CSV Summary of this function goes here
+% UPDATE_AND_SAVE_RESULTS_CSV Save trial by trial the parameters of
+% stimulation.
 
     global  trial_number folder_name
 
@@ -15,7 +16,6 @@ function update_and_save_opto_csv(variables_to_save, variable_saving_names)
         results_table = [results_table; trial_to_add];
         writetable(results_table, path_results_csv);
     end
-
 
 end
 

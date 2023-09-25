@@ -1,6 +1,7 @@
 function [opto_vec, galv_x, galv_y] = load_opto_vec(ML, AP)
-%LOAD_OPTO_VEC Summary of this function goes here
-%   Detailed explanation goes here
+%LOAD_OPTO_VEC Given a location from bregma, generate optogenetic pulse
+%trains and set the movement of the galvanic mirrors.
+
     arguments
         ML = 0;
         AP = 0;
@@ -15,6 +16,7 @@ function [opto_vec, galv_x, galv_y] = load_opto_vec(ML, AP)
     
     voltage_x = bregma_x + ML*x_step;
     voltage_y = bregma_y + AP*y_step;
+    
     galv_x = (voltage_x)*ones(1, length(t));
     galv_y = (voltage_y)*ones(1, length(t));
 

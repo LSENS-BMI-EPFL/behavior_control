@@ -1,7 +1,8 @@
 function save_opto_config
-%SAVE_OPTO_CONFIG Summary of this function goes here
-%   Detailed explanation goes here
+%SAVE_OPTO_CONFIG Save opto_gui configuration at the beginning of session
+%and images of the grid coordinates used.
 % Encode as json text 
+
     global folder_name opto_gui Opto_info
     
     opto_config_json = jsonencode(Opto_info, PrettyPrint=true);

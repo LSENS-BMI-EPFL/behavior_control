@@ -1,6 +1,7 @@
 function [x_step, y_step] = get_step(computer)
-%GET_STEP Summary of this function goes here
-%   Detailed explanation goes here
+%GET_STEP Calibrated step voltage to move laser beam 1mm. Perform
+%regularly.
+%   Last calibrated....
 
     switch computer
         case 'SV-07-051'
@@ -13,5 +14,6 @@ function [x_step, y_step] = get_step(computer)
             x_step = 0;
             y_step = 0;
     end
+
 end
 

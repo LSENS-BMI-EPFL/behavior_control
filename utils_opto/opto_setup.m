@@ -7,6 +7,7 @@ function opto_setup(trigger)
     end
     global Opto_S
 
+    % TBD switch to new nomenclature for daq objects
 %     Opto_S = daq('ni');
 %     addoutput(Opto_S, 'Dev3', 'ao4', 'Voltage'); % Laser output
 %     addoutput(Opto_S, 'Dev3', 'ao5', 'Voltage'); % Galvo X output
@@ -18,6 +19,7 @@ function opto_setup(trigger)
 %         Opto_S.DigitalTriggerTimeout = Inf;
 %     end
     
+    % For old daq session configuration
     Opto_S = daq.createSession('ni');
     Opto_S.IsContinuous = true;
     addAnalogOutputChannel(Opto_S,'Dev3','ao4', 'Voltage');
