@@ -52,7 +52,6 @@ function main_control(~,event)
         end
 
         trial_started_flag = 1;
-        disp(['Trial has started: ' num2str(trial_number)]);
         perf_and_save_results_flag = 0;
         mouse_licked_flag = 0;
         trial_time = toc(session_start_time); % time since session start

@@ -21,12 +21,12 @@ function opto_setup(trigger)
     
     % For old daq session configuration
     Opto_S = daq.createSession('ni');
-    Opto_S.IsContinuous = true;
     addAnalogOutputChannel(Opto_S,'Dev3','ao4', 'Voltage');
     addAnalogOutputChannel(Opto_S,'Dev3','ao5', 'Voltage');
     addAnalogOutputChannel(Opto_S,'Dev3','ao6', 'Voltage');
 
     if trigger
+        Opto_S.IsContinuous = true;
         addTriggerConnection(Opto_S,'External','Dev3/PFI0','StartTrigger');
         Opto_S.ExternalTriggerTimeout = Inf;
     end

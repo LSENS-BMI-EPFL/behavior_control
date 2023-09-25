@@ -8,7 +8,7 @@ function [opto_vec, galv_x, galv_y] = load_opto_vec(ML, AP)
     end
 
     global handles2give voltage_x voltage_y bregma_x bregma_y
-    root_path = 'M:\analysis\Pol_Bech\Parameters\';
+    root_path = 'M:\analysis\Pol_Bech\Parameters\Optogenetics\';
     [t, opto_vec] = get_opto_vec(handles2give.trial_duration/1000);
     
     [bregma_x, bregma_y] = get_bregma(root_path, handles2give.mouse_name);

@@ -26,6 +26,5 @@ function [bregma_x, bregma_y] = get_bregma(root_path, mouse_name)
 
     end
 
-    disp([mouse_name ' Current bregma values: ' num2str(bregma_x) ' ML, ' num2str(bregma_y) ' AP'])
 end
 
