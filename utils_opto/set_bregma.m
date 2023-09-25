@@ -3,7 +3,7 @@ function saved = set_bregma(root_path, mouse_name, ML, AP)
 %coordinate as bregma for a given mouse.
 
     arguments
-        root_path   = 'M:\analysis\Pol_Bech\Parameters\';
+        root_path   = 'M:\analysis\Pol_Bech\Parameters\Optogenetics\';
         mouse_name  = 'PB000';
         ML = [];
         AP = [];

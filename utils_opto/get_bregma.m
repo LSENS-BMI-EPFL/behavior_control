@@ -7,7 +7,7 @@ function [bregma_x, bregma_y] = get_bregma(root_path, mouse_name)
 %   the experiments with the set_bregma button in Opto_GUI app.
 
     arguments
-        root_path   = 'M:\analysis\Pol_Bech\Parameters\';
+        root_path   = 'M:\analysis\Pol_Bech\Parameters\Optogenetics\';
         mouse_name  = 'PB000';
     end
     
