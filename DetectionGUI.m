@@ -57,9 +57,10 @@ global handles2give
 handles.output = hObject;
 
 % Add subfolders to MATLAB path
-% addpath('utils_context\');
-% addpath('utils_plots\')
-% addpath('utils_savings\')
+addpath('utils_context\');
+addpath('utils_plots\');
+addpath('utils_savings\');
+addpath('utils_opto\');
 
 
 %% Set default session type
@@ -92,7 +93,7 @@ set(handles.EarlyLickPunishmentCheckbox,'Value',0); handles.early_lick_punish_fl
 set(handles.EarlyLickPunishmentCheckbox,'Enable','on');
 set(handles.AssociationCheckbox,'Value',0); handles.association_flag = get(handles.AssociationCheckbox,'Value');
 set(handles.AssociationCheckbox,'Enable','on');
-set(handles.CameraTagCheck,'Value',0); handles.camera_flag = get(handles.CameraTagCheck,'Value');   
+set(handles.CameraTagCheck,'Value', 1); handles.camera_flag = get(handles.CameraTagCheck,'Value');   
 set(handles.CameraTagCheck,'Enable','on');
 set(handles.DummySessionCheckbox,'Value',0); handles.dummy_session_flag = get(handles.DummySessionCheckbox,'Value');
 set(handles.DummySessionCheckbox,'Enable','on');
@@ -104,12 +105,12 @@ handles.behaviour_type = 'auditory'; %default, as most often the most common beh
 set(handles.BehaviourTypeTag, 'String', handles.behaviour_type);
 
 %% Set the timeline parameters
-set(handles.MinQuietWindowTag,'String','1000'); handles.min_quiet_window = str2double(get(handles.MinQuietWindowTag,'String'));
+set(handles.MinQuietWindowTag,'String','2000'); handles.min_quiet_window = str2double(get(handles.MinQuietWindowTag,'String'));
 set(handles.MaxQuietWindowTag,'String','5000'); handles.max_quiet_window = str2double(get(handles.MaxQuietWindowTag,'String'));
 set(handles.ResponseWindowTag,'String','1000'); handles.response_window = str2double(get(handles.ResponseWindowTag,'String'));
 set(handles.ArtifactWindowTag,'String','100'); handles.artifact_window = str2double(get(handles.ArtifactWindowTag,'String'));
-set(handles.MinISITag,'String','6000'); handles.min_iti = str2double(get(handles.MinISITag,'String'));
-set(handles.MaxISITag,'String','10000'); handles.max_iti = str2double(get(handles.MaxISITag,'String'));
+set(handles.MinISITag,'String','7000'); handles.min_iti = str2double(get(handles.MinISITag,'String'));
+set(handles.MaxISITag,'String','12000'); handles.max_iti = str2double(get(handles.MaxISITag,'String'));
 set(handles.BaselineWindowTag,'String','0'); handles.baseline_window = str2double(get(handles.BaselineWindowTag,'String'));
 set(handles.TrialDurationTag,'String','5000'); handles.trial_duration = str2double(get(handles.TrialDurationTag,'String'));
 
@@ -163,8 +164,8 @@ set(handles.AStimWeightTag,'String','10'); handles.aud_stim_weight = str2double(
 % Whisker stimuli 
 set(handles.StimDuration1Tag,'String','3'); handles.wh_stim_duration = str2double(get(handles.StimDuration1Tag,'String'));
 set(handles.StimDuration1Tag,'Enable','on');
-set(handles.StimAmp1Tag,'String','3.2'); handles.wh_stim_amp = str2double(get(handles.StimAmp1Tag,'String'));
-set(handles.scaling_factor,'String','0.6'); handles.wh_scaling_factor = str2double(get(handles.scaling_factor,'String'));
+set(handles.StimAmp1Tag,'String','4.5'); handles.wh_stim_amp = str2double(get(handles.StimAmp1Tag,'String'));
+set(handles.scaling_factor,'String','0.9'); handles.wh_scaling_factor = str2double(get(handles.scaling_factor,'String'));
 set(handles.scaling_factor,'Enable','on');
 set(handles.StimWeight1Tag,'String','0'); handles.wh_stim_weight = str2double(get(handles.StimWeight1Tag,'String'));
 set(handles.StimAmp1Tag,'Enable','on');
@@ -180,7 +181,7 @@ set(handles.ContextTablePath,'String','Enter path'); handles.context_table_direc
 set(handles.ContextTablePath,'Enable','off');
 
 %% Set reward parameters
-set(handles.ValveOpeningTag,'String','50'); handles.reward_valve_duration = str2double(get(handles.ValveOpeningTag,'String'));
+set(handles.ValveOpeningTag,'String','45'); handles.reward_valve_duration = str2double(get(handles.ValveOpeningTag,'String'));
 set(handles.ValveOpeningTag, 'Enable', 'on');
 set(handles.RewardDelayCheckbox,'Value',0); handles.reward_delay_flag = get(handles.RewardDelayCheckbox,'Value');
 set(handles.RewardDelayCheckbox,'Enable','off');
@@ -203,9 +204,6 @@ set(handles.CameraStartDelayTag,'String','3'); handles.camera_start_delay = str2
 set(handles.CameraStartDelayTag,'Enable','off');
 set(handles.CameraExposureTimeTag,'String','2'); handles.camera_exposure_time = str2double(get(handles.CameraExposureTimeTag,'String'));
 set(handles.CameraExposureTimeTag,'Enable','off');
-% handles.video_directory = 'F:\Axel\';
-% set(handles.VideoDirectoryTag,'String', handles.video_directory);
-% set(handles.VideoDirectoryTag,'Enable','off');
 
 %% Initialize axes
 axes(handles.TrialStartTTL); set(gca,'XTick',[]); set(gca,'XColor','w'); set(gca,'YTick',[]); set(gca,'YColor','w');
