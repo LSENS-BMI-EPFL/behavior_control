@@ -17,7 +17,7 @@ function update_parameters
         light_duration light_freq light_amp light_duty camera_freq SITrigger_vec main_trial_pool...
         whisker_trial_counter mouse_rewarded_context context_block context_flag block_id wh_rewarded_context...
         pink_noise_player brown_noise_player identical_block_count extra_time Context_S...
-        WF_S wf_cam_vec LED1_vec LED2_vec
+        WF_S wf_cam_vec LED1_vec LED2_vec opto_vec galv_x galv_y
        
 
     outputSingleScan(Trigger_S,[0 0 0])
@@ -439,7 +439,6 @@ function update_parameters
     if handles2give.opto_session
         global opto_gui Opto_S variables_to_save_opto voltage_x voltage_y bregma_x bregma_y opto_count
         if is_opto
-            
             [ML, AP, grid_no, count] = get_next_grid;
             power = opto_gui.amplitude;
             [opto_vec, galv_x, galv_y] = load_opto_vec(ML,AP);
@@ -461,16 +460,6 @@ function update_parameters
             scatter(opto_gui.UIAxes, -5, 5, 'filled', 'MarkerEdgeColor','#DC143C', 'MarkerFaceColor', '#DC143C');
             text(opto_gui.UIAxes, 1, 6.5, {['No opto trial: ' num2str(count) '/' num2str(trial_number)]})
         end
-           
-        try
-            queueOutputData(Opto_S, [opto_vec; galv_x; galv_y]')
-%             Opto_S.preload([opto_vec; galv_x; galv_y]');
-        catch
-            disp(['Error preloading Opto_S coords ap ml: ' num2str(AP) ' ' num2str(ML)])
-            disp(Opto_S)
-        end
-%         Opto_S.start();
-        Opto_S.startBackground();
 
         variables_to_save_opto = {trial_number is_stim is_auditory is_whisker context_block opto_gui.baseline*1000 power opto_gui.frequency...
             opto_gui.duration opto_gui.pulse_width grid_no count AP ML ...
@@ -621,9 +610,21 @@ function update_parameters
     end
     Stim_S.startBackground()
 
-    %ScansTobeAcquired=Stim_S.ScansQueued; %this is not used?
-    
     outputSingleScan(Trigger_S,[0 0 0])
+
+    if handles2give.opto_session
+        try
+            queueOutputData(Opto_S, [opto_vec; galv_x; galv_y]')
+            pause(.1)
+%             Opto_S.preload([opto_vec; galv_x; galv_y]');
+        catch
+            disp(['Error preloading Opto_S coords ap ml: ' num2str(AP) ' ' num2str(ML)])
+            disp(Opto_S)
+        end
+        Opto_S.startBackground();
+
+        disp(num2str(Opto_S.IsWaitingForExternalTrigger));
+    end
 
     % Queue reward vector
      if ~Reward_S.ScansQueued 

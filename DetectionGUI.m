@@ -873,7 +873,7 @@ if handles2give.wf_session
 end
 
 if handles2give.opto_session
-    global opto_gui
+    global opto_gui Opto_S
     opto_gui.GridDropDown.Enable = 'off';
     opto_gui.AssignbregmaCheckBox.Enable = 'off';
     opto_gui.update_opto_info
@@ -888,7 +888,6 @@ defining_sessions;
 
 % Update handles structure
 guidata(hObject, handles);
-
 
 % --- Executes on button press in StopBehaviourTag.
 function StopBehaviourTag_Callback(hObject, eventdata, handles)

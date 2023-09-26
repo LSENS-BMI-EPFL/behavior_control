@@ -17,7 +17,7 @@ function main_control(~,event)
         is_reward...
         light_prestim_delay light_duration light_freq light_amp SITrigger_vec...
         context_flag extra_time...
-        pink_noise_player brown_noise_player context_block WF_S
+        pink_noise_player brown_noise_player context_block WF_S Opto_S
         
 
     %% Timing last lick detection for quiet window.
@@ -245,10 +245,10 @@ function main_control(~,event)
 
         update_parameters_flag=0;
 
-        if handles2give.opto_session
-            global Opto_S
-            Opto_S.stop();
-        end
+%         if handles2give.opto_session
+%             global Opto_S
+%             Opto_S.stop();
+%         end
 
         update_parameters;
 
@@ -272,20 +272,16 @@ function main_control(~,event)
         early_lick_counter=early_lick_counter+1;
         deliver_reward_flag=0;
         Stim_S.stop();
-
-%         if handles2give.opto_session
-%             global Opto_S
-%             try
-%                 Opto_S.stop();
-%             catch
-%                 disp('Here!!')
-%             end
-%         end
+        
+        if handles2give.opto_session
+            Opto_S.stop();
+            Opto_S.release();
+        end
 
         if handles2give.wf_session % for trial based WF imaging
             global WF_FileInfo
             if ~WF_FileInfo.RecordingContinuous
-                WF_S.stop()
+                WF_S.stop();
             end
         end
 
@@ -306,6 +302,12 @@ function main_control(~,event)
         Stim_S.prepare();
         Stim_S.startBackground();
 
+        if handles2give.opto_session
+            global opto_vec galv_x galv_y
+            queueOutputData(Opto_S, [opto_vec; galv_x; galv_y]')
+            Opto_S.startBackground();
+        end
+        
         lick_flag = 1;
         perf = 6;
 

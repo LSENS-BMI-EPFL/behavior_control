@@ -43,8 +43,8 @@ function [ML, AP, grid_no, count] = get_next_grid
     opto_gui.plot_grid % Refresh plot in Opto_GUI
 
     if strcmp(grid_type, 'No Grid')
-        AP = stim_x; 
-        ML = stim_y;    
+        AP = opto_stim_x(1); 
+        ML = opto_stim_y(1);    
         grid_no = nan;
         grid_size = 0;
         
