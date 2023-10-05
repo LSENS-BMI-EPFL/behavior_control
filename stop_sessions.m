@@ -2,11 +2,17 @@ function stop_sessions
 %STOP_SESSIONS Terminate DAQ sessions and close files.
 
 global  Reward_S Stim_S Main_S Trigger_S Log_S...
-    lh1 lh2 handles2give Stim_S_SR Reward_S_SR folder_name Camera_S
+    lh1 lh2 handles2give Stim_S_SR Reward_S_SR folder_name Camera_S...
+    pink_noise_player brown_noise_player context_flag WF_S
 
 outputSingleScan(Trigger_S,[0 0 1]);
 pause(.5)                       %---> why?
 outputSingleScan(Trigger_S,[0 0 0]);
+
+%% Stop widefield session
+if handles2give.wf_session
+    wf_stop
+end
     
 Main_S.stop();
 while Main_S.IsRunning
@@ -80,6 +86,16 @@ Log_S.release();
 % Delete listeners
 delete(lh1);
 delete(lh2)
+
+% Stop context background
+if context_flag
+    if brown_noise_player.isplaying
+         stop(brown_noise_player)
+    end
+    if pink_noise_player.isplaying
+         stop(pink_noise_player)
+    end
+end
 
 % Close all open files
 fclose('all');

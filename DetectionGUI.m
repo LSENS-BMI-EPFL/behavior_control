@@ -432,8 +432,17 @@ function WFCheckbox_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of WFCheckbox
-global handles2give
+global handles2give wf_gui
+
 handles.wf_session = get(handles.WFCheckbox,'Value');
+
+if handles.wf_session == 1
+    addpath([fileparts(cd) '\WF_imaging\'])
+    wf_gui = WF_GUI;
+elseif exist('wf_gui') && handles.wf_session==0
+    wf_gui.delete()
+    clear wf_gui
+end
 
 % Update handles structure
 handles2give=handles;
@@ -842,6 +851,20 @@ set(handles2give.PerformanceText3Tag,'String',' ');
 set(handles2give.OnlineTextTag,'String',' ');
 set(handles2give.TrialTimeLineTextTag,'String',' ');
 
+if handles2give.wf_session
+    global wf_gui
+    wf_gui.DirectoryEditField.Enable = 'Off';
+    wf_gui.TriggermodeDropDown.Enable = 'Off';
+    wf_gui.CameramodeDropDown.Enable = 'Off';
+    wf_gui.ONCheckBox.Enable = 'Off';
+    wf_gui.ONCheckBox_2.Enable = 'Off';
+    wf_gui.Switch.Enable = 'Off';
+    wf_gui.Switch_2.Enable = 'Off';
+    
+    wf_gui.update_WF_info
+
+end
+
 % Get handles for control and save handles as session configuration
 handles2give= handles; 
 save_session_config(handles);
@@ -858,7 +881,18 @@ function StopBehaviourTag_Callback(hObject, eventdata, handles)
 % hObject    handle to StopBehaviourTag (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
 stop_sessions
+global handles2give wf_gui
+if handles2give.wf_session
+    wf_gui.DirectoryEditField.Enable = 'On';
+    wf_gui.TriggermodeDropDown.Enable = 'On';
+    wf_gui.CameramodeDropDown.Enable = 'On';
+    wf_gui.ONCheckBox.Enable = 'On';
+    wf_gui.ONCheckBox_2.Enable = 'On';
+    wf_gui.Switch.Enable = 'On';
+    wf_gui.Switch_2.Enable = 'On';
+end
 
 
 function StimProbTag_Callback(hObject, eventdata, handles)

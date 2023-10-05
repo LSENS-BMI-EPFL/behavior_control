@@ -16,8 +16,8 @@ function update_parameters
         is_reward reward_pool partial_reward_flag reward_proba_old...
         light_duration light_freq light_amp camera_freq SITrigger_vec main_trial_pool...
         whisker_trial_counter mouse_rewarded_context context_block context_flag block_id wh_rewarded_context...
-        pink_noise_player brown_noise_player identical_block_count extra_time Context_S
-        
+        pink_noise_player brown_noise_player identical_block_count extra_time Context_S...
+        WF_S wf_cam_vec LED1_vec LED2_vec
        
 
     outputSingleScan(Trigger_S,[0 0 0])
@@ -236,7 +236,7 @@ function update_parameters
                 else
                     identical_block_count = 1;
                 end
-                if identical_block_count ==3  % We don't want more than 2 consecutive context A or B block
+                if identical_block_count > 1  % We don't want more than 2 consecutive context A or B block
                      new_block_id = block_id;
                      while new_block_id == block_id
                          new_block_id = randi([1, size(contexts, 2)], 1);
@@ -455,7 +455,13 @@ function update_parameters
     camera_vec = [ones(1, Stim_S_SR*(camera_duty_cycle/camera_freq)) zeros(1,Stim_S_SR*((1-camera_duty_cycle)/camera_freq))];
     camera_vec = repmat(camera_vec, 1, trial_duration*camera_freq/1000);
 
-
+    %% For WF imaging - Load vectors in single trial imaging
+    if handles2give.wf_session % For trial based WF imaging
+        global WF_FileInfo
+        if ~WF_FileInfo.RecordingContinuous
+            wf_imaging
+        end
+    end
     %% Plotting the whisker/auditory stim and camera vector signals
     
     % Set plotting params
