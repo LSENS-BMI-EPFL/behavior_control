@@ -301,8 +301,14 @@ function update_parameters
 
     %% Reward Settings
     reward_valve_duration=handles2give.reward_valve_duration;    % duration valve open in milliseconds
-    reward_delay_time=handles2give.reward_delay_time;         % delay in milisecond for delivering reward after stim (if Association=1)
 
+    if handles2give.reward_delay_flag
+        reward_delay_time=handles2give.reward_delay_time;         % delay in milisecond for delivering reward after stim (if Association=1)
+    else
+        reward_delay_time = 0;
+    end
+
+    
     aud_reward = handles2give.aud_reward; % is auditory rewarded
     if context_flag
         if wh_rewarded_context
