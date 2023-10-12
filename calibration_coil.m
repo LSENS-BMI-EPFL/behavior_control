@@ -147,37 +147,41 @@ trial_peaks_val = zeros(0,ntrials);
 trial_peaks_loc = zeros(0,ntrials);
 
 for itrial=1:ntrials
-    [pks,locs] = findpeaks(flux_data(itrial,:),'Npeaks',1,'MinPeakProminence',0.1);
+    [pks,locs] = findpeaks(flux_data(itrial,:),'Npeaks',1,'MinPeakProminence',min_prominence);
     trial_peaks_val(itrial) = pks;
     trial_peaks_loc(itrial) = locs;
 end
-
 stim_amp_millitesla = mean(trial_peaks_val) * 100;  % teslameter scale 
 
 % Plot stimulus vector and magnetic flux %TODO: save figure
 time = linspace(0,trial_dur,numel(stim));
 
 figure;
-
-plot(time);
-
-
-figure;
 ax1 = subplot(2,1,1);
 plot(time, stim)
+
 ax2 = subplot(2,1,2);
-plot(time,flux_data')
+plot(time, 100 *flux_data') % converting to mT
+ylabel(ax2, 'Magnetic flux [mT]');
+
 linkaxes([ax1,ax2],'x');
 
-%% Save figure and calibration data in file
-%figure_file = [mouse_name '_' int2str(yyyymmdd(date)) '_stim_coil_calibration'];
-%figure_file = fullfile([char(dest_path) '\' char(mouse_name)], figure_file);
-%saveas(gcf, figure_file, 'png')
-%
-%data_file = [mouse_name '_' int2str(yyyymmdd(date)) '_stim_coil_calibration.m'];
-%data_file = fullfile([char(dest_path) '\' char(mouse_name)], data_file);
-%save(data_file,'mouse_name','stim_name', 'ntrials','flux_data','stim','stim_amp_volt','stim_amp_millitesla', 'stim_duration_up','stim_duration_down','scale_factor','sr')
-%disp(['Calibration data saved in: ' data_file])
+findpeaks(flux_data(1,:),time,'Npeaks',1,'MinPeakProminence',min_prominence,'Annotate','extents')
+xlim([1995 2015])
+xlabel('Time [ms]')
+ylabel(ax1, 'Impulse [V]');
+ylabel(ax2, 'Magnetic flux [mT]');
+
+
+% Save figure and calibration data in file
+figure_file = [mouse_name '_' int2str(yyyymmdd(date)) '_stim_coil_calibration'];
+figure_file = fullfile([char(dest_path) '\' char(mouse_name)], figure_file);
+saveas(gcf, figure_file, 'png')
+
+data_file = [mouse_name '_' int2str(yyyymmdd(date)) '_stim_coil_calibration.m'];
+data_file = fullfile([char(dest_path) '\' char(mouse_name)], data_file);
+save(data_file,'mouse_name','stim_name', 'ntrials','flux_data','stim','stim_amp_volt','stim_amp_millitesla', 'stim_duration_up','stim_duration_down','scale_factor','session_sampling_rate')
+disp(['Calibration data saved in: ' data_file])
 
 
 
