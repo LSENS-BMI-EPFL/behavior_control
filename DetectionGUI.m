@@ -57,6 +57,7 @@ global handles2give
 handles.output = hObject;
 
 % Add subfolders to MATLAB path
+addpath('utils\');
 addpath('utils_context\');
 addpath('utils_plots\');
 addpath('utils_savings\');
@@ -2500,6 +2501,7 @@ function StimAmpRangeCheckbox_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of StimAmpRangeCheckbox
+global handles2give
 
 handles.wh_stim_amp_range = get(handles.StimAmpRangeCheckbox,'Value');
 if handles.wh_stim_amp_range
@@ -2512,8 +2514,18 @@ if handles.wh_stim_amp_range
 else
     set(handles.StimAmp2Tag,'Enable','off');
     set(handles.StimWeight2Tag,'Enable','off');
+    set(handles.StimWeight2Tag,'String','0'); handles.wh_stim_weight_2 = str2double(get(handles.StimWeight2Tag,'String'));
     set(handles.StimAmp3Tag,'Enable','off');
     set(handles.StimWeight3Tag,'Enable','off');
+    set(handles.StimWeight3Tag,'String','0'); handles.wh_stim_weight_3 = str2double(get(handles.StimWeight3Tag,'String'));
     set(handles.StimAmp4Tag,'Enable','off');
     set(handles.StimWeight4Tag,'Enable','off');
+    set(handles.StimWeight4Tag,'String','0'); handles.wh_stim_weight_4 = str2double(get(handles.StimWeight4Tag,'String'));
+
 end
+
+% Update handles structure
+handles2give= handles;
+guidata(hObject, handles);
+
+

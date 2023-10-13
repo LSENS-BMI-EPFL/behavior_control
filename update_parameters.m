@@ -94,17 +94,18 @@ function update_parameters
     aud_stim_duration = handles2give.aud_stim_duration;
     aud_stim_freq = handles2give.aud_stim_freq;
     
-    wh_stim_amp = handles2give.wh_stim_amp;
+    wh_stim_amp = handles2give.wh_stim_amp_1;
     wh_stim_duration = handles2give.wh_stim_duration;
     wh_scaling_factor = handles2give.wh_scaling_factor;
 
     aud_stim_weight = handles2give.aud_stim_weight;
-    wh_stim_weight = handles2give.wh_stim_weight; 
+    wh_stim_weight = get_whisker_weight(handles2give);
     no_stim_weight = handles2give.no_stim_weight;
     
 
     %% Compute stimulus probability
     stim_proba = (aud_stim_weight + wh_stim_weight)/(aud_stim_weight + wh_stim_weight + no_stim_weight);
+    %stim_proba = compute_stim_proba(handles2give);
     if isempty(stim_proba_old)
         stim_proba_old = stim_proba;
     end
