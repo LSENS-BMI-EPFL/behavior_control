@@ -170,8 +170,7 @@ function update_parameters
     stim_light_list=[900,901,902,903,904,905]; % code for each stimuli
     
 
-    % CREATE NEW TRIAL POOL WHEN CURRENT POOL FINISHED, OR, WHEN CHANGE IN
-    % PARAMETERS
+    % Create new trial pool when current pool finished, or, when change in parameters
     if mod(n_completed_trials, main_pool_size)==0 || main_pool_size_old ~= main_pool_size|| stim_proba_old ~= stim_proba || aud_stim_proba_old ~= aud_stim_proba|| wh_stim_proba_old ~= wh_stim_proba || light_proba_old ~= light_proba || aud_light_proba_old ~= light_aud_proba ||  wh_light_proba_old ~= light_wh_proba
             
             % Save old probabilities and pool size
@@ -408,7 +407,8 @@ function update_parameters
             impulse_down = -tukeywin(wh_stim_duration_down,1);
             impulse_down = impulse_down(2:end);
             impulse = [impulse_up' wh_scaling_factor*impulse_down'];
-
+            
+            wh_stim_amp = get_whisker_stim_amp(handles2give); 
             wh_vec = wh_stim_amp * [zeros(1,baseline_window*Stim_S_SR/1000) impulse];
             wh_vec = [wh_vec zeros(1,trial_duration*Stim_S_SR/1000 - numel(wh_vec))];
 

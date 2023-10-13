@@ -806,8 +806,8 @@ function StimWeight1Tag_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of StimWeight1Tag as a double
 global handles2give
 
-handles.wh_stim_weight = round(str2double(get(handles.StimWeight1Tag,'String')));
-set(handles.StimWeight1Tag,'String',num2str(handles.wh_stim_weight));
+handles.wh_stim_weight_1 = round(str2double(get(handles.StimWeight1Tag,'String')));
+set(handles.StimWeight1Tag,'String',num2str(handles.wh_stim_weight_1));
 
 % Update handles structure
 handles2give=handles;
