@@ -82,8 +82,8 @@ set(handles.SetDateTag,'String',Date2Display);
 set(handles.SetDateTag,'Enable','off');
 
 % [TO CUSTOMIZE BY EACH USER]
-set(handles.MouseNameTag,'String','ARXXX'); handles.mouse_name = get(handles.MouseNameTag,'String');
-handles.behaviour_directory = 'E:\behavior';
+set(handles.MouseNameTag,'String','ABXXX'); handles.mouse_name = get(handles.MouseNameTag,'String');
+handles.behaviour_directory = 'C:\Users\bisi\Desktop\BehaviourData';
 set(handles.BehaviorDirectoryTag,'String', handles.behaviour_directory);
 
 %% Set general session settings
@@ -109,8 +109,8 @@ set(handles.MinQuietWindowTag,'String','2000'); handles.min_quiet_window = str2d
 set(handles.MaxQuietWindowTag,'String','5000'); handles.max_quiet_window = str2double(get(handles.MaxQuietWindowTag,'String'));
 set(handles.ResponseWindowTag,'String','1000'); handles.response_window = str2double(get(handles.ResponseWindowTag,'String'));
 set(handles.ArtifactWindowTag,'String','100'); handles.artifact_window = str2double(get(handles.ArtifactWindowTag,'String'));
-set(handles.MinISITag,'String','7000'); handles.min_iti = str2double(get(handles.MinISITag,'String'));
-set(handles.MaxISITag,'String','12000'); handles.max_iti = str2double(get(handles.MaxISITag,'String'));
+set(handles.MinISITag,'String','6000'); handles.min_iti = str2double(get(handles.MinISITag,'String'));
+set(handles.MaxISITag,'String','10000'); handles.max_iti = str2double(get(handles.MaxISITag,'String'));
 set(handles.BaselineWindowTag,'String','0'); handles.baseline_window = str2double(get(handles.BaselineWindowTag,'String'));
 set(handles.TrialDurationTag,'String','5000'); handles.trial_duration = str2double(get(handles.TrialDurationTag,'String'));
 
@@ -195,7 +195,7 @@ set(handles.AudRewTag,'Value',1); handles.aud_reward = get(handles.AudRewTag,'Va
 set(handles.AudRewTag,'Enable','off');
 set(handles.WhRewTag,'Value',1); handles.wh_reward = get(handles.WhRewTag,'Value');
 set(handles.WhRewTag,'Enable','on');
-set(handles.LickThresholdTag,'String','0.2'); handles.lick_threshold = str2double(get(handles.LickThresholdTag,'String'));
+set(handles.LickThresholdTag,'String','0.05'); handles.lick_threshold = str2double(get(handles.LickThresholdTag,'String'));
 
 %% Behaviour camera settings
 set(handles.CameraFrameRateTag,'String','200'); handles.camera_freq = str2double(get(handles.CameraFrameRateTag,'String'));
