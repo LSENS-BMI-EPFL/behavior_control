@@ -775,8 +775,8 @@ function StimAmp1Tag_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of StimAmp1Tag as a double
 global handles2give
 
-handles.wh_stim_amp = round(str2double(get(handles.StimAmp1Tag,'String'))*100)/100;
-set(handles.StimAmp1Tag,'String',num2str(handles.wh_stim_amp));
+handles.wh_stim_amp_1 = round(str2double(get(handles.StimAmp1Tag,'String'))*100)/100;
+set(handles.StimAmp1Tag,'String',num2str(handles.wh_stim_amp_1));
 
 % Update handles structure
 handles2give=handles;
