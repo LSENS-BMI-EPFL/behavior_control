@@ -22,7 +22,7 @@ function varargout = DetectionGUI(varargin)
 
 % Edit the above text to modify the response to help DetectionGUI
 
-% Last Modified by GUIDE v2.5 09-Aug-2023 15:46:57
+% Last Modified by GUIDE v2.5 13-Oct-2023 14:15:06
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -56,11 +56,12 @@ global handles2give
 % Choose default command line output for DetectionGUI
 handles.output = hObject;
 
-% Add subfolders to MATLAB path
-addpath('utils_context\');
-addpath('utils_plots\');
-addpath('utils_savings\');
-addpath('utils_opto\');
+% % Add subfolders to MATLAB path
+% addpath('utils\');
+% addpath('utils_context\');
+% addpath('utils_plots\');
+% addpath('utils_savings\');
+% addpath('utils_opto\');
 
 
 %% Set default session type
@@ -141,9 +142,7 @@ set(handles.FalseAlarmTimeOutTag,'Enable','off');
 set(handles.EarlyLickTimeOutTag,'String','0000'); handles.early_lick_timeout = str2double(get(handles.EarlyLickTimeOutTag,'String'));
 set(handles.EarlyLickTimeOutTag,'Enable','off');
 
-%% Set stimuli parameters
-
-% Auditory stim
+%% Auditory stimulus parameters
 set(handles.ToneDurationTag,'String','10'); handles.aud_stim_duration = str2double(get(handles.ToneDurationTag,'String'));
 set(handles.ToneDurationTag,'Enable','on');
 set(handles.ToneAmpTag,'String','10'); handles.aud_stim_amp = str2double(get(handles.ToneAmpTag,'String'));
@@ -151,26 +150,45 @@ set(handles.ToneAmpTag,'Enable','on');
 set(handles.ToneFreqTag,'String','10000'); handles.aud_stim_freq= str2double(get(handles.ToneFreqTag,'String'));
 set(handles.ToneFreqTag,'Enable','on');
 
-set(handles.BckgNoiseFolderPath,'String','Enter path'); handles.bckg_noise_directory = get(handles.BckgNoiseFolderPath,'String');
-set(handles.BckgNoiseFolderPath,'Enable','off');
-
 set(handles.AStimWeightTag,'Enable','on')
 set(handles.AStimWeightTag,'String','10'); handles.aud_stim_weight = str2double(get(handles.AStimWeightTag,'String'));
 
-% Whisker stimuli 
+set(handles.BckgNoiseFolderPath,'String','Enter path'); handles.bckg_noise_directory = get(handles.BckgNoiseFolderPath,'String');
+set(handles.BckgNoiseFolderPath,'Enable','off');
+
+%%  Whisker stimulus parameters
+%   Default whisker stimulus parameters (if one stimulus type)
 set(handles.StimDuration1Tag,'String','3'); handles.wh_stim_duration = str2double(get(handles.StimDuration1Tag,'String'));
 set(handles.StimDuration1Tag,'Enable','on');
-set(handles.StimAmp1Tag,'String','4.5'); handles.wh_stim_amp = str2double(get(handles.StimAmp1Tag,'String'));
 set(handles.scaling_factor,'String','0.9'); handles.wh_scaling_factor = str2double(get(handles.scaling_factor,'String'));
 set(handles.scaling_factor,'Enable','on');
-set(handles.StimWeight1Tag,'String','0'); handles.wh_stim_weight = str2double(get(handles.StimWeight1Tag,'String'));
+set(handles.StimAmp1Tag,'String','2.8'); handles.wh_stim_amp_1 = str2double(get(handles.StimAmp1Tag,'String'));
+set(handles.StimWeight1Tag,'String','0'); handles.wh_stim_weight_1 = str2double(get(handles.StimWeight1Tag,'String'));
 set(handles.StimAmp1Tag,'Enable','on');
 
-% Blank stimulus probability
+%  For additional whisker stimulis of different amplitudes
+set(handles.StimAmpRangeCheckbox,'Value',0); handles.wh_stim_amp_range = get(handles.StimAmpRangeCheckbox,'Value');
+
+set(handles.StimAmp2Tag,'String','0'); handles.wh_stim_amp_2 = str2double(get(handles.StimAmp2Tag,'String'));
+set(handles.StimWeight2Tag,'String','0'); handles.wh_stim_weight_2 = str2double(get(handles.StimWeight2Tag,'String'));
+set(handles.StimAmp2Tag,'Enable','off');
+set(handles.StimWeight2Tag,'Enable','off');
+
+set(handles.StimAmp3Tag,'String','0'); handles.wh_stim_amp_3 = str2double(get(handles.StimAmp3Tag,'String'));
+set(handles.StimWeight3Tag,'String','0'); handles.wh_stim_weight_3 = str2double(get(handles.StimWeight3Tag,'String'));
+set(handles.StimAmp3Tag,'Enable','off');
+set(handles.StimWeight3Tag,'Enable','off');
+
+set(handles.StimAmp4Tag,'String','0'); handles.wh_stim_amp_4 = str2double(get(handles.StimAmp4Tag,'String'));
+set(handles.StimWeight4Tag,'String','0'); handles.wh_stim_weight_4 = str2double(get(handles.StimWeight4Tag,'String'));
+set(handles.StimAmp4Tag,'Enable','off');
+set(handles.StimWeight4Tag,'Enable','off');
+
+%% No stimulus probability
 set(handles.NostimWeightTag,'String','10'); handles.no_stim_weight = str2double(get(handles.NostimWeightTag,'String'));
 set(handles.NostimWeightTag,'Enable','on');
 
-% Context task information
+%% Context task information
 set(handles.BlockSizeTag,'String','1'); handles.context_block_size = str2double(get(handles.BlockSizeTag,'String'));
 set(handles.BlockSizeTag,'Enable','off');
 set(handles.ContextTablePath,'String','Enter path'); handles.context_table_directory = get(handles.ContextTablePath,'String');
@@ -762,8 +780,8 @@ function StimAmp1Tag_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of StimAmp1Tag as a double
 global handles2give
 
-handles.wh_stim_amp = round(str2double(get(handles.StimAmp1Tag,'String'))*100)/100;
-set(handles.StimAmp1Tag,'String',num2str(handles.wh_stim_amp));
+handles.wh_stim_amp_1 = round(str2double(get(handles.StimAmp1Tag,'String'))*100)/100;
+set(handles.StimAmp1Tag,'String',num2str(handles.wh_stim_amp_1));
 
 % Update handles structure
 handles2give=handles;
@@ -793,8 +811,8 @@ function StimWeight1Tag_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of StimWeight1Tag as a double
 global handles2give
 
-handles.wh_stim_weight = round(str2double(get(handles.StimWeight1Tag,'String')));
-set(handles.StimWeight1Tag,'String',num2str(handles.wh_stim_weight));
+handles.wh_stim_weight_1 = round(str2double(get(handles.StimWeight1Tag,'String')));
+set(handles.StimWeight1Tag,'String',num2str(handles.wh_stim_weight_1));
 
 % Update handles structure
 handles2give=handles;
@@ -813,6 +831,185 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
+function StimAmp2Tag_Callback(hObject, eventdata, handles)
+% hObject    handle to StimAmp2Tag (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of StimAmp2Tag as text
+%        str2double(get(hObject,'String')) returns contents of StimAmp2Tag as a double
+global handles2give
+
+handles.wh_stim_amp_2 = round(str2double(get(handles.StimAmp2Tag,'String'))*100)/100;
+set(handles.StimAmp2Tag,'String',num2str(handles.wh_stim_amp_2));
+
+% Update handles structure
+handles2give=handles;
+guidata(hObject, handles);
+
+
+% --- Executes during object creation, after setting all properties.
+function StimAmp2Tag_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to StimAmp2Tag (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function StimWeight2Tag_Callback(hObject, eventdata, handles)
+% hObject    handle to StimWeight2Tag (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of StimWeight2Tag as text
+%        str2double(get(hObject,'String')) returns contents of StimWeight2Tag as a double
+global handles2give
+
+handles.wh_stim_weight_2 = round(str2double(get(handles.StimWeight2Tag,'String')));
+set(handles.StimWeight2Tag,'String',num2str(handles.wh_stim_weight_2));
+
+% Update handles structure
+handles2give=handles;
+guidata(hObject, handles);
+
+
+% --- Executes during object creation, after setting all properties.
+function StimWeight2Tag_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to StimWeight2Tag (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+function StimAmp3Tag_Callback(hObject, eventdata, handles)
+% hObject    handle to StimAmp3Tag (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of StimAmp3Tag as text
+%        str2double(get(hObject,'String')) returns contents of StimAmp3Tag as a double
+global handles2give
+
+handles.wh_stim_amp_3 = round(str2double(get(handles.StimAmp3Tag,'String'))*100)/100;
+set(handles.StimAmp3Tag,'String',num2str(handles.wh_stim_amp_3));
+
+% Update handles structure
+handles2give=handles;
+guidata(hObject, handles);
+
+
+% --- Executes during object creation, after setting all properties.
+function StimAmp3Tag_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to StimAmp3Tag (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function StimWeight3Tag_Callback(hObject, eventdata, handles)
+% hObject    handle to StimWeight3Tag (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of StimWeight3Tag as text
+%        str2double(get(hObject,'String')) returns contents of StimWeight3Tag as a double
+global handles2give
+
+handles.wh_stim_weight_3 = round(str2double(get(handles.StimWeight3Tag,'String')));
+set(handles.StimWeight3Tag,'String',num2str(handles.wh_stim_weight_3));
+
+% Update handles structure
+handles2give=handles;
+guidata(hObject, handles);
+
+
+% --- Executes during object creation, after setting all properties.
+function StimWeight3Tag_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to StimWeight3Tag (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+function StimAmp4Tag_Callback(hObject, eventdata, handles)
+% hObject    handle to StimAmp4Tag (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of StimAmp4Tag as text
+%        str2double(get(hObject,'String')) returns contents of StimAmp4Tag as a double
+global handles2give
+
+handles.wh_stim_amp_4 = round(str2double(get(handles.StimAmp4Tag,'String'))*100)/100;
+set(handles.StimAmp4Tag,'String',num2str(handles.wh_stim_amp_4));
+
+% Update handles structure
+handles2give=handles;
+guidata(hObject, handles);
+
+
+% --- Executes during object creation, after setting all properties.
+function StimAmp4Tag_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to StimAmp4Tag (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function StimWeight4Tag_Callback(hObject, eventdata, handles)
+% hObject    handle to StimWeight4Tag (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of StimWeight4Tag as text
+%        str2double(get(hObject,'String')) returns contents of StimWeight4Tag as a double
+global handles2give
+
+handles.wh_stim_weight_4 = round(str2double(get(handles.StimWeight4Tag,'String')));
+set(handles.StimWeight4Tag,'String',num2str(handles.wh_stim_weight_4));
+
+% Update handles structure
+handles2give=handles;
+guidata(hObject, handles);
+
+
+% --- Executes during object creation, after setting all properties.
+function StimWeight4Tag_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to StimWeight4Tag (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
 
 
 % --- Executes on button press in StartBehaviourTag.
@@ -1884,6 +2081,148 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
+% function LightProbAudTag_Callback(hObject, eventdata, handles)
+% % hObject    handle to LightProbAudTag (see GCBO)
+% % eventdata  reserved - to be defined in a future version of MATLAB
+% % handles    structure with handles and user data (see GUIDATA)
+% 
+% % Hints: get(hObject,'String') returns contents of LightProbAudTag as text
+% %        str2double(get(hObject,'String')) returns contents of LightProbAudTag as a double
+% global handles2give
+% 
+% handles.light_aud_proba = round(str2double(get(handles.LightProbAudTag,'String'))*100)/100;
+% if handles.light_aud_proba > 1
+%     handles.light_aud_proba = 1;
+% elseif handles.light_aud_proba < 0
+%     handles.light_aud_proba = 0;
+% end
+% set(handles.LightProbAudTag,'String',handles.light_aud_proba);
+% 
+% % Update handles structure
+% handles2give= handles;
+% guidata(hObject, handles);
+
+
+% % --- Executes during object creation, after setting all properties.
+% function LightProbAudTag_CreateFcn(hObject, eventdata, handles)
+% % hObject    handle to LightProbAudTag (see GCBO)
+% % eventdata  reserved - to be defined in a future version of MATLAB
+% % handles    empty - handles not created until after all CreateFcns called
+% 
+% % Hint: edit controls usually have a white background on Windows.
+% %       See ISPC and COMPUTER.
+% if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+%     set(hObject,'BackgroundColor','white');
+% end
+
+
+% --- Executes on button press in LightCheckbox.
+function LightCheckbox_Callback(hObject, eventdata, handles)
+% hObject    handle to LightCheckbox (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of LightCheckbox
+
+global handles2give
+
+handles.light_flag = get(handles.LightCheckbox,'Value');
+if handles.light_flag
+    set(handles.LightDurationTag,'Enable','on');
+    set(handles.LightPrestimDelayTag,'Enable','on');
+    set(handles.LightAmpTag,'Enable','on');
+    set(handles.LightFreqTag,'Enable','on');
+    set(handles.LightDutyTag,'Enable','on');
+    set(handles.LightStimWeightTag,'Enable','on');
+
+else
+    set(handles.LightDurationTag,'Enable','off');
+    set(handles.LightPrestimDelayTag,'Enable','off');
+    set(handles.LightAmpTag,'Enable','off');
+    set(handles.LightFreqTag,'Enable','off');
+    set(handles.LightDutyTag,'Enable','off');
+    set(handles.LightStimWeightTag,'Enable','off');
+
+end
+
+% Update handles structure
+handles2give=handles;
+guidata(hObject, handles);
+
+
+
+% function LightProbWhTag_Callback(hObject, eventdata, handles)
+% % hObject    handle to LightProbWhTag (see GCBO)
+% % eventdata  reserved - to be defined in a future version of MATLAB
+% % handles    structure with handles and user data (see GUIDATA)
+% 
+% % Hints: get(hObject,'String') returns contents of LightProbWhTag as text
+% %        str2double(get(hObject,'String')) returns contents of LightProbWhTag as a double
+% 
+% global handles2give
+% 
+% handles.light_wh_proba = round(str2double(get(handles.LightProbWhTag,'String'))*100)/100;
+% if handles.light_wh_proba > 1
+%     handles.light_wh_proba = 1;
+% elseif handles.light_wh_proba < 0
+%     handles.light_wh_proba = 0;
+% end
+% set(handles.LightProbWhTag,'String',handles.light_wh_proba);
+% 
+% % Update handles structure
+% handles2give= handles;
+% guidata(hObject, handles);
+
+% 
+% % --- Executes during object creation, after setting all properties.
+% function LightProbWhTag_CreateFcn(hObject, eventdata, handles)
+% % hObject    handle to LightProbWhTag (see GCBO)
+% % eventdata  reserved - to be defined in a future version of MATLAB
+% % handles    empty - handles not created until after all CreateFcns called
+% 
+% % Hint: edit controls usually have a white background on Windows.
+% %       See ISPC and COMPUTER.
+% if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+%     set(hObject,'BackgroundColor','white');
+% end
+
+
+
+% function LightProbNoStimTag_Callback(hObject, eventdata, handles)
+% % hObject    handle to LightProbNoStimTag (see GCBO)
+% % eventdata  reserved - to be defined in a future version of MATLAB
+% % handles    structure with handles and user data (see GUIDATA)
+% 
+% % Hints: get(hObject,'String') returns contents of LightProbNoStimTag as text
+% %        str2double(get(hObject,'String')) returns contents of LightProbNoStimTag as a double
+% global handles2give
+% 
+% handles.light_proba = round(str2double(get(handles.LightProbNoStimTag,'String'))*100)/100;
+% if handles.light_proba > 1
+%     handles.light_proba = 1;
+% elseif handles.light_proba < 0
+%     handles.light_proba = 0;
+% end
+% set(handles.LightProbNoStimTag,'String',handles.light_proba);
+% 
+% % Update handles structure
+% handles2give= handles;
+% guidata(hObject, handles);
+
+
+% % --- Executes during object creation, after setting all properties.
+% function LightProbNoStimTag_CreateFcn(hObject, eventdata, handles)
+% % hObject    handle to LightProbNoStimTag (see GCBO)
+% % eventdata  reserved - to be defined in a future version of MATLAB
+% % handles    empty - handles not created until after all CreateFcns called
+% 
+% % Hint: edit controls usually have a white background on Windows.
+% %       See ISPC and COMPUTER.
+% if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+%     set(hObject,'BackgroundColor','white');
+% end
+
+
 function MouseWeightBeforeTag_Callback(hObject, eventdata, handles)
 % hObject    handle to MouseWeightBeforeTag (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -2168,34 +2507,39 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-% --- Executes on button press in LightCheckbox.
-function LightCheckbox_Callback(hObject, eventdata, handles)
-% hObject    handle to LightCheckbox (see GCBO)
+% --- Executes on button press in StimAmpRangeCheckbox.
+function StimAmpRangeCheckbox_Callback(hObject, eventdata, handles)
+% hObject    handle to StimAmpRangeCheckbox (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of StimAmpRangeCheckbox
 global handles2give
 
-handles.light_flag = get(handles.LightCheckbox,'Value');
-if handles.light_flag
-    set(handles.LightDurationTag,'Enable','on');
-    set(handles.LightPrestimDelayTag,'Enable','on');
-    set(handles.LightAmpTag,'Enable','on');
-    set(handles.LightFreqTag,'Enable','on');
-    set(handles.LightDutyTag,'Enable','on');
-    set(handles.LightStimWeightTag,'Enable','on');
+handles.wh_stim_amp_range = get(handles.StimAmpRangeCheckbox,'Value');
+if handles.wh_stim_amp_range
+    set(handles.StimAmp2Tag,'Enable','on');
+    set(handles.StimWeight2Tag,'Enable','on');
+    set(handles.StimAmp3Tag,'Enable','on');
+    set(handles.StimWeight3Tag,'Enable','on');
+    set(handles.StimAmp4Tag,'Enable','on');
+    set(handles.StimWeight4Tag,'Enable','on');
 else
-    set(handles.LightDurationTag,'Enable','off');
-    set(handles.LightPrestimDelayTag,'Enable','off');
-    set(handles.LightAmpTag,'Enable','off');
-    set(handles.LightFreqTag,'Enable','off');
-    set(handles.LightDutyTag,'Enable','off');
-    set(handles.LightStimWeightTag,'Enable','off');
+    set(handles.StimAmp2Tag,'Enable','off');
+    set(handles.StimWeight2Tag,'Enable','off');
+    set(handles.StimWeight2Tag,'String','0'); handles.wh_stim_weight_2 = str2double(get(handles.StimWeight2Tag,'String'));
+    set(handles.StimAmp3Tag,'Enable','off');
+    set(handles.StimWeight3Tag,'Enable','off');
+    set(handles.StimWeight3Tag,'String','0'); handles.wh_stim_weight_3 = str2double(get(handles.StimWeight3Tag,'String'));
+    set(handles.StimAmp4Tag,'Enable','off');
+    set(handles.StimWeight4Tag,'Enable','off');
+    set(handles.StimWeight4Tag,'String','0'); handles.wh_stim_weight_4 = str2double(get(handles.StimWeight4Tag,'String'));
 end
 
 % Update handles structure
 handles2give=handles;
 guidata(hObject, handles);
-% Hint: get(hObject,'Value') returns toggle state of LightCheckbox
+
 
 
 
@@ -2210,9 +2554,9 @@ global handles2give
 
 handles.light_stim_weight = round(str2double(get(handles.LightStimWeightTag,'String'))*100)/100;
 if handles.light_stim_weight > 1
-    handles.light_stim_weight = 1;
+   handles.light_stim_weight = 1;
 elseif handles.light_stim_weight < 0
-    handles.light_stim_weight = 0;
+   handles.light_stim_weight = 0;
 end
 set(handles.LightStimWeightTag,'String',handles.light_stim_weight);
 
@@ -2229,5 +2573,5 @@ function LightStimWeightTag_CreateFcn(hObject, eventdata, handles)
 % Hint: edit controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
+   set(hObject,'BackgroundColor','white');
 end

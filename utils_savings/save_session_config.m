@@ -28,8 +28,6 @@ for k=1:numel(field)
         handles2save = rmfield(handles2save, field_name);
     end
 
-
-    % Remove path 
     
 end
 
@@ -41,7 +39,7 @@ fid = fopen([folder_name '\session_config.json'],'w');
 fprintf(fid, '%s', session_config_json);
 fclose(fid);
 
-disp('Saved session config file');
+disp('Saved session config file.');
 
 end
 

@@ -24,15 +24,6 @@ function update_parameters
     pause(.5)
     outputSingleScan(Trigger_S,[0 0 0])
     
-    % Light parameters
-%     ramp_down_duration=100; % in miliseconds
-%     light_amp = handles2give.light_amp;
-%     light_prestim_delay = handles2give.light_prestim_delay;
-% 
-%     light_durations = [light_amp]+ramp_down_duration;
-%     light_prestim_delays =[light_prestim_delay];
-%     light_duration = handles2give.light_duration;
-%%
     trial_number = trial_number+1;
 
    %% GENERAL SETTINGS FROM BEHAVIOUR GUI
@@ -94,12 +85,12 @@ function update_parameters
     aud_stim_duration = handles2give.aud_stim_duration;
     aud_stim_freq = handles2give.aud_stim_freq;
     
-    wh_stim_amp = handles2give.wh_stim_amp;
+    wh_stim_amp = handles2give.wh_stim_amp_1; % default amplitude, overwritten at stim. definition
     wh_stim_duration = handles2give.wh_stim_duration;
     wh_scaling_factor = handles2give.wh_scaling_factor;
 
     aud_stim_weight = handles2give.aud_stim_weight;
-    wh_stim_weight = handles2give.wh_stim_weight; 
+    wh_stim_weight = get_whisker_weight(handles2give);
     no_stim_weight = handles2give.no_stim_weight;
     
     if light_flag % If light stimulus, to be implemented
@@ -114,6 +105,7 @@ function update_parameters
 
     %% Compute stimulus probability
     stim_proba = (aud_stim_weight + wh_stim_weight)/(aud_stim_weight + wh_stim_weight + no_stim_weight);
+    %stim_proba = compute_stim_proba(handles2give);
     if isempty(stim_proba_old)
         stim_proba_old = stim_proba;
     end
@@ -129,7 +121,7 @@ function update_parameters
     end
 
 
-    %% Compute opto probability
+    %% Compute opto-stimulus probability
     if handles2give.opto_session
         global Opto_info
         opto_stim_proba = Opto_info.nostim_proba; % proportion of light trials
@@ -186,8 +178,7 @@ function update_parameters
     stim_light_list=[900,901,902,903,904,905,906]; % code for stimuli: stim, aud, wh, opto_stim, opto_aud, opto_wh, opto_ctrl(tbd)
     
 
-    % CREATE NEW TRIAL POOL WHEN CURRENT POOL FINISHED, OR, WHEN CHANGE IN
-    % PARAMETERS
+    % Create new trial pool when current pool finished, or, when change in parameters
     if mod(n_completed_trials, main_pool_size)==0 || main_pool_size_old ~= main_pool_size||...
             stim_proba_old ~= stim_proba || aud_stim_proba_old ~= aud_stim_proba|| wh_stim_proba_old ~= wh_stim_proba ||... 
             opto_stim_proba_old ~= opto_stim_proba || opto_aud_proba_old ~= opto_aud_proba || opto_wh_proba_old ~= opto_wh_proba ||...
@@ -197,7 +188,7 @@ function update_parameters
             opto_aud_proba_old = opto_aud_proba;
             opto_stim_proba_old = opto_stim_proba;
             opto_wh_proba_old = opto_wh_proba;
-            opto_ctrl_proba_old = opto_ctrl_proba; % (tbd) Proba of trials stimulating in control loc vs not stimulating at all
+            opto_ctrl_proba_old = opto_ctrl_proba; % TBD: proba of trials stimulating in control location vs. no stimulation
 
             aud_stim_proba_old = aud_stim_proba;
             wh_stim_proba_old = wh_stim_proba;
@@ -205,7 +196,7 @@ function update_parameters
 
             main_pool_size_old = main_pool_size;
 
-        % Stim. probability and trial pool when light stimulus
+        % Stim. probability and trial pool when opto-stimulus
         if handles2give.opto_session
 
             no_stim_opto_proba =(1-stim_proba)*opto_stim_proba;
@@ -223,7 +214,7 @@ function update_parameters
                 stim_light_list(6)*ones(1,round(round(wh_stim_opto*main_pool_size*100)/100)),...
                 ];
 
-        % Stim. probability and trial pool when no light stimulus
+        % Stim. probability and trial pool when no opto-stimulus
         else
             main_trial_pool=[stim_light_list(1)*ones(1,round(round(((1-stim_proba)*main_pool_size)*100)/100)) ,...
                 stim_light_list(2)*ones(1,round(round(aud_stim_proba*main_pool_size*100)/100)),...
@@ -435,13 +426,15 @@ function update_parameters
             impulse_down = -tukeywin(wh_stim_duration_down,1);
             impulse_down = impulse_down(2:end);
             impulse = [impulse_up' wh_scaling_factor*impulse_down'];
-
+            
+            wh_stim_amp = get_whisker_stim_amp(handles2give); 
             wh_vec = wh_stim_amp * [zeros(1,baseline_window*Stim_S_SR/1000) impulse];
             wh_vec = [wh_vec zeros(1,trial_duration*Stim_S_SR/1000 - numel(wh_vec))];
 
         end
     end
 
+    % If optogenetics, get opto-stimulus
     if handles2give.opto_session
         global opto_gui Opto_S variables_to_save_opto voltage_x voltage_y bregma_x bregma_y opto_count
         if is_opto
@@ -466,12 +459,13 @@ function update_parameters
             scatter(opto_gui.UIAxes, -5, 5, 'filled', 'MarkerEdgeColor','#DC143C', 'MarkerFaceColor', '#DC143C');
             text(opto_gui.UIAxes, 1, 6.5, {['No opto trial: ' num2str(count) '/' num2str(trial_number)]})
         end
-
+        
+        % Get optogenetic data to save
         variables_to_save_opto = {trial_number is_stim is_auditory is_whisker context_block opto_gui.baseline*1000 power opto_gui.frequency...
             opto_gui.duration opto_gui.pulse_width grid_no count AP ML ...
             voltage_x voltage_y bregma_x bregma_y};
     end
-    %% Light define vector
+    %% Light define vector - To update
     if is_light
 
 %         disp(['Light' num2str(is_light)])
@@ -506,18 +500,19 @@ function update_parameters
         light_vec=zeros(1,(trial_duration)*(Stim_S_SR/1000));
     end
 
-    %% Making pulse train to Trigger_S Camera
+    %% For Video Filming - Make pulse train for Trigger_S Camera
 
     camera_vec = [ones(1, Stim_S_SR*(camera_duty_cycle/camera_freq)) zeros(1,Stim_S_SR*((1-camera_duty_cycle)/camera_freq))];
     camera_vec = repmat(camera_vec, 1, trial_duration*camera_freq/1000);
 
     %% For WF imaging - Load vectors in single trial imaging
-    if handles2give.wf_session % For trial based WF imaging
+    if handles2give.wf_session 
         global WF_FileInfo
         if ~WF_FileInfo.RecordingContinuous
             wf_imaging
         end
     end
+    
     %% Plotting the whisker/auditory stim and camera vector signals
     
     % Set plotting params
@@ -577,8 +572,13 @@ function update_parameters
         ['Amp=' num2str(aud_stim_amp) ', ' 'Duration=' num2str(aud_stim_duration) ', ' 'Frequency=' num2str(aud_stim_freq)]};
 
     reward_titles={'Not rewarded', 'Rewarded'};
-    opto_titles={'Opto OFF', 'Opto ON'};
     association_titles={'', ' Association'};
+    if is_opto
+            opto_titles={'Opto OFF', 'Opto ON'};
+    else
+            opto_titles={'', ''};
+    end
+
 
     if is_stim
 
