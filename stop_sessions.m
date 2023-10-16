@@ -3,7 +3,7 @@ function stop_sessions
 
 global  Reward_S Stim_S Main_S Trigger_S Log_S...
     lh1 lh2 handles2give Stim_S_SR Reward_S_SR folder_name Camera_S...
-    pink_noise_player brown_noise_player context_flag WF_S
+    pink_noise_player brown_noise_player context_flag WF_S Opto_S
 
 outputSingleScan(Trigger_S,[0 0 1]);
 pause(.5)                       %---> why?
@@ -68,8 +68,13 @@ end
 Reward_S.stop();
 Reward_S.release();
 
-
 outputSingleScan(Trigger_S,[0 0 0]);
+
+if handles2give.opto_session
+    Opto_S.stop();
+    Opto_S.release();
+%     Opto_S.delete()
+end
 
 Trigger_S.stop();
 while Trigger_S.IsRunning

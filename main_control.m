@@ -17,7 +17,7 @@ function main_control(~,event)
         is_reward...
         light_prestim_delay light_duration light_freq light_amp SITrigger_vec...
         context_flag extra_time...
-        pink_noise_player brown_noise_player context_block WF_S
+        pink_noise_player brown_noise_player context_block WF_S Opto_S
         
 
     %% Timing last lick detection for quiet window.
@@ -221,6 +221,17 @@ function main_control(~,event)
         % Update csv result file
         update_and_save_results_csv(variables_to_save, variable_saving_names);
 
+        if handles2give.opto_session
+            global variables_to_save_opto
+
+            variables_names_opto = {'trial_number', 'is_stim', 'is_auditory', 'is_whisker', 'context_block', ...
+                'baseline', 'opto_amp', 'opto_freq', 'opto_duration', 'opto_pulse_width', ...
+                'grid_no', 'grid_count', 'coord_AP', 'coord_ML', 'volt_x', 'volt_y', 'bregma_x', 'bregma_y'};
+
+            update_and_save_opto_csv(variables_to_save_opto, variables_names_opto);
+
+        end
+
         % Reset time and flag
         trial_end_time=tic; %trial end time after reward delivery and results are saved
         update_parameters_flag=1; %update params for next trials
@@ -233,6 +244,12 @@ function main_control(~,event)
             (~reward_delivered_flag || Reward_S.ScansQueued==0) && ~handles2give.PauseRequested %<- why check reward flag?
 
         update_parameters_flag=0;
+
+%         if handles2give.opto_session
+%             global Opto_S
+%             Opto_S.stop();
+%         end
+
         update_parameters;
 
     elseif update_parameters_flag && Stim_S.IsDone &&...
@@ -255,11 +272,16 @@ function main_control(~,event)
         early_lick_counter=early_lick_counter+1;
         deliver_reward_flag=0;
         Stim_S.stop();
+        
+        if handles2give.opto_session
+            Opto_S.stop();
+            Opto_S.release();
+        end
 
         if handles2give.wf_session % for trial based WF imaging
             global WF_FileInfo
             if ~WF_FileInfo.RecordingContinuous
-                WF_S.stop()
+                WF_S.stop();
             end
         end
 
@@ -280,6 +302,12 @@ function main_control(~,event)
         Stim_S.prepare();
         Stim_S.startBackground();
 
+        if handles2give.opto_session
+            global opto_vec galv_x galv_y
+            queueOutputData(Opto_S, [opto_vec; galv_x; galv_y]')
+            Opto_S.startBackground();
+        end
+        
         lick_flag = 1;
         perf = 6;
 
@@ -304,6 +332,17 @@ function main_control(~,event)
 
         % Update csv result file
         update_and_save_results_csv(variables_to_save, variable_saving_names)
+
+        if handles2give.opto_session
+            global variables_to_save_opto
+
+            variables_names_opto = {'trial_number', 'is_stim', 'is_auditory', 'is_whisker', 'context_block', ...
+                'baseline', 'opto_amp', 'opto_freq', 'opto_duration', 'opto_pulse_width', ...
+                'grid_no', 'grid_count', 'coord_AP', 'coord_ML', 'volt_x', 'volt_y', 'bregma_x', 'bregma_y'};
+
+            update_and_save_opto_csv(variables_to_save_opto, variables_names_opto);
+
+        end
 
         while ~Stim_S.IsRunning
             continue
