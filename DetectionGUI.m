@@ -22,7 +22,7 @@ function varargout = DetectionGUI(varargin)
 
 % Edit the above text to modify the response to help DetectionGUI
 
-% Last Modified by GUIDE v2.5 05-May-2023 08:54:12
+% Last Modified by GUIDE v2.5 09-Aug-2023 15:46:57
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -116,26 +116,22 @@ set(handles.TrialDurationTag,'String','5000'); handles.trial_duration = str2doub
 
 
 %% Set Light parameters
-set(handles.OptoLightCheckbox,'Value',0); handles.light_flag = get(handles.OptoLightCheckbox,'Value');
-set(handles.OptoLightCheckbox,'Enable','off');
+set(handles.LightCheckbox,'Value',0); handles.light_flag = get(handles.LightCheckbox,'Value');
+set(handles.LightCheckbox,'Enable','on');
 
 set(handles.LightDurationTag,'Enable','off');
 set(handles.LightPrestimDelayTag,'Enable','off');
 set(handles.LightAmpTag,'Enable','off');
 set(handles.LightFreqTag,'Enable','off');
 set(handles.LightDutyTag,'Enable','off');
-set(handles.LightProbAudTag,'Enable','off');
-set(handles.LightProbWhTag,'Enable','off');
-set(handles.LightProbNoStimTag,'Enable','off');
+set(handles.LightStimWeightTag,'Enable','off');
 
 set(handles.LightDurationTag,'String','200'); handles.light_duration = str2double(get(handles.LightDurationTag,'String'));
 set(handles.LightPrestimDelayTag,'String','100'); handles.light_prestim_delay = str2double(get(handles.LightPrestimDelayTag,'String'));
 set(handles.LightAmpTag,'String','5'); handles.light_amp = str2double(get(handles.LightAmpTag,'String'));
 set(handles.LightFreqTag,'String','100'); handles.light_freq = str2double(get(handles.LightFreqTag,'String'));
 set(handles.LightDutyTag,'String','0.65'); handles.light_duty = str2double(get(handles.LightDutyTag,'String'));
-set(handles.LightProbAudTag,'String','0.4'); handles.light_aud_proba = str2double(get(handles.LightProbAudTag,'String'));
-set(handles.LightProbWhTag,'String','0.4'); handles.light_wh_proba = str2double(get(handles.LightProbWhTag,'String'));
-set(handles.LightProbNoStimTag,'String','0.4'); handles.light_proba = str2double(get(handles.LightProbNoStimTag,'String'));
+set(handles.LightStimWeightTag,'String','0'); handles.light_aud_proba = str2double(get(handles.LightStimWeightTag,'String'));
 
 %% Set Punishment parameters
 
@@ -469,8 +465,17 @@ function OptoCheckbox_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of OptoCheckbox
-global handles2give
+global handles2give opto_gui
+
 handles.opto_session = get(handles.OptoCheckbox,'Value');
+
+if handles.opto_session == 1
+    addpath([cd '\utils_opto\'])
+    opto_gui = Opto_GUI;
+elseif exist('opto_gui') && handles.opto_session==0
+    opto_gui.delete()
+    clear opto_gui
+end
 
 % Update handles structure
 handles2give=handles;
@@ -865,6 +870,13 @@ if handles2give.wf_session
 
 end
 
+if handles2give.opto_session
+    global opto_gui Opto_S
+    opto_gui.GridDropDown.Enable = 'off';
+    opto_gui.AssignbregmaCheckBox.Enable = 'off';
+    opto_gui.update_opto_info
+end
+
 % Get handles for control and save handles as session configuration
 handles2give= handles; 
 save_session_config(handles);
@@ -875,7 +887,6 @@ defining_sessions;
 % Update handles structure
 guidata(hObject, handles);
 
-
 % --- Executes on button press in StopBehaviourTag.
 function StopBehaviourTag_Callback(hObject, eventdata, handles)
 % hObject    handle to StopBehaviourTag (see GCBO)
@@ -883,8 +894,9 @@ function StopBehaviourTag_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 stop_sessions
-global handles2give wf_gui
+global handles2give
 if handles2give.wf_session
+    global wf_gui
     wf_gui.DirectoryEditField.Enable = 'On';
     wf_gui.TriggermodeDropDown.Enable = 'On';
     wf_gui.CameramodeDropDown.Enable = 'On';
@@ -894,6 +906,11 @@ if handles2give.wf_session
     wf_gui.Switch_2.Enable = 'On';
 end
 
+if handles2give.opto_session
+    global opto_gui
+    opto_gui.GridDropDown.Enable = 'on';
+    opto_gui.AssignbregmaCheckBox.Enable = 'on';
+end
 
 function StimProbTag_Callback(hObject, eventdata, handles)
 % hObject    handle to StimProbTag (see GCBO)
@@ -1867,152 +1884,6 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
-
-
-function LightProbAudTag_Callback(hObject, eventdata, handles)
-% hObject    handle to LightProbAudTag (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of LightProbAudTag as text
-%        str2double(get(hObject,'String')) returns contents of LightProbAudTag as a double
-global handles2give
-
-handles.light_aud_proba = round(str2double(get(handles.LightProbAudTag,'String'))*100)/100;
-if handles.light_aud_proba > 1
-    handles.light_aud_proba = 1;
-elseif handles.light_aud_proba < 0
-    handles.light_aud_proba = 0;
-end
-set(handles.LightProbAudTag,'String',handles.light_aud_proba);
-
-% Update handles structure
-handles2give= handles;
-guidata(hObject, handles);
-
-
-% --- Executes during object creation, after setting all properties.
-function LightProbAudTag_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to LightProbAudTag (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-% --- Executes on button press in OptoLightCheckbox.
-function OptoLightCheckbox_Callback(hObject, eventdata, handles)
-% hObject    handle to OptoLightCheckbox (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hint: get(hObject,'Value') returns toggle state of OptoLightCheckbox
-
-global handles2give
-
-handles.light_flag = get(handles.OptoLightCheckbox,'Value');
-if handles.light_flag
-    set(handles.LightDurationTag,'Enable','on');
-    set(handles.LightPrestimDelayTag,'Enable','on');
-    set(handles.LightAmpTag,'Enable','on');
-    set(handles.LightFreqTag,'Enable','on');
-    set(handles.LightDutyTag,'Enable','on');
-    set(handles.LightProbAudTag,'Enable','on');
-    set(handles.LightProbWhTag,'Enable','on');
-    set(handles.LightProbNoStimTag,'Enable','on');
-else
-    set(handles.LightDurationTag,'Enable','off');
-    set(handles.LightPrestimDelayTag,'Enable','off');
-    set(handles.LightAmpTag,'Enable','off');
-    set(handles.LightFreqTag,'Enable','off');
-    set(handles.LightDutyTag,'Enable','off');
-    set(handles.LightProbAudTag,'Enable','off');
-    set(handles.LightProbWhTag,'Enable','off');
-    set(handles.LightProbNoStimTag,'Enable','off');
-end
-
-% Update handles structure
-handles2give=handles;
-guidata(hObject, handles);
-
-
-
-function LightProbWhTag_Callback(hObject, eventdata, handles)
-% hObject    handle to LightProbWhTag (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of LightProbWhTag as text
-%        str2double(get(hObject,'String')) returns contents of LightProbWhTag as a double
-
-global handles2give
-
-handles.light_wh_proba = round(str2double(get(handles.LightProbWhTag,'String'))*100)/100;
-if handles.light_wh_proba > 1
-    handles.light_wh_proba = 1;
-elseif handles.light_wh_proba < 0
-    handles.light_wh_proba = 0;
-end
-set(handles.LightProbWhTag,'String',handles.light_wh_proba);
-
-% Update handles structure
-handles2give= handles;
-guidata(hObject, handles);
-
-
-% --- Executes during object creation, after setting all properties.
-function LightProbWhTag_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to LightProbWhTag (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-
-function LightProbNoStimTag_Callback(hObject, eventdata, handles)
-% hObject    handle to LightProbNoStimTag (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of LightProbNoStimTag as text
-%        str2double(get(hObject,'String')) returns contents of LightProbNoStimTag as a double
-global handles2give
-
-handles.light_proba = round(str2double(get(handles.LightProbNoStimTag,'String'))*100)/100;
-if handles.light_proba > 1
-    handles.light_proba = 1;
-elseif handles.light_proba < 0
-    handles.light_proba = 0;
-end
-set(handles.LightProbNoStimTag,'String',handles.light_proba);
-
-% Update handles structure
-handles2give= handles;
-guidata(hObject, handles);
-
-
-% --- Executes during object creation, after setting all properties.
-function LightProbNoStimTag_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to LightProbNoStimTag (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
 function MouseWeightBeforeTag_Callback(hObject, eventdata, handles)
 % hObject    handle to MouseWeightBeforeTag (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -2287,6 +2158,71 @@ guidata(hObject, handles);
 % --- Executes during object creation, after setting all properties.
 function CameraStartDelayTag_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to CameraStartDelayTag (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in LightCheckbox.
+function LightCheckbox_Callback(hObject, eventdata, handles)
+% hObject    handle to LightCheckbox (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global handles2give
+
+handles.light_flag = get(handles.LightCheckbox,'Value');
+if handles.light_flag
+    set(handles.LightDurationTag,'Enable','on');
+    set(handles.LightPrestimDelayTag,'Enable','on');
+    set(handles.LightAmpTag,'Enable','on');
+    set(handles.LightFreqTag,'Enable','on');
+    set(handles.LightDutyTag,'Enable','on');
+    set(handles.LightStimWeightTag,'Enable','on');
+else
+    set(handles.LightDurationTag,'Enable','off');
+    set(handles.LightPrestimDelayTag,'Enable','off');
+    set(handles.LightAmpTag,'Enable','off');
+    set(handles.LightFreqTag,'Enable','off');
+    set(handles.LightDutyTag,'Enable','off');
+    set(handles.LightStimWeightTag,'Enable','off');
+end
+
+% Update handles structure
+handles2give=handles;
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of LightCheckbox
+
+
+
+function LightStimWeightTag_Callback(hObject, eventdata, handles)
+% hObject    handle to LightStimWeightTag (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of LightStimWeightTag as text
+%        str2double(get(hObject,'String')) returns contents of LightStimWeightTag as a double
+global handles2give
+
+handles.light_stim_weight = round(str2double(get(handles.LightStimWeightTag,'String'))*100)/100;
+if handles.light_stim_weight > 1
+    handles.light_stim_weight = 1;
+elseif handles.light_stim_weight < 0
+    handles.light_stim_weight = 0;
+end
+set(handles.LightStimWeightTag,'String',handles.light_stim_weight);
+
+% Update handles structure
+handles2give= handles;
+guidata(hObject, handles);
+
+% --- Executes during object creation, after setting all properties.
+function LightStimWeightTag_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to LightStimWeightTag (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 

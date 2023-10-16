@@ -2,22 +2,22 @@ function update_parameters
 % UPDATE_PARAMETERS Update parameters at each trial.
 
     global   association_flag response_window trial_duration quiet_window lick_threshold...
-        artifact_window iti camera_flag is_stim is_auditory is_whisker is_light ...
+        artifact_window iti camera_flag is_stim is_auditory is_whisker is_light is_opto...
         reward_valve_duration  aud_reward wh_reward wh_vec aud_vec light_vec ...
         light_prestim_delay stim_flag perf lick_flag ...
         false_alarm_punish_flag false_alarm_timeout early_lick_punish_flag early_lick_timeout ...
         Stim_S Log_S wh_stim_duration  aud_stim_duration  aud_stim_amp  aud_stim_freq  Stim_S_SR ScansTobeAcquired ...
         Reward_S Reward_S_SR  Trigger_S fid_lick_trace mouse_licked_flag reaction_time ...
-        trial_started_flag  trial_number main_pool_size_old light_proba_old folder_name handles2give...
-        stim_proba_old aud_stim_proba_old wh_stim_proba_old aud_light_proba_old wh_light_proba_old light_flag baseline_window camera_vec...
-        deliver_reward_flag ...
+        trial_started_flag  trial_number main_pool_size_old opto_stim_proba_old folder_name handles2give...
+        stim_proba_old aud_stim_proba_old wh_stim_proba_old opto_aud_proba_old opto_wh_proba_old opto_ctrl_proba_old...
+        light_flag baseline_window camera_vec deliver_reward_flag ...
         wh_stim_amp wh_scaling_factor response_window_start response_window_end...
         perf_and_save_results_flag reward_delivered_flag update_parameters_flag...
         is_reward reward_pool partial_reward_flag reward_proba_old...
-        light_duration light_freq light_amp camera_freq SITrigger_vec main_trial_pool...
+        light_duration light_freq light_amp light_duty camera_freq SITrigger_vec main_trial_pool...
         whisker_trial_counter mouse_rewarded_context context_block context_flag block_id wh_rewarded_context...
         pink_noise_player brown_noise_player identical_block_count extra_time Context_S...
-        WF_S wf_cam_vec LED1_vec LED2_vec
+        WF_S wf_cam_vec LED1_vec LED2_vec opto_vec galv_x galv_y
        
 
     outputSingleScan(Trigger_S,[0 0 0])
@@ -25,14 +25,14 @@ function update_parameters
     outputSingleScan(Trigger_S,[0 0 0])
     
     % Light parameters
-    ramp_down_duration=100; % in miliseconds
-    light_amp = handles2give.light_amp;
-    light_prestim_delay = handles2give.light_prestim_delay;
-
-    light_durations = [light_amp]+ramp_down_duration;
-    light_prestim_delays =[light_prestim_delay];
-    light_duration = handles2give.light_duration;
-
+%     ramp_down_duration=100; % in miliseconds
+%     light_amp = handles2give.light_amp;
+%     light_prestim_delay = handles2give.light_prestim_delay;
+% 
+%     light_durations = [light_amp]+ramp_down_duration;
+%     light_prestim_delays =[light_prestim_delay];
+%     light_duration = handles2give.light_duration;
+%%
     trial_number = trial_number+1;
 
    %% GENERAL SETTINGS FROM BEHAVIOUR GUI
@@ -102,6 +102,15 @@ function update_parameters
     wh_stim_weight = handles2give.wh_stim_weight; 
     no_stim_weight = handles2give.no_stim_weight;
     
+    if light_flag % If light stimulus, to be implemented
+        light_amp = handles2give.light_amp;
+        light_duration = handles2give.light_duration;
+        light_prestim_delay = handles2give.light_prestim_delay;
+        light_freq = handles2give.light_freq;
+        light_duty = handles2give.light_duty;
+        light_stim_weight = handles2give.light_stim_weight;
+    end
+    
 
     %% Compute stimulus probability
     stim_proba = (aud_stim_weight + wh_stim_weight)/(aud_stim_weight + wh_stim_weight + no_stim_weight);
@@ -120,26 +129,34 @@ function update_parameters
     end
 
 
-    %% Compute light probability and light parameters
-    light_proba=handles2give.light_proba; % proportion of light trials
-    if isempty(light_proba_old)
-        light_proba_old = light_proba;
-    end
-
-    light_aud_proba=handles2give.light_aud_proba; % proportion of light trials
-    if isempty(aud_light_proba_old)
-        aud_light_proba_old = light_aud_proba;
-    end
-    light_wh_proba=handles2give.light_wh_proba; % proportion of light trials
-    if isempty(wh_light_proba_old)
-        wh_light_proba_old = light_wh_proba;
-    end
-
-    light_stim_shape='rect'; % "rect" or "sin" %%% for now only use 'rect'
-    light_amp=handles2give.light_amp;
-    light_freq=handles2give.light_freq; % frequency of the pulse train
-    light_duty=handles2give.light_duty; % duty cycle (0-1)
+    %% Compute opto probability
+    if handles2give.opto_session
+        global Opto_info
+        opto_stim_proba = Opto_info.nostim_proba; % proportion of light trials
+        if isempty(opto_stim_proba_old)
+            opto_stim_proba_old = opto_stim_proba;
+        end
     
+        opto_aud_proba = Opto_info.aud_proba; % proportion of light trials
+        if isempty(opto_aud_proba_old)
+            opto_aud_proba_old = opto_aud_proba;
+        end
+
+        opto_wh_proba = Opto_info.wh_proba; % proportion of light trials
+        if isempty(opto_wh_proba_old)
+            opto_wh_proba_old = opto_wh_proba;
+        end
+
+        opto_ctrl_proba = Opto_info.ctrl_proba;
+        if isempty(opto_ctrl_proba_old)
+            opto_ctrl_proba_old = opto_ctrl_proba;
+        end
+    else
+        opto_stim_proba = 0;
+        opto_aud_proba = 0;
+        opto_wh_proba = 0;
+        opto_ctrl_proba = 0;
+    end
     
     %% Define new pool of stimuli
 
@@ -166,17 +183,21 @@ function update_parameters
         end
     end
   
-    stim_light_list=[900,901,902,903,904,905]; % code for each stimuli
+    stim_light_list=[900,901,902,903,904,905,906]; % code for stimuli: stim, aud, wh, opto_stim, opto_aud, opto_wh, opto_ctrl(tbd)
     
 
     % CREATE NEW TRIAL POOL WHEN CURRENT POOL FINISHED, OR, WHEN CHANGE IN
     % PARAMETERS
-    if mod(n_completed_trials, main_pool_size)==0 || main_pool_size_old ~= main_pool_size|| stim_proba_old ~= stim_proba || aud_stim_proba_old ~= aud_stim_proba|| wh_stim_proba_old ~= wh_stim_proba || light_proba_old ~= light_proba || aud_light_proba_old ~= light_aud_proba ||  wh_light_proba_old ~= light_wh_proba
-            
+    if mod(n_completed_trials, main_pool_size)==0 || main_pool_size_old ~= main_pool_size||...
+            stim_proba_old ~= stim_proba || aud_stim_proba_old ~= aud_stim_proba|| wh_stim_proba_old ~= wh_stim_proba ||... 
+            opto_stim_proba_old ~= opto_stim_proba || opto_aud_proba_old ~= opto_aud_proba || opto_wh_proba_old ~= opto_wh_proba ||...
+            opto_ctrl_proba_old ~= opto_ctrl_proba
+
             % Save old probabilities and pool size
-            aud_light_proba_old =light_aud_proba;
-            light_proba_old =light_proba;
-            wh_light_proba_old = light_wh_proba;
+            opto_aud_proba_old = opto_aud_proba;
+            opto_stim_proba_old = opto_stim_proba;
+            opto_wh_proba_old = opto_wh_proba;
+            opto_ctrl_proba_old = opto_ctrl_proba; % (tbd) Proba of trials stimulating in control loc vs not stimulating at all
 
             aud_stim_proba_old = aud_stim_proba;
             wh_stim_proba_old = wh_stim_proba;
@@ -185,22 +206,21 @@ function update_parameters
             main_pool_size_old = main_pool_size;
 
         % Stim. probability and trial pool when light stimulus
-        if light_flag
+        if handles2give.opto_session
 
-            no_stim_light_proba =(1-stim_proba)*light_proba;
-            no_stim_no_light_proba = (1-stim_proba)*(1-light_proba);
-            stim_no_light = stim_proba*(1-light_proba);
-            aud_stim_light = aud_stim_proba*light_aud_proba;
-            aud_stim_no_light = aud_stim_proba*(1-light_aud_proba);
-            wh_stim_light = wh_stim_proba*light_wh_proba;
-            wh_stim_no_light = wh_stim_proba*(1-light_wh_proba);
+            no_stim_opto_proba =(1-stim_proba)*opto_stim_proba;
+            no_stim_no_opto_proba = (1-stim_proba)*(1-opto_stim_proba);
+            aud_stim_opto = aud_stim_proba*opto_aud_proba;
+            aud_stim_no_opto = aud_stim_proba*(1-opto_aud_proba);
+            wh_stim_opto = wh_stim_proba*opto_wh_proba;
+            wh_stim_no_opto = wh_stim_proba*(1-opto_wh_proba);
 
-            main_trial_pool=[stim_light_list(1)*ones(1,round(round(no_stim_no_light_proba*main_pool_size*100))/100) ,...
-                stim_light_list(2)*ones(1,round(round(aud_stim_no_light*main_pool_size*100)/100)) ,...
-                stim_light_list(3)*ones(1,round(round(wh_stim_no_light*main_pool_size*100)/100)) ,...
-                stim_light_list(4)*ones(1,round(round(no_stim_light_proba*main_pool_size*100)/100)) ,...
-                stim_light_list(5)*ones(1,round(round(aud_stim_light*main_pool_size*100)/100)) ,...
-                stim_light_list(6)*ones(1,round(round(wh_stim_light*main_pool_size*100)/100)) ,...
+            main_trial_pool=[stim_light_list(1)*ones(1,round(round(no_stim_no_opto_proba*main_pool_size*100))/100),...
+                stim_light_list(2)*ones(1,round(round(aud_stim_no_opto*main_pool_size*100)/100)),...
+                stim_light_list(3)*ones(1,round(round(wh_stim_no_opto*main_pool_size*100)/100)),...
+                stim_light_list(4)*ones(1,round(round(no_stim_opto_proba*main_pool_size*100)/100)),...
+                stim_light_list(5)*ones(1,round(round(aud_stim_opto*main_pool_size*100)/100)),...
+                stim_light_list(6)*ones(1,round(round(wh_stim_opto*main_pool_size*100)/100)),...
                 ];
 
         % Stim. probability and trial pool when no light stimulus
@@ -249,6 +269,8 @@ function update_parameters
                 play_context_background(context_block, pink_noise_player, brown_noise_player, Context_S)
             end
             wh_rewarded_context = strcmp(context_block, mouse_rewarded_context);    
+        else
+            block_id = 1;
         end
     end
 
@@ -258,35 +280,41 @@ function update_parameters
     switch trial_type
         case stim_light_list(1) % NO STIM TRIAL
             is_stim=0;
-            is_light=0;
             is_auditory=0;
             is_whisker=0;
+            is_light=0;
+            is_opto=0;
         case stim_light_list(2) % AUDITORY TRIAL
             is_stim=1;
-            is_light=0;
             is_auditory=1;
             is_whisker=0;
+            is_light=0;
+            is_opto=0;
         case stim_light_list(3) % WHISKER TRIAL
             is_stim=1;
-            is_light=0;
             is_auditory=0;
             is_whisker=1;
+            is_light=0;
+            is_opto=0;
             whisker_trial_counter=whisker_trial_counter+1; %for proba. reward pool indexing
         case stim_light_list(4) % LIGHT NO STIM TRIAL
             is_stim=0;
-            is_light=1;
             is_auditory=0;
             is_whisker=0;
+            is_light=0;
+            is_opto=1;
         case stim_light_list(5) % LIGHT AUDITORY TRIAL
             is_stim=1;
-            is_light=1;
             is_auditory=1;
             is_whisker=0;
+            is_light=0;
+            is_opto=1;
         case stim_light_list(6)  % LIGHT WHISKER TRIAL
             is_stim=1;
-            is_light=1;
             is_auditory=0;
             is_whisker=1;
+            is_light=0;
+            is_opto=1;
             whisker_trial_counter=whisker_trial_counter+1; %for proba. reward pool indexing
     end
 
@@ -339,12 +367,12 @@ function update_parameters
             reward_pool=reward_pool(randperm(numel(reward_pool))); 
         end
 
-    % Set reward flag per trial type
-    if is_whisker 
-        is_reward = double(rand(1)<reward_proba);
-    elseif is_auditory
-        is_reward=aud_reward;
-    end 
+        % Set reward flag per trial type
+        if is_whisker 
+            is_reward = double(rand(1)<reward_proba);
+        elseif is_auditory
+            is_reward=aud_reward;
+        end 
 
     % CONSTANT reward delivery (also for association trials)
     elseif not(partial_reward_flag) || association_flag
@@ -391,7 +419,7 @@ function update_parameters
             wh_vec = zeros(1,(trial_duration)*(Stim_S_SR/1000));
 
         % Biphasic cosine whisker stimulus
-        else
+        elseif is_whisker
             % Set auditory vector to 0
             aud_stim_duration = 0; 
             aud_stim_amp = 0;
@@ -414,36 +442,64 @@ function update_parameters
         end
     end
 
+    if handles2give.opto_session
+        global opto_gui Opto_S variables_to_save_opto voltage_x voltage_y bregma_x bregma_y opto_count
+        if is_opto
+            [ML, AP, grid_no, count] = get_next_grid;
+            power = opto_gui.amplitude;
+            [opto_vec, galv_x, galv_y] = load_opto_vec(ML,AP);
+            opto_count = opto_count+1;
 
-    %% Light / optogenetics, define vector
+        else
+            [opto_vec, galv_x, galv_y] = load_opto_vec(5,-5);
+
+            if strcmp(opto_gui.grid, 'No Grid')
+                opto_vec = opto_vec*-1;
+            end
+            AP = -5;
+            ML = 5;
+            power = -1;
+            grid_no = nan;
+            count = trial_number - opto_count;
+
+            opto_gui.plot_grid
+            scatter(opto_gui.UIAxes, -5, 5, 'filled', 'MarkerEdgeColor','#DC143C', 'MarkerFaceColor', '#DC143C');
+            text(opto_gui.UIAxes, 1, 6.5, {['No opto trial: ' num2str(count) '/' num2str(trial_number)]})
+        end
+
+        variables_to_save_opto = {trial_number is_stim is_auditory is_whisker context_block opto_gui.baseline*1000 power opto_gui.frequency...
+            opto_gui.duration opto_gui.pulse_width grid_no count AP ML ...
+            voltage_x voltage_y bregma_x bregma_y};
+    end
+    %% Light define vector
     if is_light
 
-        disp(['Light' num2str(is_light)])
-        time_vec_light = 1/Stim_S_SR : 1/Stim_S_SR : (light_duration/1000);
-
-        light_pulse_train=[ones(1,round(Stim_S_SR*(light_duty/light_freq))) zeros(1,round(Stim_S_SR*((1-light_duty)/light_freq)))];
-        light_pulse_train=repmat(light_pulse_train,1,light_duration*light_freq/1000);
-
-        switch light_stim_shape
-            case 'sin'
-                light_vec=light_amp/2+light_amp/2*[-ones(1,baseline_window*Stim_S_SR/1000) -ones(1,(light_prestim_delay)*Stim_S_SR/1000) -cos(2*pi*light_freq*time_vec_light)];
-                light_vec=[light_vec zeros(1,(trial_duration)*(Stim_S_SR/1000)-numel(light_vec))];
-
-                light_vec_shadow= [zeros(1,baseline_window*Stim_S_SR/1000) zeros(1,(light_prestim_delay)*Stim_S_SR/1000) [ones(1,1*length(light_pulse_train)-ramp_down_duration*Stim_S_SR/1000) fliplr(linspace(0,1,ramp_down_duration*Stim_S_SR/1000))]];
-                light_vec_shadow =[light_vec_shadow zeros(1,(trial_duration)*(Stim_S_SR/1000)-numel(light_vec_shadow))];
-
-                light_vec=light_vec.*light_vec_shadow;
-
-            otherwise
-                light_vec=light_amp*[(zeros(1,(baseline_window - light_prestim_delay)*Stim_S_SR/1000)) light_pulse_train];
-                light_vec=[light_vec zeros(1,(trial_duration)*(Stim_S_SR/1000)-numel(light_vec))];
-                %
-                light_vec_shadow= [zeros(1,(baseline_window-light_prestim_delay)*Stim_S_SR/1000) [ones(1,1*length(light_pulse_train)-ramp_down_duration*Stim_S_SR/1000) fliplr(linspace(0,1,ramp_down_duration*Stim_S_SR/1000))]];
-                light_vec_shadow =[light_vec_shadow zeros(1,(trial_duration)*(Stim_S_SR/1000)-numel(light_vec_shadow))];
-
-                light_vec=light_vec.*light_vec_shadow;
-
-        end
+%         disp(['Light' num2str(is_light)])
+%         time_vec_light = 1/Stim_S_SR : 1/Stim_S_SR : (light_duration/1000);
+% 
+%         light_pulse_train=[ones(1,round(Stim_S_SR*(light_duty/light_freq))) zeros(1,round(Stim_S_SR*((1-light_duty)/light_freq)))];
+%         light_pulse_train=repmat(light_pulse_train,1,light_duration*light_freq/1000);
+% 
+%         switch light_stim_shape
+%             case 'sin'
+%                 light_vec=light_amp/2+light_amp/2*[-ones(1,baseline_window*Stim_S_SR/1000) -ones(1,(light_prestim_delay)*Stim_S_SR/1000) -cos(2*pi*light_freq*time_vec_light)];
+%                 light_vec=[light_vec zeros(1,(trial_duration)*(Stim_S_SR/1000)-numel(light_vec))];
+% 
+%                 light_vec_shadow= [zeros(1,baseline_window*Stim_S_SR/1000) zeros(1,(light_prestim_delay)*Stim_S_SR/1000) [ones(1,1*length(light_pulse_train)-ramp_down_duration*Stim_S_SR/1000) fliplr(linspace(0,1,ramp_down_duration*Stim_S_SR/1000))]];
+%                 light_vec_shadow =[light_vec_shadow zeros(1,(trial_duration)*(Stim_S_SR/1000)-numel(light_vec_shadow))];
+% 
+%                 light_vec=light_vec.*light_vec_shadow;
+% 
+%             otherwise
+%                 light_vec=light_amp*[(zeros(1,(baseline_window - light_prestim_delay)*Stim_S_SR/1000)) light_pulse_train];
+%                 light_vec=[light_vec zeros(1,(trial_duration)*(Stim_S_SR/1000)-numel(light_vec))];
+%                 %
+%                 light_vec_shadow= [zeros(1,(baseline_window-light_prestim_delay)*Stim_S_SR/1000) [ones(1,1*length(light_pulse_train)-ramp_down_duration*Stim_S_SR/1000) fliplr(linspace(0,1,ramp_down_duration*Stim_S_SR/1000))]];
+%                 light_vec_shadow =[light_vec_shadow zeros(1,(trial_duration)*(Stim_S_SR/1000)-numel(light_vec_shadow))];
+% 
+%                 light_vec=light_vec.*light_vec_shadow;
+% 
+%         end
 
     % No light, set light vector to 0
     else
@@ -521,7 +577,7 @@ function update_parameters
         ['Amp=' num2str(aud_stim_amp) ', ' 'Duration=' num2str(aud_stim_duration) ', ' 'Frequency=' num2str(aud_stim_freq)]};
 
     reward_titles={'Not rewarded', 'Rewarded'};
-    light_titles={'Light OFF', 'Light ON'};
+    opto_titles={'Opto OFF', 'Opto ON'};
     association_titles={'', ' Association'};
 
     if is_stim
@@ -529,7 +585,7 @@ function update_parameters
         if is_auditory
 
             set(handles2give.TrialTimeLineTextTag,'String', ['Next trial: Auditory.  ' char(trial_titles(is_stim+2)) ' '...
-                char(association_titles(association_flag+1)) '   ' char(reward_titles(aud_reward+1)) '     ' char(light_titles(is_light+1))],'ForegroundColor',acolor);
+                char(association_titles(association_flag+1)) '   ' char(reward_titles(aud_reward+1)) '     ' char(opto_titles(is_opto+1))],'ForegroundColor',acolor);
 
         else
             if is_reward==1 && wh_reward==1 % =1 always when no partial rewards
@@ -541,13 +597,13 @@ function update_parameters
             end
             
             set(handles2give.TrialTimeLineTextTag,'String',['Next trial: Whisker. ' char(trial_titles(is_stim+1)) ' '...
-                char(association_titles(association_flag+1)) '   ' char(reward_title) '     ' char(light_titles(is_light+1))],'ForegroundColor', wcolor);
+                char(association_titles(association_flag+1)) '   ' char(reward_title) '     ' char(opto_titles(is_opto+1))],'ForegroundColor', wcolor);
 
         end
 
     else
         set(handles2give.TrialTimeLineTextTag,'String',['Next trial:   ' char(trial_titles(is_stim+1)) ' '...
-            char(association_titles(association_flag+1))  '     ' char(light_titles(is_light+1))], 'ForegroundColor','k');
+            char(association_titles(association_flag+1))  '     ' char(opto_titles(is_opto+1))], 'ForegroundColor','k');
     end
 
     %% Parameters are updated: now send signal vectors and triggers
@@ -560,9 +616,21 @@ function update_parameters
     end
     Stim_S.startBackground()
 
-    %ScansTobeAcquired=Stim_S.ScansQueued; %this is not used?
-    
     outputSingleScan(Trigger_S,[0 0 0])
+
+    if handles2give.opto_session
+        try
+            queueOutputData(Opto_S, [opto_vec; galv_x; galv_y]')
+            pause(.1)
+%             Opto_S.preload([opto_vec; galv_x; galv_y]');
+        catch
+            disp(['Error preloading Opto_S coords ap ml: ' num2str(AP) ' ' num2str(ML)])
+            disp(Opto_S)
+        end
+        Opto_S.startBackground();
+
+        disp(num2str(Opto_S.IsWaitingForExternalTrigger));
+    end
 
     % Queue reward vector
      if ~Reward_S.ScansQueued 
@@ -578,7 +646,6 @@ function update_parameters
     response_window_start = (artifact_window + baseline_window)/1000;
     response_window_end = (artifact_window + baseline_window + response_window)/1000;
 
-    
     %% Update current trial flags
     handles2give.ReportPause=1; %not currently paused
 

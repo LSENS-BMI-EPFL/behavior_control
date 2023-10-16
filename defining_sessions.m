@@ -10,7 +10,7 @@
         folder_name handles2give early_lick_counter session_start_time...
         Main_S_SR Reward_Ch light_counter whisker_trial_counter...
         fid_continuous trial_start_ttl lick_data cam1_ttl cam2_ttl scan_pos...
-        continuous_lick_data Camera_S Context_S context_ttl WF_S
+        continuous_lick_data Camera_S Context_S context_ttl WF_S Opto_S
         
 
 
@@ -154,6 +154,23 @@
     Context_S = daq.createSession('ni');
     addDigitalChannel(Context_S,'Dev2', 'Port0/Line2', 'OutputOnly'); %  Context channel
 
+    % Setup Opto_S with trigger, if applicable
+    if handles2give.opto_session
+        global Opto_info Opto_S
+        opto_setup(1);
+    end
+
+    % Setup WF_S and start continuous WF imaging, if applicable
+    if handles2give.wf_session  
+        global WF_FileInfo % Generated in WF_GUI
+        addpath([fileparts(cd) '\WF_imaging\'])
+        if WF_FileInfo.RecordingContinuous
+            wf_setup  
+        else
+            wf_setup(1)
+        end
+    end
+    
     % Run Main Control
     % ----------------
 
@@ -181,15 +198,9 @@
     Log_S.startBackground();
     start(Camera_S, "Continuous")
 
-    % Setup WF_S and start continuous WF imaging, if applicable
-    if handles2give.wf_session  
-        global WF_FileInfo % Generated in WF_GUI
-        addpath([fileparts(cd) '\WF_imaging\'])
+    if handles2give.wf_session
         if WF_FileInfo.RecordingContinuous
-            wf_setup
-            wf_imaging_continuous  
-        else
-            wf_setup(1)
+            wf_imaging_continuous
         end
     end
     
