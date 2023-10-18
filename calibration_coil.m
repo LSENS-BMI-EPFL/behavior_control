@@ -19,7 +19,7 @@ trial_dur = 4000;
 %% Specify saving information and create folder
 
 dest_path = 'C:\Users\bisi\Desktop\Calibration';
-mouse_name = 'ABXXX';
+mouse_name = 'AB087';
 date = datetime('today', 'Format', 'yyyyMMdd');
 
 % Create mouse directory and calibration subdirectories 
@@ -34,8 +34,8 @@ end
 %% Choose stimulus name and define impulse parameters
 %  The variable stim_name must match one of the cases below.
 
-%stim_name = 'biphasic_hann_3ms';
-stim_name = 'biphasic_hann_3ms_psy';
+stim_name = 'biphasic_hann_3ms';
+%stim_name = 'biphasic_hann_3ms_psy';
 % stim_name = 'blank';
 
 
@@ -97,7 +97,7 @@ elseif strcmp(stim_name,'biphasic_hann_3ms')
 
     % Biphasic Hann (raised cosine) window 3 ms.
     
-    stim_amp_volt = 2.8;
+    stim_amp_volt = 2.45;
     stim_duration_up = 1.5;
     stim_duration_down = 1.5;
     scale_factor = 0.9;
@@ -260,7 +260,7 @@ if strcmp(stim_name,'biphasic_hann_3ms_psy')
     stim = stim_array;
 end
 
-data_file = [mouse_name '_' int2str(yyyymmdd(date)) '_stim_coil_calibration.m'];
+data_file = [mouse_name '_' int2str(yyyymmdd(date)) '_stim_coil_calibration.mat'];
 data_file = fullfile(save_folder, data_file);
 save(data_file,'mouse_name','stim_name','n_trials','flux_data','stim','trials_stim_amp_volt','trials_stim_amp_millitesla','mean_amp_millitesla','stim_duration_up','stim_duration_down','scale_factor','session_sampling_rate')
 disp(['Calibration data saved in: ' data_file])
