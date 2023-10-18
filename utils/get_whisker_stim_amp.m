@@ -3,7 +3,6 @@ function wh_stim_amp = get_whisker_stim_amp(handles2give)
 %trial, for unique stimulus amplitude and in the case with a range of
 %amplitudes.
 
-disp(handles2give.wh_stim_weight_1);
 if handles2give.wh_stim_amp_range
 
     % Get whisker amplitudes and weights
