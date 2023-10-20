@@ -368,6 +368,14 @@ function update_parameters
     % CONSTANT reward delivery (also for association trials)
     elseif not(partial_reward_flag) || association_flag
         is_reward=1;
+
+        if context_flag
+            if is_whisker
+                is_reward=wh_reward;
+            elseif is_auditory
+                is_reward=aud_reward;
+            end
+        end
     end
 
     
