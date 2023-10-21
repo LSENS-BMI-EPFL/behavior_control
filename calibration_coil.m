@@ -216,9 +216,9 @@ trials_stim_amp_millitesla = zeros(n_trials,0);
 trials_stim_amp_index = zeros(n_trials,0);
 
 for itrial=1:n_trials
-    [pks,locs] = findpeaks(flux_data(itrial,:),'Npeaks',1,'MinPeakProminence',min_prominence);
+    pks = max(abs(flux_data(itrial,:)));
     trials_stim_amp_millitesla(itrial) = pks * 100; % teslameter scale
-    trials_stim_amp_index(itrial) = locs;
+%     trials_stim_amp_index(itrial) = locs;
 end
 
 % Get mean amplitude across trials (for single-amplitude stimuli)
