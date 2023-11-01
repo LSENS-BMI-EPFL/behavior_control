@@ -22,7 +22,7 @@ function varargout = DetectionGUI(varargin)
 
 % Edit the above text to modify the response to help DetectionGUI
 
-% Last Modified by GUIDE v2.5 13-Oct-2023 14:15:06
+% Last Modified by GUIDE v2.5 31-Oct-2023 12:12:15
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -101,9 +101,8 @@ set(handles.DummySessionCheckbox,'Enable','on');
 set(handles.ContextCheckBox,'Value',0); handles.context_flag = get(handles.ContextCheckBox,'Value');
 set(handles.ContextCheckBox,'Enable','on');
 
-
-handles.behaviour_type = 'auditory'; %default, as most often the most common behaviour session type
-set(handles.BehaviourTypeTag, 'String', handles.behaviour_type);
+behaviour_type = get(handles.BehaviourTypeMenu, 'String');
+handles.behaviour_type = behaviour_type{get(handles.BehaviourTypeMenu, 'Value')}; %default, as most often the most common behaviour session type
 
 %% Set the timeline parameters
 set(handles.MinQuietWindowTag,'String','2000'); handles.min_quiet_window = str2double(get(handles.MinQuietWindowTag,'String'));
@@ -650,63 +649,6 @@ function BehaviorDirectoryTag_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
-
-function BehaviourTypeTag_Callback(hObject, eventdata, handles)
-% hObject    handle to BehaviourTypeTag (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of BehaviourTypeTag as text
-%        str2double(get(hObject,'String')) returns contents of SessionTyp
-%        as a string
-global handles2give
-handles.behaviour_type = get(handles.BehaviourTypeTag,'String');
-
-% Update handles structure
-handles2give=handles;
-guidata(hObject, handles);
-
-
-% --- Executes during object creation, after setting all properties.
-function BehaviourTypeTag_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to BehaviourTypeTag (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-% function VideoDirectoryTag_Callback(hObject, eventdata, handles)
-% % hObject    handle to VideoDirectoryTag (see GCBO)
-% % eventdata  reserved - to be defined in a future version of MATLAB
-% % handles    structure with handles and user data (see GUIDATA)
-% 
-% % Hints: get(hObject,'String') returns contents of BehaviorDirectoryTag as text
-% %        str2double(get(hObject,'String')) returns contents of BehaviorDirectoryTag as a double
-% global handles2give
-% handles.video_directory = get(handles.VideoDirectoryTag,'String');
-% 
-% % Update handles structure
-% handles2give=handles;
-% guidata(hObject, handles);
-% 
-% % --- Executes during object creation, after setting all properties.
-% function VideoDirectoryTag_CreateFcn(hObject, eventdata, handles)
-% % hObject    handle to VideoDirectoryTag (see GCBO)
-% % eventdata  reserved - to be defined in a future version of MATLAB
-% % handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
 
 
 function ToneDurationTag_Callback(hObject, eventdata, handles)
@@ -2574,4 +2516,56 @@ function LightStimWeightTag_CreateFcn(hObject, eventdata, handles)
 %       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on selection change in popupmenu1.
+function BehaviourTypeMenu_Callback(hObject, eventdata, handles)
+% hObject    handle to popupmenu1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns popupmenu1 contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from popupmenu1
+global handles2give
+contents = cellstr(get(hObject, 'String'));
+choice = contents{get(hObject, 'Value')};
+handles.behaviour_type = choice;
+
+handles2give=handles;
+guidata(hObject, handles);
+
+% --- Executes during object creation, after setting all properties.
+function BehaviourTypeMenu_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to popupmenu1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on selection change in BehaviourTypemenu.
+function BehaviourTypemenu_Callback(hObject, eventdata, handles)
+% hObject    handle to BehaviourTypemenu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns BehaviourTypemenu contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from BehaviourTypemenu
+
+
+% --- Executes during object creation, after setting all properties.
+function BehaviourTypemenu_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to BehaviourTypemenu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
 end
