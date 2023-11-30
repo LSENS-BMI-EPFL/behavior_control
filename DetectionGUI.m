@@ -83,8 +83,8 @@ set(handles.SetDateTag,'String',Date2Display);
 set(handles.SetDateTag,'Enable','off');
 
 % [TO CUSTOMIZE BY EACH USER]
-set(handles.MouseNameTag,'String','ABXXX'); handles.mouse_name = get(handles.MouseNameTag,'String');
-handles.behaviour_directory = 'C:\Users\bisi\Desktop\BehaviourData';
+set(handles.MouseNameTag,'String','PBXXX'); handles.mouse_name = get(handles.MouseNameTag,'String');
+handles.behaviour_directory = 'E:\behavior';
 set(handles.BehaviorDirectoryTag,'String', handles.behaviour_directory);
 
 %% Set general session settings
@@ -144,15 +144,15 @@ set(handles.EarlyLickTimeOutTag,'Enable','off');
 %% Auditory stimulus parameters
 set(handles.ToneDurationTag,'String','10'); handles.aud_stim_duration = str2double(get(handles.ToneDurationTag,'String'));
 set(handles.ToneDurationTag,'Enable','on');
-set(handles.ToneAmpTag,'String','10'); handles.aud_stim_amp = str2double(get(handles.ToneAmpTag,'String'));
+set(handles.ToneAmpTag,'String','5'); handles.aud_stim_amp = str2double(get(handles.ToneAmpTag,'String'));
 set(handles.ToneAmpTag,'Enable','on');
 set(handles.ToneFreqTag,'String','10000'); handles.aud_stim_freq= str2double(get(handles.ToneFreqTag,'String'));
 set(handles.ToneFreqTag,'Enable','on');
 
 set(handles.AStimWeightTag,'Enable','on')
-set(handles.AStimWeightTag,'String','10'); handles.aud_stim_weight = str2double(get(handles.AStimWeightTag,'String'));
+set(handles.AStimWeightTag,'String','0'); handles.aud_stim_weight = str2double(get(handles.AStimWeightTag,'String'));
 
-set(handles.BckgNoiseFolderPath,'String','Enter path'); handles.bckg_noise_directory = get(handles.BckgNoiseFolderPath,'String');
+set(handles.BckgNoiseFolderPath,'String','M:\analysis\Pol_Bech\behaviour_context_files'); handles.bckg_noise_directory = get(handles.BckgNoiseFolderPath,'String');
 set(handles.BckgNoiseFolderPath,'Enable','off');
 
 %%  Whisker stimulus parameters
@@ -190,7 +190,7 @@ set(handles.NostimWeightTag,'Enable','on');
 %% Context task information
 set(handles.BlockSizeTag,'String','1'); handles.context_block_size = str2double(get(handles.BlockSizeTag,'String'));
 set(handles.BlockSizeTag,'Enable','off');
-set(handles.ContextTablePath,'String','Enter path'); handles.context_table_directory = get(handles.ContextTablePath,'String');
+set(handles.ContextTablePath,'String','M:\analysis\Pol_Bech\behaviour_context_files'); handles.context_table_directory = get(handles.ContextTablePath,'String');
 set(handles.ContextTablePath,'Enable','off');
 
 %% Set reward parameters
@@ -1014,6 +1014,7 @@ if handles2give.opto_session
     opto_gui.GridDropDown.Enable = 'off';
     opto_gui.AssignbregmaCheckBox.Enable = 'off';
     opto_gui.update_opto_info
+    save_opto_config
 end
 
 % Get handles for control and save handles as session configuration

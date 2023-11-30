@@ -206,7 +206,7 @@ function update_parameters
             wh_stim_opto = wh_stim_proba*opto_wh_proba;
             wh_stim_no_opto = wh_stim_proba*(1-opto_wh_proba);
 
-            main_trial_pool=[stim_light_list(1)*ones(1,round(round(no_stim_no_opto_proba*main_pool_size*100))/100),...
+            main_trial_pool=[stim_light_list(1)*ones(1,round(round(no_stim_no_opto_proba*main_pool_size*100)/100)),...
                 stim_light_list(2)*ones(1,round(round(aud_stim_no_opto*main_pool_size*100)/100)),...
                 stim_light_list(3)*ones(1,round(round(wh_stim_no_opto*main_pool_size*100)/100)),...
                 stim_light_list(4)*ones(1,round(round(no_stim_opto_proba*main_pool_size*100)/100)),...
@@ -446,9 +446,9 @@ function update_parameters
         else
             [opto_vec, galv_x, galv_y] = load_opto_vec(5,-5);
 
-            if strcmp(opto_gui.grid, 'No Grid')
-                opto_vec = opto_vec*-1;
-            end
+%             if strcmp(opto_gui.grid, 'No Grid')
+%                 opto_vec = opto_vec*-1;
+%             end
             AP = -5;
             ML = 5;
             power = -1;
@@ -461,7 +461,7 @@ function update_parameters
         end
         
         % Get optogenetic data to save
-        variables_to_save_opto = {trial_number is_stim is_auditory is_whisker context_block opto_gui.baseline*1000 power opto_gui.frequency...
+        variables_to_save_opto = {trial_number is_opto is_stim is_auditory is_whisker context_block opto_gui.baseline*1000 power opto_gui.frequency...
             opto_gui.duration opto_gui.pulse_width grid_no count AP ML ...
             voltage_x voltage_y bregma_x bregma_y};
     end
@@ -629,7 +629,7 @@ function update_parameters
         end
         Opto_S.startBackground();
 
-        disp(num2str(Opto_S.IsWaitingForExternalTrigger));
+%         disp(num2str(Opto_S.IsWaitingForExternalTrigger));
     end
 
     % Queue reward vector
