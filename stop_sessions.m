@@ -71,9 +71,9 @@ Reward_S.release();
 outputSingleScan(Trigger_S,[0 0 0]);
 
 if handles2give.opto_session
+    save_opto_config
     Opto_S.stop();
     Opto_S.release();
-%     Opto_S.delete()
 end
 
 Trigger_S.stop();

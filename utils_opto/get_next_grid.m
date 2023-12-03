@@ -126,11 +126,13 @@ function [ML, AP, grid_no, count] = get_next_grid
                 opto_wh_count(block_id) = opto_wh_count(block_id)+1;
             
         end
-        
+    
         % Display current trial in GUI
         scatter(opto_gui.UIAxes, AP, ML, 'filled', 'MarkerEdgeColor', '#DC143C', 'MarkerFaceColor', '#DC143C');
         text(opto_gui.UIAxes, 1, 6.5, {[plot_txt num2str(grid_no)], ['trial ' num2str(count) '/' num2str(grid_size)]})
         
     end
+%     save_opto_config
+end
 
 

@@ -1014,7 +1014,7 @@ if handles2give.opto_session
     opto_gui.GridDropDown.Enable = 'off';
     opto_gui.AssignbregmaCheckBox.Enable = 'off';
     opto_gui.update_opto_info
-    save_opto_config
+    
 end
 
 % Get handles for control and save handles as session configuration
