@@ -5,7 +5,7 @@ function [x_coord, y_coord] = draw_new_grid(step)
 %%% interface.
 
 arguments
-    step = 0.5; % Space between points in mm
+    step = 0.75; % Space between points in mm
 end
 
 [x, y] = meshgrid(-6:step:4, -0-step:step:7); % minimum and maximum ranges to access all left hemisphere
