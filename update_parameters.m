@@ -166,15 +166,6 @@ function update_parameters
         main_pool_size_old = main_pool_size;
     end
 
-    % If use context blocks (check sum is valid) 
-    if context_flag
-        if context_block_size ~= main_pool_size
-            disp('Sum of weight differ from required block size, adjust weights')
-        else
-            
-        end
-    end
-  
     stim_light_list=[900,901,902,903,904,905,906]; % code for stimuli: stim, aud, wh, opto_stim, opto_aud, opto_wh, opto_ctrl(tbd)
     
 
@@ -247,7 +238,7 @@ function update_parameters
                 else
                     identical_block_count = 1;
                 end
-                if identical_block_count > 1  % We don't want more than 2 consecutive context A or B block
+                if identical_block_count > context_block_size  % We don't want more than 2 consecutive context A or B block
                      new_block_id = block_id;
                      while new_block_id == block_id
                          new_block_id = randi([1, size(contexts, 2)], 1);
