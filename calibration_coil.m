@@ -19,7 +19,7 @@ trial_dur = 4000;
 %% Specify saving information and create folder
 
 dest_path = 'C:\Users\bechvila\Desktop\Behaviour_repo\calibration';
-mouse_name = 'PB164';
+mouse_name = 'PB157';
 date = datetime('today', 'Format', 'yyyyMMdd');
 
 % Create mouse directory and calibration subdirectories 
@@ -34,8 +34,8 @@ end
 %% Choose stimulus name and define impulse parameters
 %  The variable stim_name must match one of the cases below.
 
-% stim_name = 'biphasic_hann_3ms';
-stim_name = 'biphasic_hann_3ms_psy';
+stim_name = 'biphasic_hann_3ms';
+% stim_name = 'biphasic_hann_3ms_psy';
 % stim_name = 'blank';
 
 
@@ -97,7 +97,7 @@ elseif strcmp(stim_name,'biphasic_hann_3ms')
 
     % Biphasic Hann (raised cosine) window 3 ms.
     
-    stim_amp_volt = 2.8;
+    stim_amp_volt = 2.7;
     stim_duration_up = 1.5;
     stim_duration_down = 1.5;
     scale_factor = 0.9;

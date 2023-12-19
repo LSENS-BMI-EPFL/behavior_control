@@ -53,7 +53,7 @@ function [x_coord,y_coord] = get_stim_grid(grid_type, AP, ML)
             brain_mask = poly2mask(1.2*x_range, 1.2*y_range, length(-1:step:7), length(-6:step:4));
             x(~brain_mask) = nan;
             y(~brain_mask) = nan;
-            figure; scatter(x+1.5,y+0.75); hold on; plot(x_range-6, y_range-1)
+%             figure; scatter(x+1.5,y+0.75); hold on; plot(x_range-6, y_range-1)
             x_coord = reshape(x(~isnan(x))+1.5, 1,[]);
             y_coord = reshape(y(~isnan(y))+0.75, 1,[]);
     end

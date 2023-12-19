@@ -10,15 +10,16 @@ pause(.5)                       %---> why?
 outputSingleScan(Trigger_S,[0 0 0]);
 
 %% Stop widefield session
-if handles2give.wf_session
-    wf_stop
-end
     
 Main_S.stop();
 while Main_S.IsRunning
     continue
 end
 Main_S.release();
+
+if handles2give.wf_session
+    wf_stop
+end
 
 stop(Camera_S);
 while Camera_S.Running

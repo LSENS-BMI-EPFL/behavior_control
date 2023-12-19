@@ -247,7 +247,7 @@ function update_parameters
                 identical_block_count = 1;
                 end
                 context_block = contexts(block_id);
-                outputSingleScan(Context_S,[0])
+                outputSingleScan(Context_S, [0])
                 play_context_background(context_block, pink_noise_player, brown_noise_player, Context_S)
             end
             wh_rewarded_context = strcmp(context_block, mouse_rewarded_context);    
