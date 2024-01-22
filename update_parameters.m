@@ -436,10 +436,7 @@ function update_parameters
 
         else
             [opto_vec, galv_x, galv_y] = load_opto_vec(5,-5);
-
-%             if strcmp(opto_gui.grid, 'No Grid')
-%                 opto_vec = opto_vec*-1;
-%             end
+            
             AP = -5;
             ML = 5;
             power = -1;

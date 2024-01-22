@@ -23,8 +23,9 @@ function [t, opto_vec] = get_opto_vec(trial_duration)
         y = pulstran(t(1:end/2), d, pp, Opto_S.Rate);
     end
 
+    
     opto_vec = Opto_info.amplitude*[zeros([1,Opto_info.baseline*Opto_S.Rate]) y ...
         zeros([1, round((trial_duration-Opto_info.baseline-length(y)/Opto_S.Rate)*Opto_S.Rate)+1])];
-
+    opto_vec(opto_vec==0) = -1;
 end
 
