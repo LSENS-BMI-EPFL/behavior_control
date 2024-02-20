@@ -228,8 +228,12 @@ function update_parameters
                 mouse_rewarded_context = get_or_determine_mouse_rewarded_context(handles2give.context_table_directory, handles2give.mouse_name, contexts);
                 block_id = randi([1, size(contexts, 2)], 1); 
                 context_block = contexts(block_id);
-                outputSingleScan(Context_S,[0])
-                play_context_background(context_block, pink_noise_player, brown_noise_player, Context_S)
+                outputSingleScan(Context_S, [0])
+                if handles2give.context_sound_on
+                    play_context_background(context_block, pink_noise_player, brown_noise_player, Context_S)
+                else
+                   outputSingleScan(Context_S, [1]) 
+                end
             else
                 old_block_id = block_id;
                 block_id = randi([1, size(contexts, 2)], 1);
@@ -248,7 +252,11 @@ function update_parameters
                 end
                 context_block = contexts(block_id);
                 outputSingleScan(Context_S, [0])
-                play_context_background(context_block, pink_noise_player, brown_noise_player, Context_S)
+                if handles2give.context_sound_on
+                    play_context_background(context_block, pink_noise_player, brown_noise_player, Context_S)
+                else
+                   outputSingleScan(Context_S, [1]) 
+                end
             end
             wh_rewarded_context = strcmp(context_block, mouse_rewarded_context);    
         else

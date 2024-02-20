@@ -154,6 +154,8 @@ set(handles.AStimWeightTag,'String','0'); handles.aud_stim_weight = str2double(g
 
 set(handles.BckgNoiseFolderPath,'String','M:\analysis\Pol_Bech\behaviour_context_files'); handles.bckg_noise_directory = get(handles.BckgNoiseFolderPath,'String');
 set(handles.BckgNoiseFolderPath,'Enable','off');
+set(handles.ContextSoundCheckBox,'Value',1); handles.context_sound_on = get(handles.ContextSoundCheckBox,'Value');
+set(handles.ContextSoundCheckBox,'Enable','off');
 
 %%  Whisker stimulus parameters
 %   Default whisker stimulus parameters (if one stimulus type)
@@ -2255,12 +2257,14 @@ if handles.context_flag
     set(handles.BlockSizeTag,'Enable','on');
     set(handles.ContextTablePath,'Enable','on');
     set(handles.BckgNoiseFolderPath,'Enable','on');
+    set(handles.ContextSoundCheckBox,'Enable','on');
     set(handles.WhRewTag,'Value',1); handles.wh_reward = get(handles.WhRewTag,'Value');
     set(handles.WhRewTag,'Enable','off');
 else 
     set(handles.BlockSizeTag,'Enable','off');
     set(handles.ContextTablePath,'Enable','off');
     set(handles.BckgNoiseFolderPath,'Enable','off');
+    set(handles.ContextSoundCheckBox,'Enable','off');
     set(handles.WhRewTag,'Value',1); handles.wh_reward = get(handles.WhRewTag,'Value');
     set(handles.WhRewTag,'Enable','on');
 end
@@ -2570,3 +2574,19 @@ function BehaviourTypemenu_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes on button press in ContextSoundCheckBox.
+function ContextSoundCheckBox_Callback(hObject, eventdata, handles)
+% hObject    handle to ContextSoundCheckBox (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of ContextSoundCheckBox
+global handles2give
+
+handles.context_sound_on = get(handles.ContextSoundCheckBox,'Value');
+
+% Update handles structure
+handles2give=handles;
+guidata(hObject, handles);
