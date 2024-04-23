@@ -1,13 +1,7 @@
 # Behaviour Control
-**Work in progress.**
 
 MATLAB code to control data acquisition and behavioural sessions of sensory detection task(s) at Laboratory of Sensory Processing, EPFL.
-This code currently supports (uncued, undelayed) simple sensory (auditory, whisker) detection tasks. :mouse:	:desktop_computer:
-
-**Contributing - important information**: :warning:	
-- The LSENS datajoint depends on the output of **behaviour_control**. Therefore, changes made on the output of this code (i.e. `results.csv`, `session_config.json`) must be repercuted in the LSENS datajoint.
-- Example: adding/removing a variable in either of these two files mean that the corresponding table (BehaviourTrial, Session) in datajoint may be wrongly defined. This table must be updated with this variable (using the same name) and include a default variable (`null`) for all previously generated files that did not include this information. 
-- In datajoint, redefinition of tables require to "drop" the tables and repopulate them (see [lsens_datajoint](https://github.com/LSENS-BMI-EPFL/lsens_datajoint)). **This takes some time, the goal is to change these output as rarely as possible, and make use of the available boolean variables as much as possible.**
+This code currently supports (uncued, undelayed) sensory (auditory, whisker) detection tasks. :mouse:	:desktop_computer:
 
 
 ### Requirements
@@ -19,7 +13,13 @@ This code currently supports (uncued, undelayed) simple sensory (auditory, whisk
  - An audio player (e.g. VLC) for playing white noise.
 
 ### Installation
-- Clone the repository `git clone ...`, or download as zip in the computer from which you wish to run the behaviour.
+- Clone the repository `git clone ...`, (or download as zip) in the computer from which you wish to run the behaviour.
+- Regularly check for updates, then `git pull` (or re-download)
+
+
+### Behaviour set-up 
+The code assumes the following standard set-up wiring. In particular the behaviour program saves a `log_continuous.bin` file whose content is determined by the following connections.
+[Behaviour set-up diagram](https://github.com/LSENS-BMI-EPFL/behavior_control/images/behaviour_connectic.pdf)
 
 
 ### How to use
@@ -33,7 +33,7 @@ This code currently supports (uncued, undelayed) simple sensory (auditory, whisk
 
 #### Default usage
 - Run `DetectionGUI.m` to open GUI.
-- Control desired choice GUI text input, general settings and task parameters. <- These together design a sensory detection task.
+- Control desired choice GUI text input, general settings and task parameters. <- These together design a behavioural task.
 - **Video filming**:
     - Make sure the parameters specified in the camera settings match that in IC Capture (frame rate, exposure time).
     - The start delay imposes a wait time before triggering frame acquisition.
