@@ -169,10 +169,8 @@
             wf_setup(1)
         end
     
-    % Setup WF_S + Opto_S in Grid_S for combined imaging and opto
+    % Setup WF_S + O
     elseif handles2give.wf_session && handles2give.opto_session
-        global WF_FileInfo Opto_info
-        opto_wf_setup();
 
     end
 

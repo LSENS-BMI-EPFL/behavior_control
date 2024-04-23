@@ -496,8 +496,12 @@ function update_parameters
     %% For WF imaging - Load vectors in single trial imaging
     if handles2give.wf_session 
         global WF_FileInfo
-        if ~WF_FileInfo.RecordingContinuous
+        if ~WF_FileInfo.RecordingContinuous 
             wf_imaging
+            if ~handles2give.opto_session
+                WF_S.start()
+                WF_S.write([wf_cam_vec; LED1_vec; LED2_vec;]')
+            end
         end
     end
     
@@ -606,18 +610,27 @@ function update_parameters
 
     outputSingleScan(Trigger_S,[0 0 0])
 
-    if handles2give.opto_session
+    if handles2give.opto_session && ~handles2give.wf_session
         try
             queueOutputData(Opto_S, [opto_vec; galv_x; galv_y]')
             pause(.1)
-%             Opto_S.preload([opto_vec; galv_x; galv_y]');
+
         catch
             disp(['Error preloading Opto_S coords ap ml: ' num2str(AP) ' ' num2str(ML)])
             disp(Opto_S)
         end
         Opto_S.startBackground();
 
-%         disp(num2str(Opto_S.IsWaitingForExternalTrigger));
+    elseif handles2give.opto_session && handles2give.wf_session
+        try
+            queueOutputData(Opto_S, [opto_vec(1:end-1); galv_x(1:end-1); galv_y(1:end-1); wf_cam_vec]')
+            pause(.1)
+
+        catch
+            disp(['Error preloading Opto_S coords ap ml: ' num2str(AP) ' ' num2str(ML)])
+            disp(Opto_S)
+        end
+        Opto_S.startBackground();
     end
 
     % Queue reward vector

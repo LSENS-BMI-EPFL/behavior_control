@@ -56,6 +56,19 @@ function [x_coord,y_coord] = get_stim_grid(grid_type, AP, ML)
 %             figure; scatter(x+1.5,y+0.75); hold on; plot(x_range-6, y_range-1)
             x_coord = reshape(x(~isnan(x))+1.5, 1,[]);
             y_coord = reshape(y(~isnan(y))+0.75, 1,[]);
+
+        case 'Grid 4'
+            x_range = [-4.5; 3.5; 3.5; 2.5; 2.5; 1.5; 1.5; -4.5; -4.5]+6;
+            y_range = [0.5; 0.5; 4.5; 4.5; 5.5; 5.5; 6.5; 6.5; 0.5];
+            step = 1;
+            scale = step/.25;
+            [x, y] = meshgrid(-6.5:step:5.5, 0.5-step:step:6);
+            brain_mask = poly2mask(x_range, y_range, length(-1:step:5), length(-6:step:6));
+            x(~brain_mask) = nan;
+            y(~brain_mask) = nan;
+%             figure; scatter(x+2,y+1); hold on; plot(x_range-6, y_range)
+            x_coord = reshape(x(~isnan(x))+2, 1,[]);
+            y_coord = reshape(y(~isnan(y))+1, 1,[]);
     end
 
 end

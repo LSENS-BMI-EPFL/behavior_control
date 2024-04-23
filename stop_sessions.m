@@ -17,7 +17,7 @@ while Main_S.IsRunning
 end
 Main_S.release();
 
-if handles2give.wf_session
+if handles2give.wf_session  && ~handles2give.opto_session
     wf_stop
 end
 
