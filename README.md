@@ -16,12 +16,6 @@ This code currently supports (uncued, undelayed) sensory (auditory, whisker) det
 - Clone the repository `git clone ...`, (or download as zip) in the computer from which you wish to run the behaviour.
 - Regularly check for updates, then `git pull` (or re-download)
 
-
-### Behaviour set-up 
-The code assumes the following standard set-up wiring. In particular the behaviour program saves a `log_continuous.bin` file whose content is determined by the following connections.
-[Behaviour set-up diagram](https://github.com/LSENS-BMI-EPFL/behavior_control/images/behaviour_connectic.pdf)
-
-
 ### How to use
 #### Setting up 
 - In `defining_sessions.m`: for each `daq.Session` instance, modify input and output channels so that it matches your NI DAQ device setup connections.
