@@ -84,7 +84,7 @@ set(handles.SetDateTag,'Enable','off');
 
 % [TO CUSTOMIZE BY EACH USER]
 set(handles.MouseNameTag,'String','PBXXX'); handles.mouse_name = get(handles.MouseNameTag,'String');
-handles.behaviour_directory = 'E:\behavior';
+handles.behaviour_directory = 'D:\behavior';
 set(handles.BehaviorDirectoryTag,'String', handles.behaviour_directory);
 
 %% Set general session settings
@@ -150,7 +150,7 @@ set(handles.ToneFreqTag,'String','10000'); handles.aud_stim_freq= str2double(get
 set(handles.ToneFreqTag,'Enable','on');
 
 set(handles.AStimWeightTag,'Enable','on')
-set(handles.AStimWeightTag,'String','0'); handles.aud_stim_weight = str2double(get(handles.AStimWeightTag,'String'));
+set(handles.AStimWeightTag,'String','4'); handles.aud_stim_weight = str2double(get(handles.AStimWeightTag,'String'));
 
 set(handles.BckgNoiseFolderPath,'String','M:\analysis\Pol_Bech\behaviour_context_files'); handles.bckg_noise_directory = get(handles.BckgNoiseFolderPath,'String');
 set(handles.BckgNoiseFolderPath,'Enable','off');
@@ -164,7 +164,7 @@ set(handles.StimDuration1Tag,'Enable','on');
 set(handles.scaling_factor,'String','0.9'); handles.wh_scaling_factor = str2double(get(handles.scaling_factor,'String'));
 set(handles.scaling_factor,'Enable','on');
 set(handles.StimAmp1Tag,'String','2.8'); handles.wh_stim_amp_1 = str2double(get(handles.StimAmp1Tag,'String'));
-set(handles.StimWeight1Tag,'String','0'); handles.wh_stim_weight_1 = str2double(get(handles.StimWeight1Tag,'String'));
+set(handles.StimWeight1Tag,'String','8'); handles.wh_stim_weight_1 = str2double(get(handles.StimWeight1Tag,'String'));
 set(handles.StimAmp1Tag,'Enable','on');
 
 %  For additional whisker stimulis of different amplitudes
@@ -186,7 +186,7 @@ set(handles.StimAmp4Tag,'Enable','off');
 set(handles.StimWeight4Tag,'Enable','off');
 
 %% No stimulus probability
-set(handles.NostimWeightTag,'String','10'); handles.no_stim_weight = str2double(get(handles.NostimWeightTag,'String'));
+set(handles.NostimWeightTag,'String','8'); handles.no_stim_weight = str2double(get(handles.NostimWeightTag,'String'));
 set(handles.NostimWeightTag,'Enable','on');
 
 %% Context task information
