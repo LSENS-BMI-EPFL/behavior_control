@@ -22,7 +22,7 @@ function varargout = DetectionGUI(varargin)
 
 % Edit the above text to modify the response to help DetectionGUI
 
-% Last Modified by GUIDE v2.5 31-Oct-2023 12:12:15
+% Last Modified by GUIDE v2.5 08-Jul-2024 15:10:32
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -83,18 +83,14 @@ set(handles.SetDateTag,'String',Date2Display);
 set(handles.SetDateTag,'Enable','off');
 
 % [TO CUSTOMIZE BY EACH USER]
-set(handles.MouseNameTag,'String','PBXXX'); handles.mouse_name = get(handles.MouseNameTag,'String');
-handles.behaviour_directory = 'D:\behavior';
+set(handles.MouseNameTag,'String','ABXXX'); handles.mouse_name = get(handles.MouseNameTag,'String');
+handles.behaviour_directory = 'C:\Users\bisi\Desktop\BehaviourData';
 set(handles.BehaviorDirectoryTag,'String', handles.behaviour_directory);
 
 %% Set general session settings
-set(handles.FalseAlarmPunishmentCheckbox,'Value',0); handles.false_alarm_punish_flag = get(handles.FalseAlarmPunishmentCheckbox,'Value');
-set(handles.FalseAlarmPunishmentCheckbox,'Enable','on');
-set(handles.EarlyLickPunishmentCheckbox,'Value',0); handles.early_lick_punish_flag = get(handles.EarlyLickPunishmentCheckbox,'Value');
-set(handles.EarlyLickPunishmentCheckbox,'Enable','on');
 set(handles.AssociationCheckbox,'Value',0); handles.association_flag = get(handles.AssociationCheckbox,'Value');
 set(handles.AssociationCheckbox,'Enable','on');
-set(handles.CameraTagCheck,'Value', 1); handles.camera_flag = get(handles.CameraTagCheck,'Value');   
+set(handles.CameraTagCheck,'Value', 0); handles.camera_flag = get(handles.CameraTagCheck,'Value');   
 set(handles.CameraTagCheck,'Enable','on');
 set(handles.DummySessionCheckbox,'Value',0); handles.dummy_session_flag = get(handles.DummySessionCheckbox,'Value');
 set(handles.DummySessionCheckbox,'Enable','on');
@@ -134,10 +130,12 @@ set(handles.LightDutyTag,'String','0.65'); handles.light_duty = str2double(get(h
 set(handles.LightStimWeightTag,'String','0'); handles.light_aud_proba = str2double(get(handles.LightStimWeightTag,'String'));
 
 %% Set Punishment parameters
-
+set(handles.FalseAlarmPunishmentCheckbox,'Value',0); handles.false_alarm_punish_flag = get(handles.FalseAlarmPunishmentCheckbox,'Value');
+set(handles.FalseAlarmPunishmentCheckbox,'Enable','off');
+set(handles.EarlyLickPunishmentCheckbox,'Value',0); handles.early_lick_punish_flag = get(handles.EarlyLickPunishmentCheckbox,'Value');
+set(handles.EarlyLickPunishmentCheckbox,'Enable','off');
 set(handles.FalseAlarmTimeOutTag,'String','0000'); handles.false_alarm_timeout = str2double(get(handles.FalseAlarmTimeOutTag,'String'));
 set(handles.FalseAlarmTimeOutTag,'Enable','off');
-
 set(handles.EarlyLickTimeOutTag,'String','0000'); handles.early_lick_timeout = str2double(get(handles.EarlyLickTimeOutTag,'String'));
 set(handles.EarlyLickTimeOutTag,'Enable','off');
 
@@ -219,6 +217,19 @@ set(handles.CameraStartDelayTag,'String','3'); handles.camera_start_delay = str2
 set(handles.CameraStartDelayTag,'Enable','off');
 set(handles.CameraExposureTimeTag,'String','2'); handles.camera_exposure_time = str2double(get(handles.CameraExposureTimeTag,'String'));
 set(handles.CameraExposureTimeTag,'Enable','off');
+
+%% Passive stimulation settings
+set(handles.PassiveStimCheckBox,'Value',0); handles.passive_stim_flag = get(handles.PassiveStimCheckBox,'Value');
+set(handles.PassiveStimCheckBox,'Enable','on');
+set(handles.PassiveAtStart,'Value',0); handles.passive_at_start_flag = get(handles.PassiveAtStart,'Value');
+set(handles.PassiveAtStart,'Enable','off');
+set(handles.PassiveAtEnd,'Value',0); handles.passive_at_end_flag = get(handles.PassiveAtEnd,'Value');
+set(handles.PassiveAtEnd,'Enable','off');
+set(handles.PassiveTrialsNumber,'String','40'); handles.passive_trials_number = str2double(get(handles.PassiveTrialsNumber,'String'));
+set(handles.PassiveTrialsNumber,'Enable','off');
+set(handles.PassiveITI,'String','5000'); handles.passive_iti = str2double(get(handles.PassiveITI,'String'));
+set(handles.PassiveITI,'Enable','off');
+
 
 %% Initialize axes
 axes(handles.TrialStartTTL); set(gca,'XTick',[]); set(gca,'XColor','w'); set(gca,'YTick',[]); set(gca,'YColor','w');
@@ -1689,6 +1700,14 @@ function RewardProbTag_Callback(hObject, eventdata, handles)
 global handles2give
 
 handles.reward_proba = round(str2double(get(handles.RewardProbTag,'String'))*10)/10;
+if handles.reward_proba > 1 || handles.reward_proba < 0
+    disp('Warning: reward proba is not between 0 and 1. Setting to nearest.');
+    if handles.reward_proba > 1
+       handles.reward_proba = 1;
+    elseif handles.reward_proba < 0
+       handles.reward_proba = 0;
+    end
+end
 set(handles.RewardProbTag,'String',num2str(handles.reward_proba));
 
 % Update handles structure
@@ -2500,10 +2519,13 @@ function LightStimWeightTag_Callback(hObject, eventdata, handles)
 global handles2give
 
 handles.light_stim_weight = round(str2double(get(handles.LightStimWeightTag,'String'))*100)/100;
-if handles.light_stim_weight > 1
-   handles.light_stim_weight = 1;
-elseif handles.light_stim_weight < 0
-   handles.light_stim_weight = 0;
+if handles.light_stim_weight > 1 || handles.light_stim_weight < 0
+    disp('Warning: light stim proba is not between 0 and 1. Setting to nearest.');
+    if handles.light_stim_weight > 1
+       handles.light_stim_weight = 1;
+    elseif handles.light_stim_weight < 0
+       handles.light_stim_weight = 0;
+    end
 end
 set(handles.LightStimWeightTag,'String',handles.light_stim_weight);
 
@@ -2590,3 +2612,122 @@ handles.context_sound_on = get(handles.ContextSoundCheckBox,'Value');
 % Update handles structure
 handles2give=handles;
 guidata(hObject, handles);
+
+
+% --- Executes on button press in PassiveStimCheckBox.
+function PassiveStimCheckBox_Callback(hObject, eventdata, handles)
+% hObject    handle to PassiveStimCheckBox (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of PassiveStimCheckBox
+global handles2give
+
+
+handles.passive_stim_flag = get(handles.PassiveStimCheckBox,'Value');
+if handles.passive_stim_flag
+    set(handles.PassiveAtStart,'Enable','on');
+    set(handles.PassiveAtEnd,'Enable','on');
+    set(handles.PassiveTrialsNumber,'Enable','on');
+    set(handles.PassiveITI,'Enable','on');
+
+else
+    set(handles.PassiveAtStart,'Enable','off');
+    set(handles.PassiveAtEnd,'Enable','off');
+    set(handles.PassiveTrialsNumber,'Enable','off');
+    set(handles.PassiveITI,'Enable','off');
+
+end
+
+% Update handles structure
+handles2give=handles;
+guidata(hObject, handles);
+
+
+% --- Executes on button press in PassiveAtStart.
+function PassiveAtStart_Callback(hObject, eventdata, handles)
+% hObject    handle to PassiveAtStart (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of PassiveAtStart
+global handles2give
+handles.passive_at_start_flag = get(handles.PassiveAtStart,'Value');
+
+% Update handles structure
+handles2give=handles;
+guidata(hObject, handles);
+
+
+% --- Executes on button press in PassiveAtEnd.
+function PassiveAtEnd_Callback(hObject, eventdata, handles)
+% hObject    handle to PassiveAtEnd (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of PassiveAtEnd
+global handles2give
+handles.passive_at_end_flag = get(handles.PassiveAtEnd,'Value');
+
+% Update handles structure
+handles2give=handles;
+guidata(hObject, handles);
+
+function PassiveTrialsNumber_Callback(hObject, eventdata, handles)
+% hObject    handle to PassiveTrialsNumber (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of PassiveTrialsNumber as text
+%        str2double(get(hObject,'String')) returns contents of PassiveTrialsNumber as a double
+global handles2give
+handles.passive_trials_number = round(str2double(get(handles.PassiveTrialsNumber,'String')));
+set(handles.PassiveTrialsNumber,'String',handles.passive_trials_number);
+
+% Update handles structure
+handles2give=handles;
+guidata(hObject, handles);
+
+% --- Executes during object creation, after setting all properties.
+function PassiveTrialsNumber_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to PassiveTrialsNumber (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function PassiveITI_Callback(hObject, eventdata, handles)
+% hObject    handle to PassiveITI (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of PassiveITI as text
+%        str2double(get(hObject,'String')) returns contents of PassiveITI as a double
+global handles2give
+handles.passive_iti = round(str2double(get(handles.PassiveITI,'String')));
+set(handles.PassiveITI,'String',handles.passive_iti);
+
+% Update handles structure
+handles2give=handles;
+guidata(hObject, handles);
+
+
+% --- Executes during object creation, after setting all properties.
+function PassiveITI_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to PassiveITI (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
