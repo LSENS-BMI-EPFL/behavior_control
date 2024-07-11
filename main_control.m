@@ -17,7 +17,9 @@ function main_control(~,event)
         is_reward...
         light_prestim_delay light_duration light_freq light_amp SITrigger_vec...
         context_flag extra_time...
-        pink_noise_player brown_noise_player context_block WF_S Opto_S
+        pink_noise_player brown_noise_player context_block WF_S Opto_S ...
+        passive_stim_flag is_passive 
+
         
 
     %% Timing last lick detection for quiet window.
@@ -37,24 +39,34 @@ function main_control(~,event)
 
     % Trial start: 1. if stim flag ON, 2. no lick in quiet window 3. iti
     % has elapsed since trial_end_time
+    if stim_flag && toc(trial_end_time) > iti/ 1000 + extra_time && toc(lick_time) > quiet_window/1000
     
-    if stim_flag && toc(lick_time) > quiet_window/1000 && toc(trial_end_time) > iti/1000+extra_time
-
-        stim_flag=0; %reset
-        set(handles2give.OnlineTextTag,'String','Trial Started','FontWeight','bold');
-        trial_start_time=tic;
-        outputSingleScan(Trigger_S,[1 0 0])
-
-
-        % Free reward
-        if association_flag && is_stim
-            deliver_reward_flag=1;
+        % Reset the stimulation flag
+        stim_flag = 0;
+    
+        % Update GUI to indicate trial start
+        if is_passive
+            set(handles2give.OnlineTextTag, 'String', 'Trial Started (Passive)', 'FontWeight', 'bold');
+        else
+            set(handles2give.OnlineTextTag, 'String', 'Trial Started', 'FontWeight', 'bold');
         end
-
+    
+        % Start the trial timer
+        trial_start_time = tic;
+        outputSingleScan(Trigger_S, [1 0 0]);
+    
+        % Check if a free reward should be delivered
+        if association_flag && ~passive_stim_flag && is_stim
+            deliver_reward_flag = 1;
+        end
+    
+        % Set flags for trial status
         trial_started_flag = 1;
         perf_and_save_results_flag = 0;
         mouse_licked_flag = 0;
-        trial_time = toc(session_start_time); % time since session start
+    
+        % Record the trial time
+        trial_time = toc(session_start_time); % Time since session start
     end
 
 
@@ -206,7 +218,6 @@ function main_control(~,event)
             aud_stim_duration aud_stim_amp aud_stim_freq aud_reward early_lick ...
             is_light light_amp light_duration light_freq light_prestim_delay ...
             context_block};
-%         disp(variables_to_save)
 
         variable_saving_names = {'trial_number', 'perf', 'trial_time', 'association_flag', 'quiet_window','iti', ...
             'response_window', 'artifact_window','baseline_window','trial_duration', ...
@@ -216,7 +227,6 @@ function main_control(~,event)
             'aud_stim_duration','aud_stim_amp','aud_stim_freq','aud_reward', ...
             'early_lick', ...
             'is_light', 'light_amp','light_duration','light_freq','light_prestim', 'context_block'};
-%         disp(variable_saving_names)
 
         % Update csv result file
         update_and_save_results_csv(variables_to_save, variable_saving_names);

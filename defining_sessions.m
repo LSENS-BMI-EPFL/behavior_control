@@ -10,7 +10,7 @@
         folder_name handles2give early_lick_counter session_start_time...
         Main_S_SR Reward_Ch light_counter whisker_trial_counter...
         fid_continuous trial_start_ttl lick_data cam1_ttl cam2_ttl scan_pos...
-        continuous_lick_data Camera_S Context_S context_ttl WF_S Opto_S
+        continuous_lick_data Camera_S Context_S context_ttl WF_S Opto_S passive_trial_counter 
         
 
 
@@ -174,6 +174,7 @@
     early_lick_counter = 0;
     local_counter = 0; % for plot_lick_trace
     whisker_trial_counter = 0; %for partial rewards
+    passive_trial_counter = 0;
  
     % Update parameters in GUI
     update_parameters;

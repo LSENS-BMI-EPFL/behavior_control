@@ -17,7 +17,8 @@ function update_parameters
         light_duration light_freq light_amp light_duty camera_freq SITrigger_vec main_trial_pool...
         whisker_trial_counter mouse_rewarded_context context_block context_flag block_id wh_rewarded_context...
         pink_noise_player brown_noise_player identical_block_count extra_time Context_S...
-        WF_S wf_cam_vec LED1_vec LED2_vec opto_vec galv_x galv_y
+        WF_S wf_cam_vec LED1_vec LED2_vec opto_vec galv_x galv_y ...
+        passive_stim_flag_enable passive_stim_flag passive_trial_max passive_iti passive_trial_counter is_passive
        
 
     outputSingleScan(Trigger_S,[0 0 0])
@@ -101,8 +102,37 @@ function update_parameters
         light_duty = handles2give.light_duty;
         light_stim_weight = handles2give.light_stim_weight;
     end
-    
 
+    % Passive stimulation 
+    passive_stim_flag_enable = handles2give.passive_stim_flag_enable;
+    passive_stim_flag = handles2give.passive_stim_flag;
+    passive_trial_max = handles2give.passive_trial_max;
+    passive_iti = handles2give.passive_iti;
+
+    if passive_stim_flag
+        if passive_trial_counter < passive_trial_max
+            is_passive = 1;
+            association_flag = 1; % to exclude from performance and plots
+            quiet_window = 0;
+            iti = passive_iti;
+
+            passive_trial_counter = passive_trial_counter + 1;
+            disp(['Passive trial ' num2str(passive_trial_counter)]);
+        else
+            is_passive = 0;
+            association_flag = 0;
+            passive_stim_flag=0;
+            set(handles2give.PassiveOnToggleButton,'Value',0);
+            handles2give.passive_stim_flag = 0; % this will be reset when toggle button pressed again
+            disp('End of passive stimulation.')
+        end
+    else
+       passive_trial_counter = 0; % keep counter
+    end
+
+    
+  
+  
     %% Compute stimulus probability
     stim_proba = (aud_stim_weight + wh_stim_weight)/(aud_stim_weight + wh_stim_weight + no_stim_weight);
     %stim_proba = compute_stim_proba(handles2give);
@@ -169,6 +199,7 @@ function update_parameters
     stim_light_list=[900,901,902,903,904,905,906]; % code for stimuli: stim, aud, wh, opto_stim, opto_aud, opto_wh, opto_ctrl(tbd)
     
 
+    % --- Creation of pseudo-random pool of trials (= block) ---
     % Create new trial pool when current pool finished, or, when change in parameters
     if mod(n_completed_trials, main_pool_size)==0 || main_pool_size_old ~= main_pool_size||...
             stim_proba_old ~= stim_proba || aud_stim_proba_old ~= aud_stim_proba|| wh_stim_proba_old ~= wh_stim_proba ||... 
@@ -216,10 +247,8 @@ function update_parameters
         %Randomize occurrence of trials in pool
         main_trial_pool=main_trial_pool(randperm(numel(main_trial_pool)));
 
-        % Specify absence of context
-        context_block = {'NA'};
 
-        % if context 
+        % if context task
         if context_flag
             contexts = {'pink', 'brown'};
             if trial_number==1
@@ -263,49 +292,95 @@ function update_parameters
             block_id = 1;
         end
     end
+    % --- End of trial pool creation ---
 
-    % Select next trial
+    
+    % Specify active/passive trial context, or absence of
+    if passive_stim_flag_enable
+        if is_passive
+            context_block = {'passive'};
+        else
+            context_block = {'active'};
+        end
+    else
+        context_block = {'NA'};
+    end
+
+    % Select next trial 
     trial_type = main_trial_pool(mod(n_completed_trials,main_pool_size)+1); %0 noLight 1 Light
+    
+    if is_passive
+        switch trial_type
 
-    switch trial_type
-        case stim_light_list(1) % NO STIM TRIAL
-            is_stim=0;
-            is_auditory=0;
-            is_whisker=0;
-            is_light=0;
-            is_opto=0;
-        case stim_light_list(2) % AUDITORY TRIAL
-            is_stim=1;
-            is_auditory=1;
-            is_whisker=0;
-            is_light=0;
-            is_opto=0;
-        case stim_light_list(3) % WHISKER TRIAL
-            is_stim=1;
-            is_auditory=0;
-            is_whisker=1;
-            is_light=0;
-            is_opto=0;
-            whisker_trial_counter=whisker_trial_counter+1; %for proba. reward pool indexing
-        case stim_light_list(4) % LIGHT NO STIM TRIAL
-            is_stim=0;
-            is_auditory=0;
-            is_whisker=0;
-            is_light=0;
-            is_opto=1;
-        case stim_light_list(5) % LIGHT AUDITORY TRIAL
-            is_stim=1;
-            is_auditory=1;
-            is_whisker=0;
-            is_light=0;
-            is_opto=1;
-        case stim_light_list(6)  % LIGHT WHISKER TRIAL
-            is_stim=1;
-            is_auditory=0;
-            is_whisker=1;
-            is_light=0;
-            is_opto=1;
-            whisker_trial_counter=whisker_trial_counter+1; %for proba. reward pool indexing
+            case stim_light_list(2) % AUDITORY TRIAL
+                is_stim=1;
+                is_auditory=1;
+                is_whisker=0;
+                is_light=0;
+                is_opto=0;
+            case stim_light_list(3) % WHISKER TRIAL
+                is_stim=1;
+                is_auditory=0;
+                is_whisker=1;
+                is_light=0;
+                is_opto=0;
+                whisker_trial_counter=whisker_trial_counter+1; %for proba. reward pool indexing
+
+            case stim_light_list(5) % LIGHT AUDITORY TRIAL
+                is_stim=1;
+                is_auditory=1;
+                is_whisker=0;
+                is_light=0;
+                is_opto=1;
+            case stim_light_list(6)  % LIGHT WHISKER TRIAL
+                is_stim=1;
+                is_auditory=0;
+                is_whisker=1;
+                is_light=0;
+                is_opto=1;
+                whisker_trial_counter=whisker_trial_counter+1; %for proba. reward pool indexing
+        end
+    else
+        switch trial_type
+            case stim_light_list(1) % NO STIM TRIAL
+                is_stim=0;
+                is_auditory=0;
+                is_whisker=0;
+                is_light=0;
+                is_opto=0;
+            case stim_light_list(2) % AUDITORY TRIAL
+                is_stim=1;
+                is_auditory=1;
+                is_whisker=0;
+                is_light=0;
+                is_opto=0;
+            case stim_light_list(3) % WHISKER TRIAL
+                is_stim=1;
+                is_auditory=0;
+                is_whisker=1;
+                is_light=0;
+                is_opto=0;
+                whisker_trial_counter=whisker_trial_counter+1; %for proba. reward pool indexing
+            case stim_light_list(4) % LIGHT NO STIM TRIAL
+                is_stim=0;
+                is_auditory=0;
+                is_whisker=0;
+                is_light=0;
+                is_opto=1;
+            case stim_light_list(5) % LIGHT AUDITORY TRIAL
+                is_stim=1;
+                is_auditory=1;
+                is_whisker=0;
+                is_light=0;
+                is_opto=1;
+            case stim_light_list(6)  % LIGHT WHISKER TRIAL
+                is_stim=1;
+                is_auditory=0;
+                is_whisker=1;
+                is_light=0;
+                is_opto=1;
+                whisker_trial_counter=whisker_trial_counter+1; %for proba. reward pool indexing
+        end
     end
 
     % Set light parameters to zero if not a light trial
@@ -316,6 +391,7 @@ function update_parameters
         light_duration=0;
         light_freq=0;
     end
+
 
     %% Reward Settings
     reward_valve_duration=handles2give.reward_valve_duration;    % duration valve open in milliseconds
@@ -571,8 +647,14 @@ function update_parameters
         ['Amp=' num2str(wh_stim_amp) ', ' 'Duration=' num2str(wh_stim_duration)], ...
         ['Amp=' num2str(aud_stim_amp) ', ' 'Duration=' num2str(aud_stim_duration) ', ' 'Frequency=' num2str(aud_stim_freq)]};
 
-    reward_titles={'Not rewarded', 'Rewarded'};
-    association_titles={'', ' Association'};
+    if is_passive
+        association_titles={'', ''};
+        reward_titles={'Passive', 'Passive'};
+    else
+        association_titles={'', ' Association'};
+        reward_titles={'Not rewarded', 'Rewarded'};
+    end
+
     if is_opto
             opto_titles={'Opto OFF', 'Opto ON'};
     else
@@ -594,6 +676,10 @@ function update_parameters
             else
                 reward_title = 'Not rewarded';
                 wcolor = [0.6350 0.0780 0.1840];
+            end
+
+            if is_passive
+                reward_title = 'Passive';
             end
             
             set(handles2give.TrialTimeLineTextTag,'String',['Next trial: Whisker. ' char(trial_titles(is_stim+1)) ' '...
@@ -676,5 +762,7 @@ function update_parameters
     else
         extra_time = 0;
     end
+
+
 
 end

@@ -22,7 +22,7 @@ function varargout = DetectionGUI(varargin)
 
 % Edit the above text to modify the response to help DetectionGUI
 
-% Last Modified by GUIDE v2.5 08-Jul-2024 15:10:32
+% Last Modified by GUIDE v2.5 10-Jul-2024 12:44:49
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -219,15 +219,13 @@ set(handles.CameraExposureTimeTag,'String','2'); handles.camera_exposure_time = 
 set(handles.CameraExposureTimeTag,'Enable','off');
 
 %% Passive stimulation settings
-set(handles.PassiveStimCheckBox,'Value',0); handles.passive_stim_flag = get(handles.PassiveStimCheckBox,'Value');
+set(handles.PassiveStimCheckBox,'Value',0); handles.passive_stim_enable = get(handles.PassiveStimCheckBox,'Value');
 set(handles.PassiveStimCheckBox,'Enable','on');
-set(handles.PassiveAtStart,'Value',0); handles.passive_at_start_flag = get(handles.PassiveAtStart,'Value');
-set(handles.PassiveAtStart,'Enable','off');
-set(handles.PassiveAtEnd,'Value',0); handles.passive_at_end_flag = get(handles.PassiveAtEnd,'Value');
-set(handles.PassiveAtEnd,'Enable','off');
-set(handles.PassiveTrialsNumber,'String','40'); handles.passive_trials_number = str2double(get(handles.PassiveTrialsNumber,'String'));
+set(handles.PassiveOnToggleButton,'Value',0); handles.passive_stim_flag = get(handles.PassiveOnToggleButton,'Value');
+set(handles.PassiveOnToggleButton,'Enable','off');
+set(handles.PassiveTrialsNumber,'String','40'); handles.passive_trial_max = str2double(get(handles.PassiveTrialsNumber,'String'));
 set(handles.PassiveTrialsNumber,'Enable','off');
-set(handles.PassiveITI,'String','5000'); handles.passive_iti = str2double(get(handles.PassiveITI,'String'));
+set(handles.PassiveITI,'String','7000'); handles.passive_iti = str2double(get(handles.PassiveITI,'String')); % in addition to trial_duration
 set(handles.PassiveITI,'Enable','off');
 
 
@@ -2624,16 +2622,14 @@ function PassiveStimCheckBox_Callback(hObject, eventdata, handles)
 global handles2give
 
 
-handles.passive_stim_flag = get(handles.PassiveStimCheckBox,'Value');
-if handles.passive_stim_flag
-    set(handles.PassiveAtStart,'Enable','on');
-    set(handles.PassiveAtEnd,'Enable','on');
+handles.passive_stim_flag_enable = get(handles.PassiveStimCheckBox,'Value');
+if handles.passive_stim_flag_enable
+    set(handles.PassiveOnToggleButton,'Enable','on');
     set(handles.PassiveTrialsNumber,'Enable','on');
     set(handles.PassiveITI,'Enable','on');
 
 else
-    set(handles.PassiveAtStart,'Enable','off');
-    set(handles.PassiveAtEnd,'Enable','off');
+    set(handles.PassiveOnToggleButton,'Enable','off');
     set(handles.PassiveTrialsNumber,'Enable','off');
     set(handles.PassiveITI,'Enable','off');
 
@@ -2644,35 +2640,6 @@ handles2give=handles;
 guidata(hObject, handles);
 
 
-% --- Executes on button press in PassiveAtStart.
-function PassiveAtStart_Callback(hObject, eventdata, handles)
-% hObject    handle to PassiveAtStart (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hint: get(hObject,'Value') returns toggle state of PassiveAtStart
-global handles2give
-handles.passive_at_start_flag = get(handles.PassiveAtStart,'Value');
-
-% Update handles structure
-handles2give=handles;
-guidata(hObject, handles);
-
-
-% --- Executes on button press in PassiveAtEnd.
-function PassiveAtEnd_Callback(hObject, eventdata, handles)
-% hObject    handle to PassiveAtEnd (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hint: get(hObject,'Value') returns toggle state of PassiveAtEnd
-global handles2give
-handles.passive_at_end_flag = get(handles.PassiveAtEnd,'Value');
-
-% Update handles structure
-handles2give=handles;
-guidata(hObject, handles);
-
 function PassiveTrialsNumber_Callback(hObject, eventdata, handles)
 % hObject    handle to PassiveTrialsNumber (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -2681,8 +2648,8 @@ function PassiveTrialsNumber_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of PassiveTrialsNumber as text
 %        str2double(get(hObject,'String')) returns contents of PassiveTrialsNumber as a double
 global handles2give
-handles.passive_trials_number = round(str2double(get(handles.PassiveTrialsNumber,'String')));
-set(handles.PassiveTrialsNumber,'String',handles.passive_trials_number);
+handles.passive_trial_max = round(str2double(get(handles.PassiveTrialsNumber,'String')));
+set(handles.PassiveTrialsNumber,'String',handles.passive_trial_max);
 
 % Update handles structure
 handles2give=handles;
@@ -2699,7 +2666,6 @@ function PassiveTrialsNumber_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
 
 
 function PassiveITI_Callback(hObject, eventdata, handles)
@@ -2731,3 +2697,25 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
+% --- Executes on button press in PassiveOnToggleButton.
+function PassiveOnToggleButton_Callback(hObject, eventdata, handles)
+% hObject    handle to PassiveOnToggleButton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global handles2give
+
+handles.passive_stim_flag = get(hObject,'Value');
+
+if handles.passive_stim_flag
+    set(handles.PassiveTrialsNumber,'Enable','on');
+    set(handles.PassiveITI,'Enable','on');
+
+else
+    set(handles.PassiveTrialsNumber,'Enable','off');
+    set(handles.PassiveITI,'Enable','off');
+
+end
+
+% Update handles structure
+handles2give= handles;
+guidata(hObject, handles);
