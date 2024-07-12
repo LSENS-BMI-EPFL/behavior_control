@@ -219,7 +219,7 @@ set(handles.CameraExposureTimeTag,'String','2'); handles.camera_exposure_time = 
 set(handles.CameraExposureTimeTag,'Enable','off');
 
 %% Passive stimulation settings
-set(handles.PassiveStimCheckBox,'Value',0); handles.passive_stim_enable = get(handles.PassiveStimCheckBox,'Value');
+set(handles.PassiveStimCheckBox,'Value',0); handles.passive_stim_flag_enable = get(handles.PassiveStimCheckBox,'Value');
 set(handles.PassiveStimCheckBox,'Enable','on');
 set(handles.PassiveOnToggleButton,'Value',0); handles.passive_stim_flag = get(handles.PassiveOnToggleButton,'Value');
 set(handles.PassiveOnToggleButton,'Enable','off');
@@ -2620,7 +2620,6 @@ function PassiveStimCheckBox_Callback(hObject, eventdata, handles)
 
 % Hint: get(hObject,'Value') returns toggle state of PassiveStimCheckBox
 global handles2give
-
 
 handles.passive_stim_flag_enable = get(handles.PassiveStimCheckBox,'Value');
 if handles.passive_stim_flag_enable
