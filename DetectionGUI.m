@@ -148,7 +148,7 @@ set(handles.ToneFreqTag,'String','10000'); handles.aud_stim_freq= str2double(get
 set(handles.ToneFreqTag,'Enable','on');
 
 set(handles.AStimWeightTag,'Enable','on')
-set(handles.AStimWeightTag,'String','4'); handles.aud_stim_weight = str2double(get(handles.AStimWeightTag,'String'));
+set(handles.AStimWeightTag,'String','10'); handles.aud_stim_weight = str2double(get(handles.AStimWeightTag,'String'));
 
 set(handles.BckgNoiseFolderPath,'String','M:\analysis\Pol_Bech\behaviour_context_files'); handles.bckg_noise_directory = get(handles.BckgNoiseFolderPath,'String');
 set(handles.BckgNoiseFolderPath,'Enable','off');
@@ -162,7 +162,7 @@ set(handles.StimDuration1Tag,'Enable','on');
 set(handles.scaling_factor,'String','0.9'); handles.wh_scaling_factor = str2double(get(handles.scaling_factor,'String'));
 set(handles.scaling_factor,'Enable','on');
 set(handles.StimAmp1Tag,'String','2.8'); handles.wh_stim_amp_1 = str2double(get(handles.StimAmp1Tag,'String'));
-set(handles.StimWeight1Tag,'String','8'); handles.wh_stim_weight_1 = str2double(get(handles.StimWeight1Tag,'String'));
+set(handles.StimWeight1Tag,'String','0'); handles.wh_stim_weight_1 = str2double(get(handles.StimWeight1Tag,'String'));
 set(handles.StimAmp1Tag,'Enable','on');
 
 %  For additional whisker stimulis of different amplitudes
@@ -184,7 +184,7 @@ set(handles.StimAmp4Tag,'Enable','off');
 set(handles.StimWeight4Tag,'Enable','off');
 
 %% No stimulus probability
-set(handles.NostimWeightTag,'String','8'); handles.no_stim_weight = str2double(get(handles.NostimWeightTag,'String'));
+set(handles.NostimWeightTag,'String','10'); handles.no_stim_weight = str2double(get(handles.NostimWeightTag,'String'));
 set(handles.NostimWeightTag,'Enable','on');
 
 %% Context task information
@@ -194,7 +194,7 @@ set(handles.ContextTablePath,'String','M:\analysis\Pol_Bech\behaviour_context_fi
 set(handles.ContextTablePath,'Enable','off');
 
 %% Set reward parameters
-set(handles.ValveOpeningTag,'String','45'); handles.reward_valve_duration = str2double(get(handles.ValveOpeningTag,'String'));
+set(handles.ValveOpeningTag,'String','40'); handles.reward_valve_duration = str2double(get(handles.ValveOpeningTag,'String'));
 set(handles.ValveOpeningTag, 'Enable', 'on');
 set(handles.RewardDelayCheckbox,'Value',0); handles.reward_delay_flag = get(handles.RewardDelayCheckbox,'Value');
 set(handles.RewardDelayCheckbox,'Enable','off');
@@ -225,7 +225,7 @@ set(handles.PassiveOnToggleButton,'Value',0); handles.passive_stim_flag = get(ha
 set(handles.PassiveOnToggleButton,'Enable','off');
 set(handles.PassiveTrialsNumber,'String','40'); handles.passive_trial_max = str2double(get(handles.PassiveTrialsNumber,'String'));
 set(handles.PassiveTrialsNumber,'Enable','off');
-set(handles.PassiveITI,'String','7000'); handles.passive_iti = str2double(get(handles.PassiveITI,'String')); % in addition to trial_duration
+set(handles.PassiveITI,'String','3000'); handles.passive_iti = str2double(get(handles.PassiveITI,'String')); % in addition to trial_duration
 set(handles.PassiveITI,'Enable','off');
 
 

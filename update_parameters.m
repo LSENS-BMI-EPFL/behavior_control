@@ -113,6 +113,7 @@ function update_parameters
         if passive_trial_counter < passive_trial_max
             is_passive = 1;
             association_flag = 1; % to exclude from performance and plots
+            trial_duration = 1000;
             quiet_window = 0;
             iti = passive_iti;
 
