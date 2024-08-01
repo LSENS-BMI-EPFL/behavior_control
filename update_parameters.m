@@ -108,7 +108,7 @@ function update_parameters
     passive_stim_flag = handles2give.passive_stim_flag;
     passive_trial_max = handles2give.passive_trial_max;
     passive_iti = handles2give.passive_iti;
-
+    is_passive = 0;
     if passive_stim_flag
         if passive_trial_counter < passive_trial_max
             is_passive = 1;
