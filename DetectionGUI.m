@@ -161,7 +161,7 @@ set(handles.StimDuration1Tag,'String','3'); handles.wh_stim_duration = str2doubl
 set(handles.StimDuration1Tag,'Enable','on');
 set(handles.scaling_factor,'String','0.9'); handles.wh_scaling_factor = str2double(get(handles.scaling_factor,'String'));
 set(handles.scaling_factor,'Enable','on');
-set(handles.StimAmp1Tag,'String','2.8'); handles.wh_stim_amp_1 = str2double(get(handles.StimAmp1Tag,'String'));
+set(handles.StimAmp1Tag,'String','3.2'); handles.wh_stim_amp_1 = str2double(get(handles.StimAmp1Tag,'String'));
 set(handles.StimWeight1Tag,'String','0'); handles.wh_stim_weight_1 = str2double(get(handles.StimWeight1Tag,'String'));
 set(handles.StimAmp1Tag,'Enable','on');
 
@@ -208,7 +208,7 @@ set(handles.AudRewTag,'Value',1); handles.aud_reward = get(handles.AudRewTag,'Va
 set(handles.AudRewTag,'Enable','off');
 set(handles.WhRewTag,'Value',1); handles.wh_reward = get(handles.WhRewTag,'Value');
 set(handles.WhRewTag,'Enable','on');
-set(handles.LickThresholdTag,'String','0.05'); handles.lick_threshold = str2double(get(handles.LickThresholdTag,'String'));
+set(handles.LickThresholdTag,'String','0.03'); handles.lick_threshold = str2double(get(handles.LickThresholdTag,'String'));
 
 %% Behaviour camera settings
 set(handles.CameraFrameRateTag,'String','200'); handles.camera_freq = str2double(get(handles.CameraFrameRateTag,'String'));
@@ -2622,6 +2622,7 @@ function PassiveStimCheckBox_Callback(hObject, eventdata, handles)
 global handles2give
 
 handles.passive_stim_flag_enable = get(handles.PassiveStimCheckBox,'Value');
+
 if handles.passive_stim_flag_enable
     set(handles.PassiveOnToggleButton,'Enable','on');
     set(handles.PassiveTrialsNumber,'Enable','on');
@@ -2710,6 +2711,7 @@ if handles.passive_stim_flag
     set(handles.PassiveITI,'Enable','on');
 
 else
+    set(handles2give.PassiveTrialsNumber,'Value',0);
     set(handles.PassiveTrialsNumber,'Enable','off');
     set(handles.PassiveITI,'Enable','off');
 
