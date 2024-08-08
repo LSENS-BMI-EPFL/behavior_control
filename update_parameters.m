@@ -109,27 +109,37 @@ function update_parameters
     passive_trial_max = handles2give.passive_trial_max;
     passive_iti = handles2give.passive_iti;
     is_passive = 0;
-    if passive_stim_flag
-        if passive_trial_counter < passive_trial_max
-            is_passive = 1;
-            association_flag = 1; % to exclude from performance and plots
-            trial_duration = 1000;
-            quiet_window = 0;
-            iti = passive_iti;
 
-            passive_trial_counter = passive_trial_counter + 1;
-            disp(['Passive trial ' num2str(passive_trial_counter)]);
+    if passive_stim_flag_enable
+        contexts = {'active', 'passive'};
+        if passive_stim_flag
+            if passive_trial_counter < passive_trial_max
+                is_passive = 1;
+                association_flag = 1; % to exclude from performance and plots
+                trial_duration = 1000;
+                quiet_window = 0;
+                iti = passive_iti;
+    
+                passive_trial_counter = passive_trial_counter + 1;
+                context_block = contexts(is_passive+1)
+                disp(['Passive trial ' num2str(passive_trial_counter)]);
+            else
+                is_passive = 0;
+                association_flag = 0;
+                passive_stim_flag=0;
+                context_block = contexts(is_passive+1)
+                set(handles2give.PassiveOnToggleButton,'Value',0);
+                handles2give.passive_stim_flag = 0; % this will be reset when toggle button pressed again
+                disp('End of passive stimulation.')
+            end
         else
-            is_passive = 0;
-            association_flag = 0;
-            passive_stim_flag=0;
-            set(handles2give.PassiveOnToggleButton,'Value',0);
-            handles2give.passive_stim_flag = 0; % this will be reset when toggle button pressed again
-            disp('End of passive stimulation.')
+           context_block = contexts(is_passive+1)
+           passive_trial_counter = 0; % keep counter
         end
     else
-       passive_trial_counter = 0; % keep counter
+        is_passive=0;
     end
+
 
     
   
@@ -248,6 +258,11 @@ function update_parameters
         %Randomize occurrence of trials in pool
         main_trial_pool=main_trial_pool(randperm(numel(main_trial_pool)));
 
+        if passive_stim_flag_enable
+            contexts = {'active', 'passive'};
+        else
+            context_block = {'NA'};
+        end
 
         % if context task
         if context_flag
@@ -295,22 +310,18 @@ function update_parameters
     end
     % --- End of trial pool creation ---
 
-    
-    % Specify active/passive trial context, or absence of
-    if passive_stim_flag_enable
-        if is_passive
-            context_block = {'passive'};
-        else
-            context_block = {'active'};
-        end
-    else
-        context_block = {'NA'};
-    end
+   
 
     % Select next trial 
-    trial_type = main_trial_pool(mod(n_completed_trials,main_pool_size)+1); %0 noLight 1 Light
+    %trial_type = main_trial_pool(mod(n_completed_trials,main_pool_size)+1); %0 noLight 1 Light
     
     if is_passive
+        
+        main_trial_pool_passive = main_trial_pool((main_trial_pool~=900) & (main_trial_pool~=903)); % remove no stim trials
+        main_pool_passive_size = wh_stim_weight + aud_stim_weight;
+%         trial_type = main_trial_pool_passive(mod(n_completed_trials,main_pool_passive_size)+1); %0 noLight 1 Light
+        trial_type = randsample(main_trial_pool_passive, 1);
+        
         switch trial_type
 
             case stim_light_list(2) % AUDITORY TRIAL
@@ -342,6 +353,9 @@ function update_parameters
                 whisker_trial_counter=whisker_trial_counter+1; %for proba. reward pool indexing
         end
     else
+
+        trial_type = main_trial_pool(mod(n_completed_trials,main_pool_size)+1); %0 noLight 1 Light
+
         switch trial_type
             case stim_light_list(1) % NO STIM TRIAL
                 is_stim=0;
