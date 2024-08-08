@@ -137,7 +137,6 @@ function update_parameters
            passive_trial_counter = 0; % keep counter
         end
     else
-        context_block = {'NA'};
         is_passive=0;
     end
 
