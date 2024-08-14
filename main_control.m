@@ -18,7 +18,7 @@ function main_control(~,event)
         light_prestim_delay light_duration light_freq light_amp SITrigger_vec...
         context_flag extra_time...
         pink_noise_player brown_noise_player context_block WF_S Opto_S ...
-        passive_stim_flag is_passive 
+        passive_stim_flag is_passive opto_vec galv_x galv_y wf_cam_vec
 
         
 
@@ -248,28 +248,6 @@ function main_control(~,event)
 
     end
 
-    %% Update parameters for next trial
-    % ---------------------------------
-    if update_parameters_flag && Stim_S.IsDone &&...
-            (~reward_delivered_flag || Reward_S.ScansQueued==0) && ~handles2give.PauseRequested %<- why check reward flag?
-
-        update_parameters_flag=0;
-
-%         if handles2give.opto_session
-%             global Opto_S
-%             Opto_S.stop();
-%         end
-
-        update_parameters;
-
-    elseif update_parameters_flag && Stim_S.IsDone &&...
-            (~reward_delivered_flag || Reward_S.ScansQueued==0) && handles2give.PauseRequested && handles2give.ReportPause
-
-        handles2give.ReportPause=0; %reset
-        set(handles2give.OnlineTextTag,'String','Session Paused','FontWeight','bold');
-
-    end
-
     %% UNCLEAR PART - Detecting early licks (licks between baseline start and stimulus or between light start and stim) <- CHECK THIS
     % Early licks results in aborted trials, before starting a new trial
 
@@ -282,20 +260,12 @@ function main_control(~,event)
         early_lick_counter=early_lick_counter+1;
         deliver_reward_flag=0;
         Stim_S.stop();
+        outputSingleScan(Trigger_S,[0 0 0]);
         
         if handles2give.opto_session
             Opto_S.stop();
             Opto_S.release();
         end
-
-        if handles2give.wf_session % for trial based WF imaging
-            global WF_FileInfo
-            if ~WF_FileInfo.RecordingContinuous
-                WF_S.stop();
-            end
-        end
-
-        outputSingleScan(Trigger_S,[0 0 0]);
 
         set(handles2give.OnlineTextTag,'String','Early Lick','FontWeight','bold');
 
@@ -308,16 +278,11 @@ function main_control(~,event)
             pause(early_lick_timeout / 1000);
         end
 
-        queueOutputData(Stim_S,[zeros(1,Stim_S_SR/2);zeros(1,Stim_S_SR/2); zeros(1,Stim_S_SR/2); zeros(1,Stim_S_SR/2)]')
-        Stim_S.prepare();
-        Stim_S.startBackground();
+%         queueOutputData(Stim_S,[zeros(1,Stim_S_SR/2);zeros(1,Stim_S_SR/2); zeros(1,Stim_S_SR/2); zeros(1,Stim_S_SR/2)]')
+%         Stim_S.prepare();
+%         Stim_S.startBackground();
+        pause(2);
 
-        if handles2give.opto_session
-            global opto_vec galv_x galv_y
-            queueOutputData(Opto_S, [opto_vec; galv_x; galv_y]')
-            Opto_S.startBackground();
-        end
-        
         lick_flag = 1;
         perf = 6;
 
@@ -342,43 +307,48 @@ function main_control(~,event)
 
         % Update csv result file
         update_and_save_results_csv(variables_to_save, variable_saving_names)
+        
+        if handles2give.opto_session && ~handles2give.wf_session
+
+            try
+                queueOutputData(Opto_S, [opto_vec; galv_x; galv_y]')
+                pause(.1)
+    
+            catch
+                disp(['Error preloading Opto_S coords ap ml: ' num2str(AP) ' ' num2str(ML)])
+                disp(Opto_S)
+            end
+            Opto_S.startBackground();
+    
+        elseif handles2give.opto_session && handles2give.wf_session
+           
+            try
+                queueOutputData(Opto_S, [opto_vec(1:end-1); galv_x(1:end-1); galv_y(1:end-1); wf_cam_vec]')
+                pause(.1)
+    
+            catch
+                disp(['Error preloading Opto_S coords ap ml: ' num2str(AP) ' ' num2str(ML)])
+                disp(Opto_S)
+            end
+            Opto_S.startBackground();
+        end
 
         if handles2give.opto_session
             global variables_to_save_opto
-
             variables_names_opto = {'trial_number', 'is_opto', 'is_stim', 'is_auditory', 'is_whisker', 'context_block', ...
                 'baseline', 'opto_amp', 'opto_freq', 'opto_duration', 'opto_pulse_width', ...
                 'grid_no', 'grid_count', 'coord_AP', 'coord_ML', 'volt_x', 'volt_y', 'bregma_x', 'bregma_y'};
 
             update_and_save_opto_csv(variables_to_save_opto, variables_names_opto);
+            variables_to_save_opto{1} = variables_to_save_opto{1}+1;
 
-        end
-
-        while ~Stim_S.IsRunning
-            continue
-        end
-
-        outputSingleScan(Trigger_S,[1 0 0]);
-
-        while Stim_S.ScansQueued==0
-            continue
-        end
-
-        Stim_S.stop();
-        Stim_S.release();
-        outputSingleScan(Trigger_S,[0 0 0]);
-
-        while Stim_S.IsRunning
-            continue
         end
 
         trial_number = trial_number + 1;
 
-        % queueOutputData(Stim_S,[Wh_vec; Aud_vec;Light_vec;Camera_vec;SITrigger_vec]')
         queueOutputData(Stim_S,[wh_vec; aud_vec; camera_vec;SITrigger_vec]')
 
         Stim_S.startBackground();
-
         while ~Stim_S.IsRunning
             continue
         end
@@ -387,8 +357,27 @@ function main_control(~,event)
         reaction_time = 0;
         early_lick = 0;
         stim_flag=1;
+        trial_end_time=tic; %trial end time after reward delivery and results are saved
+        update_parameters_flag=1; %update params for next trials
+        
     end
 
+    %% Update parameters for next trial
+    % ---------------------------------
+    if update_parameters_flag && Stim_S.IsDone &&...
+            (~reward_delivered_flag || Reward_S.ScansQueued==0) && ~handles2give.PauseRequested %<- why check reward flag?
+
+        update_parameters_flag=0;
+
+        update_parameters;
+
+    elseif update_parameters_flag && Stim_S.IsDone &&...
+            (~reward_delivered_flag || Reward_S.ScansQueued==0) && handles2give.PauseRequested && handles2give.ReportPause
+
+        handles2give.ReportPause=0; %reset
+        set(handles2give.OnlineTextTag,'String','Session Paused','FontWeight','bold');
+
+    end
 
     %% Rewarding the stimulus trials in association mode
     % --------------------------------------------------
