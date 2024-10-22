@@ -3,6 +3,7 @@
 MATLAB code to control data acquisition and behavioural sessions of sensory detection task(s) at Laboratory of Sensory Processing, EPFL.
 This code currently supports (uncued, undelayed) sensory (auditory, whisker) detection tasks. :mouse:	:desktop_computer:
 
+Documentation for this code is in this [repo's wiki](https://github.com/LSENS-BMI-EPFL/behavior_control/wiki).
 
 ### Requirements
  - Git
