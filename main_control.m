@@ -346,7 +346,7 @@ function main_control(~,event)
 
         trial_number = trial_number + 1;
 
-        queueOutputData(Stim_S,[wh_vec; aud_vec; camera_vec;SITrigger_vec]')
+        queueOutputData(Stim_S,[wh_vec; aud_vec; opto_vec; camera_vec;SITrigger_vec]')
 
         Stim_S.startBackground();
         while ~Stim_S.IsRunning

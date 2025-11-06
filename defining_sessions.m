@@ -117,6 +117,9 @@
     aoch_aud=addAnalogOutputChannel(Stim_S,'Dev2','ao1', 'Voltage'); % Auditory  stim (tone) channel
     aoch_aud.TerminalConfig='SingleEnded';
 
+    aoch_opto=addAnalogOutputChannel(Stim_S,'Dev2','ao2', 'Voltage'); % Opto  stim channel
+    aoch_opto.TerminalConfig='SingleEnded';
+
     addDigitalChannel(Stim_S,'Dev2', 'Port0/Line0', 'OutputOnly'); %  Camera Channel
     addDigitalChannel(Stim_S,'Dev2', 'Port0/Line1', 'OutputOnly'); %  ScanImage Trigger Channel (2P-imaging)
 
@@ -129,7 +132,6 @@
 
 
     % Create a Camera Continuous recording session
-
     Camera_S = daq('ni');
     Camera_S.Rate = 5000;
     cam_ch = addoutput(Camera_S, 'Dev1', 'ctr0', 'PulseGeneration'); % Camera frames
@@ -141,28 +143,29 @@
     Context_S = daq.createSession('ni');
     addDigitalChannel(Context_S,'Dev2', 'Port0/Line2', 'OutputOnly'); %  Context channel
 
-    % Setup Opto_S with trigger, if applicable
-    if handles2give.opto_session && ~handles2give.wf_session
-        global Opto_info Opto_S
-        opto_setup(1);
+    if is_wf_computer(getenv("COMPUTERNAME"))
+        % Setup Opto_S with trigger, if applicable
+        if handles2give.opto_session && ~handles2give.wf_session
+            global Opto_info Opto_S
+            opto_setup(1);
+        
+        % Setup WF_S and start continuous WF imaging, if applicable
+        elseif handles2give.wf_session && ~handles2give.opto_session
+            global WF_FileInfo % Generated in WF_GUI
+            addpath([fileparts(cd) '\WF_imaging\'])
+            if WF_FileInfo.RecordingContinuous
+                wf_setup  
+            else
+                wf_setup(1)
+            end
+        
+        % Setup WF_S + Opto_S in Grid_S for combined imaging and opto
+        elseif handles2give.wf_session && handles2give.opto_session
+            global WF_FileInfo Opto_info
+            opto_wf_setup();
     
-    % Setup WF_S and start continuous WF imaging, if applicable
-    elseif handles2give.wf_session && ~handles2give.opto_session
-        global WF_FileInfo % Generated in WF_GUI
-        addpath([fileparts(cd) '\WF_imaging\'])
-        if WF_FileInfo.RecordingContinuous
-            wf_setup  
-        else
-            wf_setup(1)
         end
-    
-    % Setup WF_S + Opto_S in Grid_S for combined imaging and opto
-    elseif handles2give.wf_session && handles2give.opto_session
-        global WF_FileInfo Opto_info
-        opto_wf_setup();
-
     end
-
     
     % Run Main Control
     % ----------------

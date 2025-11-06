@@ -528,15 +528,18 @@ function update_parameters
     if handles2give.opto_session
         global opto_gui Opto_S variables_to_save_opto voltage_x voltage_y bregma_x bregma_y opto_count
         if is_opto
+            if is_wf_computer(getenv("COMPUTERNAME"))
             [ML, AP, grid_no, count] = get_next_grid;
             power = opto_gui.amplitude;
             [opto_vec, galv_x, galv_y] = load_opto_vec(ML,AP);
-            if ~is_wf_computer(getenv("COMPUTERNAME"))
-                opto_vec = opto_vec(1:end-1);
-                power = opto_gui.amplitude; % replace bz actual power              
-            end
-            opto_count = opto_count+1;
             
+
+            else
+                [AP, ML] = get_stim_grid("No Grid", opto_gui.AP_coord, opto_gui.ML_coord);
+                grid_no = nan;
+                opto_vec = opto_vec(1:end-1);
+                power = opto_gui.amplitude; % replace bz actual power
+            end
         else
             if is_wf_computer(getenv("COMPUTERNAME")) % Shine control opto outside the brain
                 [opto_vec, galv_x, galv_y] = load_opto_vec(5,-5);

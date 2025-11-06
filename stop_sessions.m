@@ -45,7 +45,7 @@ while Reward_S.IsRunning
 end
 Reward_S.startBackground();
 
-queueOutputData(Stim_S,[zeros(1,Stim_S_SR/2); zeros(1,Stim_S_SR/2); zeros(1,Stim_S_SR/2); zeros(1,Stim_S_SR/2)]')
+queueOutputData(Stim_S,[zeros(1,Stim_S_SR/2); zeros(1,Stim_S_SR/2); zeros(1,Stim_S_SR/2); zeros(1,Stim_S_SR/2); zeros(1,Stim_S_SR/2)]')
 Stim_S.prepare(); %optional as per documentation, not sure what is
 Stim_S.startBackground();
 
@@ -71,7 +71,7 @@ Reward_S.release();
 
 outputSingleScan(Trigger_S,[0 0 0]);
 
-if handles2give.opto_session
+if handles2give.opto_session && is_wf_computer(getenv("COMPUTERNAME"))
     save_opto_config
     Opto_S.stop();
     Opto_S.release();
