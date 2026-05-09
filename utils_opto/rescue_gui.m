@@ -37,9 +37,31 @@ function [output] = rescue_gui()
     Stim_S.startBackground();
     outputSingleScan(Trigger_S,[0 0 0]);
 
-    queueOutputData(Opto_S, [opto_vec; galv_x; galv_y]');
-    pause(.1)
-    Opto_S.startBackground();
+        if handles2give.opto_session && ~handles2give.wf_session
+
+            try
+                queueOutputData(Opto_S, [opto_vec; galv_x; galv_y]')
+                pause(.1)
+    
+            catch
+                disp(['Error preloading Opto_S coords ap ml: ' num2str(AP) ' ' num2str(ML)])
+                disp(Opto_S)
+            end
+            Opto_S.startBackground();
+    
+        elseif handles2give.opto_session && handles2give.wf_session
+           
+            try
+                queueOutputData(Opto_S, [opto_vec(1:end-1); galv_x(1:end-1); galv_y(1:end-1); wf_cam_vec]')
+                pause(.1)
+    
+            catch
+                disp(['Error preloading Opto_S coords ap ml: ' num2str(AP) ' ' num2str(ML)])
+                disp(Opto_S)
+            end
+            Opto_S.startBackground();
+        end
+
 
     if ~Reward_S.ScansQueued
         queueOutputData(Reward_S, reward_vec')

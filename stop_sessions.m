@@ -72,9 +72,17 @@ Reward_S.release();
 outputSingleScan(Trigger_S,[0 0 0]);
 
 if handles2give.opto_session
-    save_opto_config
+    global opto_stim_count opto_wh_count opto_aud_count opto_count stim_grid wh_grid aud_grid
+    save_opto_config    
     Opto_S.stop();
     Opto_S.release();
+    stim_grid = [1, 1];
+    opto_stim_count = [1, 1];
+    wh_grid = [1, 1];
+    opto_wh_count = [1, 1];
+    aud_grid = [1, 1];
+    opto_aud_count = [1, 1];
+    opto_count = 1;
 end
 
 Trigger_S.stop();
