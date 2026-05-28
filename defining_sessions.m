@@ -5,13 +5,21 @@
 
     global  Reward_S Stim_S Log_S association_flag lick_time  trial_number   ...
         trial_start_time  trial_end_time  timeout_time ...
-        Trigger_S  Stim_S_SR Main_S Log_S_SR...
+        Trigger_S  Stim_S_SR Main_S Log_S_SR TTL_S...
         lh1 lh2 Reward_S_SR local_counter lick_channel_times camera_start_time ...
         folder_name handles2give early_lick_counter session_start_time...
         Main_S_SR Reward_Ch light_counter whisker_trial_counter...
         fid_continuous trial_start_ttl lick_data cam1_ttl cam2_ttl scan_pos...
-        continuous_lick_data Camera_S Context_S context_ttl WF_S Opto_S passive_trial_counter 
-        
+        continuous_lick_data Camera_S Context_S context_ttl WF_S Opto_S passive_trial_counter... 
+        ttl_ch1 ttl_ch2 pdco_is_on pdco_trial pdco_activation ...
+        pdco_block_mode_started pdco_activation_block_counter ...
+        pdco_prev_config_key pdco_continuous_stop_armed ...
+        pdco_prev_ch2_start pdco_alternate_start_block ...
+        pdco_trial_on_flags pdco_trial_off_flags ...
+        ttl1_edge_times_s ttl1_edge_states ttl1_edge_idx ttl1_current_state ...
+        ttl2_edge_times_s ttl2_edge_states ttl2_edge_idx ttl2_current_state ...
+        wh_stim_amp_pool wh_stim_amp_pool_idx wh_stim_amp_pool_key ...
+        session_stopping_flag
 
 
     % Initialize variables and result file
@@ -32,10 +40,13 @@
     % Initialized variables for continuous plotting with zeros.
     trial_start_ttl = zeros(1,10*Log_S_SR);
     continuous_lick_data = zeros(1,10*Log_S_SR);
+    
     cam1_ttl = zeros(1,10*Log_S_SR);
     cam2_ttl = zeros(1,10*Log_S_SR);
     scan_pos = zeros(1,10*Log_S_SR);
     context_ttl =  zeros(1,10*Log_S_SR);
+    ttl_ch1 = zeros(1,10*Log_S_SR);
+    ttl_ch2 = zeros(1,10*Log_S_SR);
     
     % Folder to behaviour data output
     folder_name=[char(handles2give.behaviour_directory) '\' char(handles2give.mouse_name) ...
@@ -64,20 +75,21 @@
 
     Log_S = daq.createSession('ni');
 
-    % ai0: lick
+    % ai0: lick 
     % ai1: galvo scanner position
     % ai2: trial start ttl
     % ai3: camera 1
     % ai4: camera 2
     % ai5: context transition
+    % ai6: TTL ch1 (port0/line3)
+    % ai7: TTL ch2 (port0/line4)
+    % ai16: dummy1
+    % ai17: dummy2
     
-    ai_log = addAnalogInputChannel(Log_S, 'Dev2', [0,1,2,3,4, 5], 'Voltage');
-    ai_log(1).TerminalConfig='SingleEnded';
-    ai_log(2).TerminalConfig='SingleEnded';
-    ai_log(3).TerminalConfig='SingleEnded';
-    ai_log(4).TerminalConfig='SingleEnded';
-    ai_log(5).TerminalConfig='SingleEnded';
-    ai_log(6).TerminalConfig='SingleEnded';
+    ai_log = addAnalogInputChannel(Log_S, 'Dev2', [0,1,2,3,4,5,6,7,16,17], 'Voltage');
+    for k = 1:numel(ai_log)
+        ai_log(k).TerminalConfig = 'Differential';
+    end
     Log_S.Rate = Log_S_SR;
     Log_S.IsContinuous = true;
     lh2 = addlistener(Log_S,'DataAvailable', @(src, event) log_continuously(src, event));
@@ -122,10 +134,16 @@
 
     addTriggerConnection(Stim_S,'External','Dev2/PFI0','StartTrigger');
 
+    
     Stim_S.Rate = Stim_S_SR;
     Stim_S.IsContinuous = true;
     Stim_S.TriggersPerRun = 1;
     Stim_S.ExternalTriggerTimeout = 2000;
+
+
+    TTL_S = daq.createSession('ni');
+    addDigitalChannel(TTL_S,'Dev2', 'Port0/Line3', 'OutputOnly');
+    addDigitalChannel(TTL_S,'Dev2', 'Port0/Line4', 'OutputOnly');
 
 
     % Create a Camera Continuous recording session
@@ -167,6 +185,8 @@
     % Run Main Control
     % ----------------
 
+    session_stopping_flag = false;
+
     % Set counters
     handles2give.PauseRequested=0;
     trial_number = 0;
@@ -175,7 +195,37 @@
     local_counter = 0; % for plot_lick_trace
     whisker_trial_counter = 0; %for partial rewards
     passive_trial_counter = 0;
- 
+
+    pdco_is_on = 0;
+    pdco_trial = 0;
+    pdco_activation = 0;
+
+    pdco_block_mode_started = false;
+    pdco_activation_block_counter = NaN;
+    pdco_prev_config_key = '';
+    pdco_continuous_stop_armed = false;
+    pdco_prev_ch2_start = false;
+    pdco_alternate_start_block = NaN;
+
+    pdco_trial_on_flags = [];
+    pdco_trial_off_flags = [];
+
+    % TTL edge playback state
+    ttl1_edge_times_s = [];
+    ttl1_edge_states = [];
+    ttl1_edge_idx = 1;
+    ttl1_current_state = false;
+
+    ttl2_edge_times_s = [];
+    ttl2_edge_states = [];
+    ttl2_edge_idx = 1;
+    ttl2_current_state = false;
+
+    % Initialize whisker amplitude pool
+    wh_stim_amp_pool = [];
+    wh_stim_amp_pool_idx = 1;
+    wh_stim_amp_pool_key = '';
+
     % Update parameters in GUI
     update_parameters;
 
