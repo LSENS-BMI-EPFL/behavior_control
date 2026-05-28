@@ -22,7 +22,7 @@ function varargout = DetectionGUI(varargin)
 
 % Edit the above text to modify the response to help DetectionGUI
 
-% Last Modified by GUIDE v2.5 10-Jul-2024 12:44:49
+% Last Modified by GUIDE v2.5 12-May-2026 17:46:59
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -72,6 +72,7 @@ set(handles.EphysCheckbox,'Value',0); handles.ephys_session = get(handles.EphysC
 set(handles.OptoCheckbox,'Value',0); handles.opto_session = get(handles.OptoCheckbox,'Value');
 set(handles.ChemoCheckbox,'Value',0); handles.chemo_session = get(handles.ChemoCheckbox,'Value');
 set(handles.PharmaCheckbox,'Value',0); handles.pharma_session = get(handles.PharmaCheckbox,'Value');
+set(handles.PdCOCheckbox,'Value',0); handles.ttl_session = get(handles.PdCOCheckbox,'Value');
 
 
 %% Set general session information
@@ -83,8 +84,8 @@ set(handles.SetDateTag,'String',Date2Display);
 set(handles.SetDateTag,'Enable','off');
 
 % [TO CUSTOMIZE BY EACH USER]
-set(handles.MouseNameTag,'String','ABXXX'); handles.mouse_name = get(handles.MouseNameTag,'String');
-handles.behaviour_directory = 'C:\Users\bisi\Desktop\BehaviourData';
+set(handles.MouseNameTag,'String','MPXXX'); handles.mouse_name = get(handles.MouseNameTag,'String');
+handles.behaviour_directory = 'D:\Behavior\BehaviourData';
 set(handles.BehaviorDirectoryTag,'String', handles.behaviour_directory);
 
 %% Set general session settings
@@ -148,7 +149,7 @@ set(handles.ToneFreqTag,'String','10000'); handles.aud_stim_freq= str2double(get
 set(handles.ToneFreqTag,'Enable','on');
 
 set(handles.AStimWeightTag,'Enable','on')
-set(handles.AStimWeightTag,'String','10'); handles.aud_stim_weight = str2double(get(handles.AStimWeightTag,'String'));
+set(handles.AStimWeightTag,'String','0'); handles.aud_stim_weight = str2double(get(handles.AStimWeightTag,'String'));
 
 set(handles.BckgNoiseFolderPath,'String','M:\analysis\Pol_Bech\behaviour_context_files'); handles.bckg_noise_directory = get(handles.BckgNoiseFolderPath,'String');
 set(handles.BckgNoiseFolderPath,'Enable','off');
@@ -161,26 +162,34 @@ set(handles.StimDuration1Tag,'String','3'); handles.wh_stim_duration = str2doubl
 set(handles.StimDuration1Tag,'Enable','on');
 set(handles.scaling_factor,'String','0.9'); handles.wh_scaling_factor = str2double(get(handles.scaling_factor,'String'));
 set(handles.scaling_factor,'Enable','on');
-set(handles.StimAmp1Tag,'String','3.2'); handles.wh_stim_amp_1 = str2double(get(handles.StimAmp1Tag,'String'));
-set(handles.StimWeight1Tag,'String','0'); handles.wh_stim_weight_1 = str2double(get(handles.StimWeight1Tag,'String'));
+set(handles.StimAmp1Tag,'String','1.94'); handles.wh_stim_amp_1 = str2double(get(handles.StimAmp1Tag,'String'));
+set(handles.StimAmp1mT,'String','20'); handles.wh_stim_amp_mT_1 = str2double(get(handles.StimAmp1mT,'String'));
+set(handles.StimWeight1Tag,'String','10'); handles.wh_stim_weight_1 = str2double(get(handles.StimWeight1Tag,'String'));
 set(handles.StimAmp1Tag,'Enable','on');
+set(handles.StimAmp1mT,'Enable','on');
 
 %  For additional whisker stimulis of different amplitudes
 set(handles.StimAmpRangeCheckbox,'Value',0); handles.wh_stim_amp_range = get(handles.StimAmpRangeCheckbox,'Value');
 
-set(handles.StimAmp2Tag,'String','0'); handles.wh_stim_amp_2 = str2double(get(handles.StimAmp2Tag,'String'));
-set(handles.StimWeight2Tag,'String','0'); handles.wh_stim_weight_2 = str2double(get(handles.StimWeight2Tag,'String'));
+set(handles.StimAmp2Tag,'String','1.45'); handles.wh_stim_amp_2 = str2double(get(handles.StimAmp2Tag,'String'));
+set(handles.StimAmp2mT,'String','15'); handles.wh_stim_amp_mT_2 = str2double(get(handles.StimAmp2mT,'String'));
+set(handles.StimWeight2Tag,'String','3'); handles.wh_stim_weight_2 = str2double(get(handles.StimWeight2Tag,'String'));
 set(handles.StimAmp2Tag,'Enable','off');
+set(handles.StimAmp2mT,'Enable','off');
 set(handles.StimWeight2Tag,'Enable','off');
 
-set(handles.StimAmp3Tag,'String','0'); handles.wh_stim_amp_3 = str2double(get(handles.StimAmp3Tag,'String'));
-set(handles.StimWeight3Tag,'String','0'); handles.wh_stim_weight_3 = str2double(get(handles.StimWeight3Tag,'String'));
+set(handles.StimAmp3Tag,'String','0.96'); handles.wh_stim_amp_3 = str2double(get(handles.StimAmp3Tag,'String'));
+set(handles.StimAmp3mT,'String','10'); handles.wh_stim_amp_mT_3 = str2double(get(handles.StimAmp3mT,'String'));
+set(handles.StimWeight3Tag,'String','3'); handles.wh_stim_weight_3 = str2double(get(handles.StimWeight3Tag,'String'));
 set(handles.StimAmp3Tag,'Enable','off');
+set(handles.StimAmp3mT,'Enable','off');
 set(handles.StimWeight3Tag,'Enable','off');
 
-set(handles.StimAmp4Tag,'String','0'); handles.wh_stim_amp_4 = str2double(get(handles.StimAmp4Tag,'String'));
-set(handles.StimWeight4Tag,'String','0'); handles.wh_stim_weight_4 = str2double(get(handles.StimWeight4Tag,'String'));
+set(handles.StimAmp4Tag,'String','0.48'); handles.wh_stim_amp_4 = str2double(get(handles.StimAmp4Tag,'String'));
+set(handles.StimAmp4mT,'String','5'); handles.wh_stim_amp_mT_4 = str2double(get(handles.StimAmp4mT,'String'));
+set(handles.StimWeight4Tag,'String','3'); handles.wh_stim_weight_4 = str2double(get(handles.StimWeight4Tag,'String'));
 set(handles.StimAmp4Tag,'Enable','off');
+set(handles.StimAmp4mT,'Enable','off');
 set(handles.StimWeight4Tag,'Enable','off');
 
 %% No stimulus probability
@@ -194,7 +203,7 @@ set(handles.ContextTablePath,'String','M:\analysis\Pol_Bech\behaviour_context_fi
 set(handles.ContextTablePath,'Enable','off');
 
 %% Set reward parameters
-set(handles.ValveOpeningTag,'String','40'); handles.reward_valve_duration = str2double(get(handles.ValveOpeningTag,'String'));
+set(handles.ValveOpeningTag,'String','45'); handles.reward_valve_duration = str2double(get(handles.ValveOpeningTag,'String'));
 set(handles.ValveOpeningTag, 'Enable', 'on');
 set(handles.RewardDelayCheckbox,'Value',0); handles.reward_delay_flag = get(handles.RewardDelayCheckbox,'Value');
 set(handles.RewardDelayCheckbox,'Enable','off');
@@ -238,7 +247,7 @@ axes(handles.ScanAx); set(gca,'XTick',[]); set(gca,'XColor','w'); set(gca,'YTick
 
 axes(handles.EarlyLickAxes); set(gca,'XTick',[]); set(gca,'XColor','w'); set(gca,'YTick',[]); set(gca,'YColor','w');
 axes(handles.PerformanceAxes); set(gca,'XTick',[]); set(gca,'XColor','w'); set(gca,'YTick',[]); set(gca,'YColor','w');
-set(handles.LastRecentTrialsTag,'String','5'); handles.last_recent_trials = str2double(get(handles.LastRecentTrialsTag,'String'));
+set(handles.LastRecentTrialsTag,'String','20'); handles.last_recent_trials = str2double(get(handles.LastRecentTrialsTag,'String'));
 axes(handles.LickTraceAx); set(gca,'XTick',[]); set(gca,'XColor','w'); set(gca,'YTick',[]); set(gca,'YColor','w');
 
 
@@ -505,8 +514,41 @@ elseif exist('opto_gui') && handles.opto_session==0
     clear opto_gui
 end
 
-% Update handles structure
-handles2give=handles;
+function PdCOCheckbox_Callback(hObject, eventdata, handles)
+% hObject    handle to PdCOCheckbox (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+global handles2give ttl_gui
+
+val = get(handles.PdCOCheckbox,'Value');
+
+% Update both handles and global mirror
+handles.ttl_session = val;
+handles2give = handles;
+
+% disp('PdCOCheckbox_Callback fired')
+% disp(['checkbox value = ' num2str(val)])
+% disp(['handles2give.ttl_session set to = ' num2str(handles2give.ttl_session)])
+
+if val == 1
+    thisFilePath = fileparts(mfilename('fullpath'));
+    addpath(fullfile(thisFilePath, 'utils_TTL'))
+    ttl_gui = TTL_GUI;
+
+else
+    global TTL_info
+    TTL_info = [];
+
+    try
+        if exist('ttl_gui','var') && ~isempty(ttl_gui) && isvalid(ttl_gui)
+            ttl_gui.delete();
+        end
+    catch
+    end
+    clear ttl_gui
+end
+
 guidata(hObject, handles);
 
 % --- Executes on button press in DummySessionCheckbox.
@@ -1024,12 +1066,35 @@ if handles2give.opto_session
     global opto_gui Opto_S
     opto_gui.GridDropDown.Enable = 'off';
     opto_gui.AssignbregmaCheckBox.Enable = 'off';
-    opto_gui.update_opto_info
-    
+    opto_gui.update_opto_info   
 end
 
-% Get handles for control and save handles as session configuration
-handles2give= handles; 
+if isfield(handles2give,'ttl_session') && handles2give.ttl_session
+    global ttl_gui
+    if ~isempty(ttl_gui) && isvalid(ttl_gui)
+        ttl_gui.update_ttl_info();
+    end
+end
+
+% Push TTL GUI state into TTL_info before session creation
+if isfield(handles2give,'ttl_session') && handles2give.ttl_session
+    global ttl_gui
+    try
+        if ~isempty(ttl_gui) && isvalid(ttl_gui)
+            ttl_gui.update_ttl_info();
+        end
+    catch
+        disp('Could not update TTL GUI info before session start.')
+    end
+end
+
+% Keep current ttl_session state
+if isfield(handles2give,'ttl_session')
+    handles.ttl_session = handles2give.ttl_session;
+end
+
+% Mirror fresh handles globally and save
+handles2give = handles;
 save_session_config(handles);
 
 % Define sessions
@@ -1043,6 +1108,7 @@ function StopBehaviourTag_Callback(hObject, eventdata, handles)
 % hObject    handle to StopBehaviourTag (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
 
 stop_sessions
 global handles2give
@@ -2483,19 +2549,25 @@ global handles2give
 handles.wh_stim_amp_range = get(handles.StimAmpRangeCheckbox,'Value');
 if handles.wh_stim_amp_range
     set(handles.StimAmp2Tag,'Enable','on');
+    set(handles.StimAmp2mT,'Enable','on');
     set(handles.StimWeight2Tag,'Enable','on');
     set(handles.StimAmp3Tag,'Enable','on');
+    set(handles.StimAmp3mT,'Enable','on');
     set(handles.StimWeight3Tag,'Enable','on');
     set(handles.StimAmp4Tag,'Enable','on');
+    set(handles.StimAmp4mT,'Enable','on');
     set(handles.StimWeight4Tag,'Enable','on');
 else
     set(handles.StimAmp2Tag,'Enable','off');
+    set(handles.StimAmp2mT,'Enable','off');
     set(handles.StimWeight2Tag,'Enable','off');
     set(handles.StimWeight2Tag,'String','0'); handles.wh_stim_weight_2 = str2double(get(handles.StimWeight2Tag,'String'));
     set(handles.StimAmp3Tag,'Enable','off');
+    set(handles.StimAmp3mT,'Enable','off');
     set(handles.StimWeight3Tag,'Enable','off');
     set(handles.StimWeight3Tag,'String','0'); handles.wh_stim_weight_3 = str2double(get(handles.StimWeight3Tag,'String'));
     set(handles.StimAmp4Tag,'Enable','off');
+    set(handles.StimAmp4mT,'Enable','off');
     set(handles.StimWeight4Tag,'Enable','off');
     set(handles.StimWeight4Tag,'String','0'); handles.wh_stim_weight_4 = str2double(get(handles.StimWeight4Tag,'String'));
 end
@@ -2720,3 +2792,126 @@ end
 % Update handles structure
 handles2give= handles;
 guidata(hObject, handles);
+
+
+function StimAmp1mT_Callback(hObject, eventdata, handles)
+% hObject    handle to StimAmp1mT (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of StimAmp1mT as text
+%        str2double(get(hObject,'String')) returns contents of StimAmp1mT as a double
+global handles2give
+
+handles.wh_stim_amp_mT_1 = round(str2double(get(handles.StimAmp1mT,'String'))*100)/100;
+set(handles.StimAmp1mT,'String',num2str(handles.wh_stim_amp_mT_1));
+
+% Update handles structure
+handles2give=handles;
+guidata(hObject, handles);
+
+
+% --- Executes during object creation, after setting all properties.
+function StimAmp1mT_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to StimAmp1mT (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function StimAmp2mT_Callback(hObject, eventdata, handles)
+% hObject    handle to StimAmp2mT (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of StimAmp2mT as text
+%        str2double(get(hObject,'String')) returns contents of StimAmp2mT as a double
+global handles2give
+
+handles.wh_stim_amp_mT_2 = round(str2double(get(handles.StimAmp2mT,'String'))*100)/100;
+set(handles.StimAmp2mT,'String',num2str(handles.wh_stim_amp_mT_2));
+
+% Update handles structure
+handles2give=handles;
+guidata(hObject, handles);
+
+
+% --- Executes during object creation, after setting all properties.
+function StimAmp2mT_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to StimAmp2mT (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function StimAmp3mT_Callback(hObject, eventdata, handles)
+% hObject    handle to StimAmp3mT (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of StimAmp3mT as text
+%        str2double(get(hObject,'String')) returns contents of StimAmp3mT as a double
+global handles2give
+
+handles.wh_stim_amp_mT_3 = round(str2double(get(handles.StimAmp3mT,'String'))*100)/100;
+set(handles.StimAmp3mT,'String',num2str(handles.wh_stim_amp_mT_3));
+
+% Update handles structure
+handles2give=handles;
+guidata(hObject, handles);
+
+
+% --- Executes during object creation, after setting all properties.
+function StimAmp3mT_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to StimAmp3mT (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function StimAmp4mT_Callback(hObject, eventdata, handles)
+% hObject    handle to StimAmp4mT (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of StimAmp4mT as text
+%        str2double(get(hObject,'String')) returns contents of StimAmp4mT as a double
+global handles2give
+
+handles.wh_stim_amp_mT_4 = round(str2double(get(handles.StimAmp4mT,'String'))*100)/100;
+set(handles.StimAmp4mT,'String',num2str(handles.wh_stim_amp_mT_4));
+
+% Update handles structure
+handles2give=handles;
+guidata(hObject, handles);
+
+
+% --- Executes during object creation, after setting all properties.
+function StimAmp4mT_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to StimAmp4mT (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
